@@ -25,6 +25,6 @@ module.exports = {
         const Button = new ActionRowBuilder()
             .addComponents(LinkButton)
 
-        await interaction.reply({embeds: [Stardew], components: [Button] })
+        await interaction.reply({embeds: [Stardew], components: [Button], ephemeral: true })
     }
 }

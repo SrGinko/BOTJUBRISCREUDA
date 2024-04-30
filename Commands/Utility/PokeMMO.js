@@ -13,6 +13,6 @@ module.exports = {
         .setDescription('Acesso aos Links para poder Jogar PokeMMO'),
 
     async execute(interaction){
-        await interaction.reply({embeds: [poke] })
+        await interaction.reply({embeds: [poke], ephemeral: true })
     }
 }

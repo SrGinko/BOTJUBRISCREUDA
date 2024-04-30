@@ -25,6 +25,6 @@ module.exports = {
         const Button = new ActionRowBuilder()
             .addComponents(LinkButton)
 
-        await interaction.reply({embeds: [Melatonin], components: [Button] })
+        await interaction.reply({embeds: [Melatonin], components: [Button], ephemeral: true })
     }
 }

@@ -22,10 +22,9 @@ module.exports = {
             .setURL('https://www.mediafire.com/file/0z0xrpklrntqoso/Minecraft.apk/file')
             .setStyle(ButtonStyle.Link)
             
-
             const row = new ActionRowBuilder()
-			.addComponents(LinkButton );
+			.addComponents(LinkButton);
 
-        await interaction.reply({embeds: [Minecraft], components:[row] })
+        await interaction.reply({embeds: [Minecraft], components:[row], ephemeral: true })
     }
 }
