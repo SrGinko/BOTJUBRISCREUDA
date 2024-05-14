@@ -1,9 +1,20 @@
 const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder } = require('discord.js');
+const { getVariaveis, eventEmitter } = require('../../Controle')
+
+let stardew 
+
+eventEmitter.on('atualizarStardew', (variaveis) => {
+    if(variaveis.minecraft === ' ' ){
+        stardew = stardew
+    }else{
+        stardew = variaveis.stardewvalley
+    }
+})
 
 const Stardew = new EmbedBuilder()
     .setTitle('Stardew Valley')
     .setColor('Blue')
-    .setURL('https://www.mediafire.com/file/hrkiqgi0zftd896/Stardew.Valley.v1.5.6.zip/file')
+    .setURL(stardew)
     .setDescription('Link de Download do Stardew Valley (1.5.6)')
     .setImage('https://cdn.discordapp.com/attachments/1119014051033403473/1212776788506452019/capsule_616x353.jpg?ex=65f31166&is=65e09c66&hm=330d4411bfda91f0f5ba75573205b8e96ab54daa003c8a140ad7e4c73a1b246b&')
     .setThumbnail('https://cdn.discordapp.com/attachments/1119014051033403473/1212776746424737853/image.png?ex=65f3115c&is=65e09c5c&hm=19de8a49a88605bf03c7f787d0713bc9c1703410cd564c9d9a0033a8dc3754cf&')
@@ -19,12 +30,12 @@ module.exports = {
 
         const LinkButton = new ButtonBuilder()
             .setLabel('Download')
-            .setURL('https://www.mediafire.com/file/hrkiqgi0zftd896/Stardew.Valley.v1.5.6.zip/file')
+            .setURL(stardew)
             .setStyle(ButtonStyle.Link)
 
         const Button = new ActionRowBuilder()
             .addComponents(LinkButton)
 
-        await interaction.reply({embeds: [Stardew], components: [Button], ephemeral: true })
+        await interaction.reply({content: `${stardew}`,embeds: [Stardew], components: [Button], ephemeral: true })
     }
 }
