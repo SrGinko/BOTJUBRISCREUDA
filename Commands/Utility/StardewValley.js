@@ -3,7 +3,7 @@ const { getVariaveis, eventEmitter } = require('../../Controle')
 
 let stardew 
 
-eventEmitter.on('atualizarStardew', (variaveis) => {
+eventEmitter.on('atualizaStardew', (variaveis) => {
     if(variaveis.minecraft === ' ' ){
         stardew = stardew
     }else{
@@ -36,6 +36,6 @@ module.exports = {
         const Button = new ActionRowBuilder()
             .addComponents(LinkButton)
 
-        await interaction.reply({content: `${stardew}`,embeds: [Stardew], components: [Button], ephemeral: true })
+        await interaction.reply({embeds: [Stardew], components: [Button], ephemeral: true })
     }
 }

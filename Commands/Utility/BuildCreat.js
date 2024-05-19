@@ -16,26 +16,22 @@ module.exports = {
 
         const title = options.getString('titulo')
         const image = options.getString('imagem')
-        const cor = options.getString('cor')
-        const link = options.getString('link') || ' '
+        const cor = options.getString('cor') || "Random"
+        const link = options.getString('link') || "Nada"
 
         const constructionEmbed = new EmbedBuilder()
             .setTitle(title)
             .setImage(image)
             .setColor(cor)
 
-        const constructionBotton = new ButtonBuilder()
+        /*const constructionBotton = new ButtonBuilder()
             .setLabel('Link')
             .setURL(link)
-            .setStyle(ButtonStyle.Link)
+            .setStyle(ButtonStyle.Link)*/
 
         const row = new ActionRowBuilder()
             .addComponents(constructionBotton)
 
-        if (interaction.channelId === '1234623651962425516' || '1113232397635424366') {
-            await interaction.reply({ content: `Você não pode utilizar esse comando aqui`, ephemeral: true })
-        } else {
-            await interaction.reply({ embeds: [constructionEmbed], components: [row] })
-        }
+            await interaction.reply({content: `${link}`, embeds: [constructionEmbed] })
     }
 }

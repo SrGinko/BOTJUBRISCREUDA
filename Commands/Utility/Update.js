@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require("discord.js")
-const { atualizarMine, atualizarStardew } = require('../../Controle')
+const { atualizarMine, atualizarStardew, eventEmitter } = require('../../Controle')
 const adm = '770818264691114016'
 
 module.exports = {
@@ -13,15 +13,19 @@ module.exports = {
 
         const { options } = interaction
 
-        const minecraft1 = options.getString('minecraft')
-        const stardew1 = options.getString('stardew')
+        const minecraft1 = options.getString('minecraft') || " "
+        const stardew1 = options.getString('stardew') || " "
 
         if (interaction.user.id !== adm) {
             await interaction.reply({ content: `Você não tem permissão para dar este comando`, ephemeral: true })
         } else {
-            atualizarMine(minecraft1)
-            atualizarStardew(stardew1)
-            await interaction.reply({ content: `${stardew1}`, ephemeral: true })
+            if (minecraft1 !== " ") {
+                atualizarMine(minecraft1)
+            }
+            if (stardew1 !== " ") {
+                atualizarStardew(stardew1)
+            }
+            await interaction.reply({ content: `Link Atualizado`, ephemeral: true })
         }
     }
 }
