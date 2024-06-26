@@ -1,18 +1,12 @@
 const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle } = require("discord.js")
-const { getVariaveis, eventEmitter } = require('../../Controle')
 
-let mine 
+let mine  = 'https://m0ve-my.sharepoint.com/:f:/g/personal/pmonteiro_m0ve_onmicrosoft_com/EiEzw7PDsk5NiRUHRk_4Xp4BBpZkmlfLhKdJxO9HJsRPQQ?e=bsZRYK'
 
-eventEmitter.on('alteraVariaveis', (variaveis) => {
-    if(variaveis.minecraft === ' ' ){
-        mine = mine
-    }else
-    mine = variaveis.minecraft 
-})
+
 
 
 const Minecraft = new EmbedBuilder()
-    .setTitle('Minecraft Bedrock(Android)')
+    .setTitle('Minecraft Bedrock(Android) <:mine:1255553081400230028>')
     .setColor('Green')
     .setDescription('Minecraft apk para download')
     .setURL(mine)

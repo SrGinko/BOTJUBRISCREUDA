@@ -1,15 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder } = require('discord.js');
-const { getVariaveis, eventEmitter } = require('../../Controle')
 
-let stardew 
+let stardew = 'https://m0ve-my.sharepoint.com/:f:/g/personal/pmonteiro_m0ve_onmicrosoft_com/Ei4CzBo_jP5LmEQ9xkuw1zkBPW-doddNi6-DKwagQcvyDg?e=OhTX8S'
 
-eventEmitter.on('atualizaStardew', (variaveis) => {
-    if(variaveis.minecraft === ' ' ){
-        stardew = stardew
-    }else{
-        stardew = variaveis.stardewvalley
-    }
-})
 
 const Stardew = new EmbedBuilder()
     .setTitle('Stardew Valley')

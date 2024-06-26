@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require('discord.js');
 
 const Coordenadas = new EmbedBuilder()
     .setTitle('Coodernadas')
@@ -25,12 +25,12 @@ module.exports = {
 
                 new StringSelectMenuOptionBuilder()
                     .setLabel('Nether')
-                    .setDescription('Mostra as coordenadas dos ponto inportantes no Nether')
+                    .setDescription('Mostra as coordenadas dos ponto importantes no Nether')
                     .setValue('nether'),
 
                 new StringSelectMenuOptionBuilder()
                     .setLabel('OverWorld')
-                    .setDescription('Mostras as coordenadas dos pontos inportantes no OverWorld')
+                    .setDescription('Mostras as coordenadas dos pontos importantes no OverWorld')
                     .setValue('overworld')
             )
 

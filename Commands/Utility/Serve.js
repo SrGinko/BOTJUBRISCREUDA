@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle, Permissions } = require("discord.js")
+const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle } = require("discord.js")
 
 const Server1 = new EmbedBuilder()
     .setTitle('ManicomioServer (Aternos Fechado)')
