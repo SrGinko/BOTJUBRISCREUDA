@@ -6,7 +6,7 @@ const { TOKEN, CLIENTE_ID, GUILD_ID } = process.env
 const fs = require('node:fs')
 const path = require('node:path')
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions] });
 
 client.commands = new Collection()
 
