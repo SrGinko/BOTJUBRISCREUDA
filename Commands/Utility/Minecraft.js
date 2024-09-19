@@ -8,7 +8,7 @@ let mine  = 'https://m0ve-my.sharepoint.com/:f:/g/personal/pmonteiro_m0ve_onmicr
 const Minecraft = new EmbedBuilder()
     .setTitle('Minecraft Bedrock(Android) <:mine:1255553081400230028>')
     .setColor('Green')
-    .setDescription('Minecraft apk para download')
+    .setDescription('`Minecraft apk para download`')
     .setURL(mine)
     .setImage("https://media.discordapp.net/attachments/1119014051033403473/1212601554662592514/download.jpg?ex=65f26e33&is=65dff933&hm=2501398f48d8ebaa04c1df87b6268b6d04dec26b7687428a5b43fad7013d65e1&=&format=webp")
     .setThumbnail("https://cdn.discordapp.com/attachments/1119014051033403473/1212602916855087144/image.png?ex=65f26f78&is=65dffa78&hm=06fb5edb46e9d132dc9a3476c8a014fadff24e7adb7b07f3e578659d543ac256&")

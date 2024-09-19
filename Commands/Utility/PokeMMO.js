@@ -4,7 +4,7 @@ const poke = new EmbedBuilder()
     .setTitle('PokeMMO')
     .setColor('Red')
     .addFields(
-        {name: 'Acesso aos Links', value: `https://discord.com/channels/1031036294433865850/1038287748433448991`, inline: true }
+        {name: '``Acesso aos Links``', value: `https://discord.com/channels/1031036294433865850/1038287748433448991`, inline: true }
     )
 
 module.exports = {
