@@ -2,7 +2,7 @@ const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRow
 
 const Melatonin = new EmbedBuilder()
     .setTitle('Melatonin')
-    .setColor('Blurple')
+    .setColor('#ff2bb5')
     .setURL('https://www.mediafire.com/file/y5wu2mlaq8gq1pl/Melatonin.v2023.10.30.rar/file')
     .setDescription('Link de Download do Jogo Melatonin')
     .setImage('https://cdn1.epicgames.com/spt-assets/07109b840b8446d089419a84742c9239/melatonin-bjrmy.png')

@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js")
+const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder } = require("discord.js")
 
 
 module.exports = {
@@ -8,7 +8,9 @@ module.exports = {
         .addStringOption(option => option.setName('titulo').setDescription('Adiciona um titulo a sua Incorporção'))
         .addStringOption(option => option.setName('cor').setDescription('A cor em formato HEX(#FF0000)'))
         .addStringOption(option => option.setName('descrição').setDescription('Descrição'))
-        .addStringOption(option => option.setName('imagem').setDescription('Insira a URL de uma imagem.')),
+        .addStringOption(option => option.setName('imagem').setDescription('Insira a URL de uma imagem.'))
+        .addBooleanOption(option => option.setName('botao').setDescription('Seleciona se você quer ou não um botão com link na Embed'))
+        .addStringOption(option => option.setName('link').setDescription('Insira um link válido')),
 
     async execute(interaction) {
 
@@ -18,17 +20,35 @@ module.exports = {
         const cor = options.getString('cor') || "Random"
         const descricao = options.getString('descrição') || ''
         const imagem = options.getString('imagem')
+        const botao = options.getBoolean('botao') || false
+        const link = options.getString('link')
 
         const Embed = new EmbedBuilder()
             .setTitle(title)
             .setColor(cor)
             .setDescription(descricao)
 
-        if (imagem == imagem) {
+        const botaoLink = new ButtonBuilder()
+            .setLabel('Link')
+            .setURL(link)
+            .setStyle(ButtonStyle.Link)
+
+        const row = new ActionRowBuilder()
+            .addComponents(botaoLink)
+
+
+        if (imagem === imagem) {
             Embed.setImage(imagem)
         }
 
-        await interaction.reply({ embeds: [Embed] })
+        if (botao == botao) {
+
+            await interaction.reply({ embeds: [Embed], components: [row] })
+
+        } else {
+            await interaction.reply({ embeds: [Embed] })
+        }
+
 
     }
 }

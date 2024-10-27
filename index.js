@@ -4,7 +4,6 @@ const dotenv = require('dotenv')
 dotenv.config()
 const { TOKEN, CLIENTE_ID, GUILD_ID } = process.env
 const fs = require('node:fs');
-const { ClientRequest } = require('node:http');
 const path = require('node:path')
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions] });

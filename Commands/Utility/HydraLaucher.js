@@ -2,7 +2,7 @@ const { SlashCommandBuilder, EmbedBuilder, Colors } = require('discord.js');
 
 const hydra = new EmbedBuilder()
     .setTitle('HydraLaucher <:hydra:1255365685232537651>')
-    .setColor('DarkGreen')
+    .setColor('#030303')
     .addFields(
         {name: 'Acesso aos Links', value: `https://discord.com/channels/1031036294433865850/1297632360665186335`, inline: true }
     )
