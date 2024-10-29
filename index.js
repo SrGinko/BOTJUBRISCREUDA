@@ -41,9 +41,10 @@ for (const file of eventFiles) {
 
 client.on('ready', () => {
 	client.user.setActivity({
-		name: 'Minecraft',
-		type: ActivityType.Playing
+		name: 'OCUPADO',
+		type: ActivityType.Custom
 	})
+	client.user.setStatus('dnd')
 })
 
 client.on(Events.Raw, async (menssage) => {

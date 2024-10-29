@@ -17,7 +17,7 @@ const embed = new EmbedBuilder()
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('cores')
-        .setDescription('teste'),
+        .setDescription('Cores nos Usuarios'),
         
         async execute(interaction){
             interaction.reply({embeds: [embed]})
