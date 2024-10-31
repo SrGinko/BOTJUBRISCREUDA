@@ -37,7 +37,7 @@ module.exports = {
         .setTitle(`${data}`)
         .setColor('Random')
 
-        await interaction.reply({embeds: [embed]})
+        await interaction.reply({embeds: [embed], ephemeral: true})
 
     }
 }

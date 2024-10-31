@@ -41,10 +41,10 @@ for (const file of eventFiles) {
 
 client.on('ready', () => {
 	client.user.setActivity({
-		name: 'OCUPADO',
+		name: 'Estudando',
 		type: ActivityType.Custom
 	})
-	client.user.setStatus('dnd')
+	client.user.setStatus('idle')
 })
 
 client.on(Events.Raw, async (menssage) => {
