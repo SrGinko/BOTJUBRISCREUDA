@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder } = require("discord.js")
+const { addXp } = require("../../Controller")
 
 
 module.exports = {
@@ -13,6 +14,7 @@ module.exports = {
         .addStringOption(option => option.setName('link').setDescription('Insira um link válido')),
 
     async execute(interaction) {
+        const userId = interaction.user.id
 
         const { options } = interaction
 
@@ -36,6 +38,7 @@ module.exports = {
         const row = new ActionRowBuilder()
             .addComponents(botaoLink)
 
+        addXp(userId, 20)
 
         if (imagem === imagem) {
             Embed.setImage(imagem)

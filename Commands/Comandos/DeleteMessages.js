@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js")
+const { addXp } = require('../../Controller')
 
 const embed = new EmbedBuilder()
 
@@ -11,6 +12,7 @@ module.exports = {
 
     async execute(interaction) {
 
+        const userId = interaction.user.id
         const { options } = interaction
 
         const quantidade = options.getInteger('quantidade')
@@ -28,12 +30,14 @@ module.exports = {
 
                 embed.setDescription(`Excluídas **${deletedMessages.size}** mensagens.`)
                 embed.setColor('Green')
+                addXp(userId, 20)
             }
-        } else if(lixeiro === false){
+        } else if (lixeiro === false) {
 
             embed.setDescription(`Você não tem permição de Lixeiro para executar este comando!`)
             embed.setColor('Red')
         }
+
 
         await interaction.channel.sendTyping();
         interaction.reply({ embeds: [embed], ephemeral: true });

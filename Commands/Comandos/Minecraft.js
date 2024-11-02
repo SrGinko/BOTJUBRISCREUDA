@@ -1,9 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle } = require("discord.js")
+const { addXp } = require('../../Controller')
 
-let mine  = 'https://m0ve-my.sharepoint.com/:f:/g/personal/pmonteiro_m0ve_onmicrosoft_com/EiEzw7PDsk5NiRUHRk_4Xp4BBpZkmlfLhKdJxO9HJsRPQQ?e=bsZRYK'
-
-
-
+let mine = 'https://m0ve-my.sharepoint.com/:f:/g/personal/pmonteiro_m0ve_onmicrosoft_com/EiEzw7PDsk5NiRUHRk_4Xp4BBpZkmlfLhKdJxO9HJsRPQQ?e=bsZRYK'
 
 const Minecraft = new EmbedBuilder()
     .setTitle('Minecraft Bedrock(Android) <:mine:1255553081400230028>')
@@ -23,6 +21,8 @@ module.exports = {
 
     async execute(interaction) {
 
+        const userId = interaction.user.id
+
         const LinkButton = new ButtonBuilder()
             .setLabel('Download')
             .setURL(mine)
@@ -30,6 +30,9 @@ module.exports = {
 
         const row = new ActionRowBuilder()
             .addComponents(LinkButton);
+
+
+        addXp(userId, 10)
 
         await interaction.reply({ embeds: [Minecraft], components: [row], ephemeral: true })
     }

@@ -1,3 +1,5 @@
+const db = require('./db')
+
 const { EmbedBuilder } = require('discord.js')
 
 const EndCitys = new EmbedBuilder()
@@ -30,4 +32,15 @@ async function control(interaction) {
 
     } else return
 }
-module.exports = { control }
+
+async function addXp(userId, add) {
+    const selectXp = db.prepare(`SELECT xp from users WHERE id = ?`)
+    const updateXp = db.prepare(`UPDATE users SET xp = ? WHERE id = ?`)
+
+    const xp = selectXp.get(userId)
+    var newXp = xp.xp + add
+
+   await updateXp.run(newXp, userId)
+}
+
+module.exports = { control, addXp }

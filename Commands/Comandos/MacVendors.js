@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js")
 const axios = require('axios')
+const { addXp } = require("../../Controller")
 
 
 module.exports = {
@@ -11,6 +12,7 @@ module.exports = {
     async execute(interaction) {
 
         const { options } = interaction
+        const userId = interaction.user.id
 
         const mac = options.getString('mac')
 
@@ -39,6 +41,7 @@ module.exports = {
 
         
         await interaction.channel.sendTyping();
+        addXp(userId, 10)
         await interaction.reply({embeds: [embed], ephemeral: true})
 
     }
