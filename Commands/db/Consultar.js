@@ -17,6 +17,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle(username)
+            .setColor('#00a86d')
             .setFields(
                 { name: 'Nivel:', value: `${user.lvl}` },
                 { name: 'XP:', value: `${user.xp}` }
@@ -24,7 +25,7 @@ module.exports = {
             .setThumbnail(avatar)
             .setFooter({ text: 'By Jubscreuda', iconURL: 'https://i.ytimg.com/vi/s6V4BjURhOs/maxresdefault.jpg' })
 
-
+        await interaction.channel.sendTyping();
         await interaction.reply({ embeds: [embed]})
     }
 

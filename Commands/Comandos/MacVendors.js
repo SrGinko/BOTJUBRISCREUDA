@@ -37,6 +37,8 @@ module.exports = {
         .setTitle(`${data}`)
         .setColor('Random')
 
+        
+        await interaction.channel.sendTyping();
         await interaction.reply({embeds: [embed], ephemeral: true})
 
     }

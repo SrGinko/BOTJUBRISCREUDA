@@ -11,15 +11,4 @@ db.prepare(`
   )
 `).run();
 
-function addPoints(userId, xp, lvl) {
-    const stmt = db.prepare('INSERT INTO users (id, points) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET points = points + ?');
-    stmt.run(userId, username, xp, lvl );
-  }
-
-  function getPoints(userId) {
-    const stmt = db.prepare('SELECT * FROM users WHERE id = ?');
-    const user = stmt.get(userId);
-    return user 
-  }
-
   module.exports = db;

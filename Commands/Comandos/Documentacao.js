@@ -25,6 +25,7 @@ module.exports = {
 
     async execute(interaction) {
 
+        await interaction.channel.sendTyping();
         await interaction.reply({ embeds: [Documentacao],})
     }
 }

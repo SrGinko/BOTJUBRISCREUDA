@@ -20,7 +20,7 @@ module.exports = {
 
         if (lixeiro === true) {
             if (quantidade < 1 || quantidade > 100) {
-                embed.setDescription('Por favor, forneça um número entre 1 e 100.')
+                embed.setDescription(`Por favor, forneça um número entre 1 e 100.`)
                 embed.setColor('Red')
 
             } else {
@@ -29,13 +29,13 @@ module.exports = {
                 embed.setDescription(`Excluídas **${deletedMessages.size}** mensagens.`)
                 embed.setColor('Green')
             }
-        } else {
+        } else if(lixeiro === false){
 
             embed.setDescription(`Você não tem permição de Lixeiro para executar este comando!`)
             embed.setColor('Red')
         }
 
-
+        await interaction.channel.sendTyping();
         interaction.reply({ embeds: [embed], ephemeral: true });
 
     }

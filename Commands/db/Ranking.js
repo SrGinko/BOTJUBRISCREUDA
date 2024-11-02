@@ -9,21 +9,38 @@ module.exports = {
     async execute(interaction) {
 
         const sumt = db.prepare(`SELECT * from users`)
-        const user = sumt.get()
-        console.log(user)
-        // const username = user.username
+        const user = sumt.all()
 
-        // const embed = new EmbedBuilder()
-        //     .setTitle('Ranking')
-        //     .setFields(
-        //         { name: 'Nivel', value: `${user.lvl}`},
-        //         { name: 'XP:', value: `${user.xp}` }
-        //     )
-        //     .setThumbnail(avatar)
-        //     .setFooter({ text: 'By Jubscreuda', iconURL: 'https://i.ytimg.com/vi/s6V4BjURhOs/maxresdefault.jpg' })
+        user.sort((a, b) => b.xp - a.xp)
+
+        var primeiro = user[0]
+        var segundo = user[1]
+        var terceiro = user[2]
+        var quarto = user[3]
+
+        const embed = new EmbedBuilder()
+            .setTitle('Ranking')
+            .setColor('#7500db')
+            .setFields(
+                { name: 'Nome ', value: '\u200B', inline: true },
+                { name: '\u200B', value: '\u200B', inline: true },
+                { name: 'Nivel ', value: '\u200B', inline: true },
+                { name: ` 1️⃣ | ${primeiro.username}`, value: '\u200B', inline: true },
+                { name: '\u200B', value: '\u200B', inline: true },
+                { name: `${primeiro.lvl}`, value: '\u200B', inline: true },
+                { name: ` 2️⃣ | ${segundo.username}`, value: '\u200B', inline: true },
+                { name: '\u200B', value: '\u200B', inline: true },
+                { name: `${segundo.lvl}`, value: '\u200B', inline: true },
+                { name: ` 3️⃣ | ${terceiro.username}`, value: '\u200B', inline: true },
+                { name: '\u200B', value: '\u200B', inline: true },
+                { name: `${terceiro.lvl}`, value: '\u200B', inline: true },
+                { name: ` 4️⃣ | ${quarto.username}`, value: '\u200B', inline: true },
+                { name: '\u200B', value: '\u200B', inline: true },
+                { name: `${quarto.lvl}`, value: '\u200B', inline: true },
+            )
+            .setFooter({ text: 'By Jubscreuda', iconURL: 'https://i.ytimg.com/vi/s6V4BjURhOs/maxresdefault.jpg' })
 
 
-        // await interaction.reply({ embeds: [embed] })
+        await interaction.reply({ embeds: [embed] })
     }
-
 }

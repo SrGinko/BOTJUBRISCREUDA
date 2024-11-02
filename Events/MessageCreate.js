@@ -32,11 +32,11 @@ module.exports = {
 
             } catch (error) {
                 if (error.code === 'SQLITE_CONSTRAINT_PRIMARYKEY') {
-                    
-                    const selectXp =  db.prepare(`SELECT xp from users WHERE id = ?`)
-                    const selectLvl =  db.prepare(`SELECT lvl from users WHERE id = ?`)
+
+                    const selectXp = db.prepare(`SELECT xp from users WHERE id = ?`)
+                    const selectLvl = db.prepare(`SELECT lvl from users WHERE id = ?`)
                     const updateXp = db.prepare(`UPDATE users SET xp = ? WHERE id = ?`)
-                    const updateLvl =  db.prepare(`UPDATE users SET lvl = ? WHERE id = ?`)
+                    const updateLvl = db.prepare(`UPDATE users SET lvl = ? WHERE id = ?`)
 
                     var experiencia = selectXp.get(userId)
                     var nivel = selectLvl.get(userId)
@@ -44,86 +44,106 @@ module.exports = {
 
                     switch (nivel.lvl) {
                         case 1:
-                            if(experiencia.xp >= 100){
-                                let newLvl = nivel.lvl + 1 
+                            if (experiencia.xp >= 100) {
+                                let newLvl = nivel.lvl + 1
                                 updateLvl.run(newLvl, userId)
-                            }else{
+                            } else {
 
                                 let newXp = experiencia.xp + 15
                                 updateXp.run(newXp, userId)
                             }
                             break;
-                            case 2:
-                            if(experiencia.xp >= 500){
-                                let newLvl = nivel.lvl + 1 
+                        case 2:
+                            if (experiencia.xp >= 500) {
+                                let newLvl = nivel.lvl + 1
                                 updateLvl.run(newLvl, userId)
-                            }else{
+                            } else {
 
                                 let newXp = experiencia.xp + 15
                                 updateXp.run(newXp, userId)
                             }
                             break;
-                            case 3:
-                            if(experiencia.xp >= 1000){
-                                let newLvl = nivel.lvl + 1 
+                        case 3:
+                            if (experiencia.xp >= 1000) {
+                                let newLvl = nivel.lvl + 1
                                 updateLvl.run(newLvl, userId)
-                            }else{
+                            } else {
 
                                 let newXp = experiencia.xp + 15
                                 updateXp.run(newXp, userId)
                             }
                             break;
-                            case 4:
-                            if(experiencia.xp >= 1500){
-                                let newLvl = nivel.lvl + 1 
+                        case 4:
+                            if (experiencia.xp >= 1500) {
+                                let newLvl = nivel.lvl + 1
                                 updateLvl.run(newLvl, userId)
-                            }else{
+                            } else {
 
                                 let newXp = experiencia.xp + 15
                                 updateXp.run(newXp, userId)
                             }
                             break;
-                            case 5:
-                            if(experiencia.xp >= 2000){
-                                let newLvl = nivel.lvl + 1 
+                        case 5:
+                            if (experiencia.xp >= 2000) {
+                                let newLvl = nivel.lvl + 1
                                 updateLvl.run(newLvl, userId)
-                            }else{
+                            } else {
 
                                 let newXp = experiencia.xp + 15
                                 updateXp.run(newXp, userId)
                             }
                             break;
-                            case 6:
-                            if(experiencia.xp >= 3000){
-                                let newLvl = nivel.lvl + 1 
+                        case 6:
+                            if (experiencia.xp >= 3000) {
+                                let newLvl = nivel.lvl + 1
                                 updateLvl.run(newLvl, userId)
-                            }else{
+                            } else {
 
                                 let newXp = experiencia.xp + 15
                                 updateXp.run(newXp, userId)
                             }
                             break;
-                            case 7:
-                            if(experiencia.xp >= 4000){
-                                let newLvl = nivel.lvl + 1 
+                        case 7:
+                            if (experiencia.xp >= 4000) {
+                                let newLvl = nivel.lvl + 1
                                 updateLvl.run(newLvl, userId)
-                            }else{
+                            } else {
 
                                 let newXp = experiencia.xp + 15
                                 updateXp.run(newXp, userId)
                             }
                             break;
-                            case 8:
-                            if(experiencia.xp >= 6000){
-                                let newLvl = nivel.lvl + 1 
+                        case 8:
+                            if (experiencia.xp >= 6000) {
+                                let newLvl = nivel.lvl + 1
                                 updateLvl.run(newLvl, userId)
-                            }else{
+                            } else {
 
                                 let newXp = experiencia.xp + 15
                                 updateXp.run(newXp, userId)
                             }
                             break;
-                    
+                        case 9:
+                            if (experiencia.xp >= 8000) {
+                                let newLvl = nivel.lvl + 1
+                                updateLvl.run(newLvl, userId)
+                            } else {
+
+                                let newXp = experiencia.xp + 15
+                                updateXp.run(newXp, userId)
+                            }
+                            break;
+                        case 10:
+                            if (experiencia.xp >= 10000) {
+                                let newLvl = nivel.lvl + 1
+                                updateLvl.run(newLvl, userId)
+                            } else {
+
+                                let newXp = experiencia.xp + 15
+                                updateXp.run(newXp, userId)
+                            }
+                            break;
+
                         default:
                             break;
                     }

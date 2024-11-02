@@ -13,6 +13,8 @@ module.exports = {
         .setDescription('Acesso ao Link de Download da HydraLaucher'),
 
     async execute(interaction){
+        
+        await interaction.channel.sendTyping();
         await interaction.reply({embeds: [hydra], ephemeral: true })
     }
 }
