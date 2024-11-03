@@ -3,7 +3,7 @@ const db = require('../../db')
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('consultar')
+        .setName('perfil')
         .setDescription('Consultar seu Nível e quantidade de XP'),
 
     async execute(interaction) {

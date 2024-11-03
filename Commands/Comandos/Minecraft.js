@@ -4,7 +4,7 @@ const { addXp } = require('../../Controller')
 let mine = 'https://m0ve-my.sharepoint.com/:f:/g/personal/pmonteiro_m0ve_onmicrosoft_com/EiEzw7PDsk5NiRUHRk_4Xp4BBpZkmlfLhKdJxO9HJsRPQQ?e=bsZRYK'
 
 const Minecraft = new EmbedBuilder()
-    .setTitle('Minecraft Bedrock(Android) <:mine:1255553081400230028>')
+    .setTitle('Minecraft Bedrock(Android)')
     .setColor('#28fa08')
     .setDescription('`Minecraft apk para download`')
     .setURL(mine)

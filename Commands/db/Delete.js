@@ -5,21 +5,23 @@ const embed = new EmbedBuilder()
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('deletusr')
-        .setDescription('Deletar um usuário do banco de dados')
-        .addStringOption(option => option.setName('usuario').setDescription('Adicionar id do Usuario').setRequired(true)),
+        .setName('delettb')
+        .setDescription('Deletar uma tabela do banco de dados')
+        .addStringOption(option => option.setName('id').setDescription('Adicionar id').setRequired(true))
+        .addStringOption(option => option.setName('tabela').setDescription('Selecionar a Tabela').setRequired(true)),
 
     async execute(interaction) {
 
         const { options } = interaction
 
-        const userId = options.getString('usuario')
+        const userId = options.getString('id')
+        const tabela = options.getString('tabela')
 
         const member = interaction.member
         const adm = member.guild.roles.cache.some(r => r.name === 'Adm')
 
         if (adm === true) {
-            const sumt = db.prepare(`DELETE FROM users WHERE id = ?`)
+            const sumt = db.prepare(`DELETE FROM ${tabela} WHERE id = ?`)
 
             try {
                 sumt.run(userId)

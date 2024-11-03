@@ -11,4 +11,12 @@ db.prepare(`
   )
 `).run();
 
+db.prepare(`CREATE TABLE IF NOT EXISTS files (
+  id INTEGER PRIMARY KEY,
+  filename TEXT,
+  filetype TEXT,
+  content BLOB
+)`).run()
+
+
   module.exports = db;
