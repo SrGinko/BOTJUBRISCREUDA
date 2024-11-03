@@ -18,5 +18,13 @@ db.prepare(`CREATE TABLE IF NOT EXISTS files (
   content BLOB
 )`).run()
 
+db.prepare(`CREATE TABLE IF NOT EXISTS personagem (
+  id INTEGER PRIMARY KEY,
+  nomePersonagem TEXT,
+  classePersonagem TEXT,
+  vidaPersonagem INTEGER,
+  danoPersonagem INTEGER
+)`).run()
+
 
   module.exports = db;

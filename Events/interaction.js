@@ -1,5 +1,5 @@
 const { Events } = require('discord.js')
-const {  controler } = require('../Controller')
+const { controler } = require('../Controller')
 
 
 module.exports = {

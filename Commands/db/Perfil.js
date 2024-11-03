@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder} = require("discord.js")
 const db = require('../../db')
+const { Hoje } = require("../../Controller")
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -15,6 +16,8 @@ module.exports = {
 
         const username = user.username
 
+        const agora = Hoje()
+
         const embed = new EmbedBuilder()
             .setTitle(username)
             .setColor('#00a86d')
@@ -23,7 +26,7 @@ module.exports = {
                 { name: 'XP:', value: `${user.xp}` }
             )
             .setThumbnail(avatar)
-            .setFooter({ text: 'By Jubscreuda', iconURL: 'https://i.ytimg.com/vi/s6V4BjURhOs/maxresdefault.jpg' })
+            .setFooter({ text: `By Jubscreuda ∘ ${agora.horas}:${agora.minutos} - ${agora.ano}` , iconURL: 'https://i.ytimg.com/vi/s6V4BjURhOs/maxresdefault.jpg' })
 
         await interaction.channel.sendTyping();
         await interaction.reply({ embeds: [embed]})

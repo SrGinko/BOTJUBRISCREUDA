@@ -42,8 +42,8 @@ async function controler(interaction) {
 
 /**
  * 
- * @param {Integer} userId - id do usuário
- * @param {Integer} add - Quantidade de xp que será adicionada
+ * @param {Inteiro} userId - id do usuário
+ * @param {Inteiro} add - Quantidade de xp que será adicionada
  */
 
 async function addXp(userId, add) {
@@ -56,4 +56,23 @@ async function addXp(userId, add) {
     await updateXp.run(newXp, userId)
 }
 
-module.exports = { controler, addXp }
+
+/**
+ * 
+ * 
+ * @returns dia, mes, ano, horas, minutos
+ */
+ function Hoje() {
+
+    const agora = new Date();
+    const dia = String(agora.getDate()).padStart(2, '0');
+    const mes = String(agora.getMonth() + 1).padStart(2, '0');
+    const ano = agora.getFullYear();
+
+    const horas = String(agora.getHours()).padStart(2, '0');
+    const minutos = String(agora.getMinutes()).padStart(2, '0');
+
+    return { dia, mes, ano, horas, minutos }
+}
+
+module.exports = { controler, addXp, Hoje }
