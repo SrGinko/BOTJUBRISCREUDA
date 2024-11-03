@@ -20,7 +20,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Ranking')
-            .setColor('#7500db')
+            .setColor('#004078')
             .setFields(
                 { name: 'Nome ', value: '\u200B', inline: true },
                 { name: '\u200B', value: '\u200B', inline: true },

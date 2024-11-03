@@ -13,7 +13,6 @@ const Minecraft = new EmbedBuilder()
     .setFooter({ text: 'Mediafire.com', iconURL: 'https://cdn.discordapp.com/attachments/1119014051033403473/1213609191919591514/mediafire.png?ex=65f618a3&is=65e3a3a3&hm=51460e2f620b4787cfe81ae993e9c472437a43d817b71dae938b92a3392c0605&' })
 
 
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('minecraft')

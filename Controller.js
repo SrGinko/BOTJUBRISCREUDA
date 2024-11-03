@@ -1,6 +1,5 @@
-const db = require('./db')
-
 const { EmbedBuilder } = require('discord.js')
+const db = require('./db')
 
 const EndCitys = new EmbedBuilder()
     .setTitle('EndsCitys')
@@ -18,7 +17,14 @@ const OverWorld = new EmbedBuilder()
     .addFields({ name: 'Clique aqui:', value: `https://discord.com/channels/1031036294433865850/1215493397230395452` })
 
 
-async function control(interaction) {
+
+/**
+ * 
+ * @param {Objeto} interaction - Necessaria para execção dos comando
+ * @returns {Objeto} - Retorna valor da interação
+ */
+
+async function controler(interaction) {
     if (interaction.isStringSelectMenu()) {
         const select = interaction.values[0]
 
@@ -33,6 +39,13 @@ async function control(interaction) {
     } else return
 }
 
+
+/**
+ * 
+ * @param {Integer} userId - id do usuário
+ * @param {Integer} add - Quantidade de xp que será adicionada
+ */
+
 async function addXp(userId, add) {
     const selectXp = db.prepare(`SELECT xp from users WHERE id = ?`)
     const updateXp = db.prepare(`UPDATE users SET xp = ? WHERE id = ?`)
@@ -40,7 +53,7 @@ async function addXp(userId, add) {
     const xp = selectXp.get(userId)
     var newXp = xp.xp + add
 
-   await updateXp.run(newXp, userId)
+    await updateXp.run(newXp, userId)
 }
 
-module.exports = { control, addXp }
+module.exports = { controler, addXp }
