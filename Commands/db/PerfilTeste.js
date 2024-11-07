@@ -9,7 +9,6 @@ module.exports = {
 
     async execute(interaction) {
 
-        try{
             const userId = interaction.user.id
 
             const smt = db.prepare(`SELECT * FROM users WHERE id = ?`)
@@ -61,10 +60,6 @@ module.exports = {
             // Enviar o card como um anexo no Discord
             const attachment = new AttachmentBuilder(canvas.encode('jpg'), { name: 'rank-card.jpg' });
             interaction.reply({ files: [attachment] });
-
-        } catch (error) {
-            console.log(error)
-        }
 
     }
 
