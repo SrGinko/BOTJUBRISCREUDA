@@ -1,5 +1,5 @@
 
-const { Client, Events, GatewayIntentBits, Collection, ActivityType, messageLink } = require('discord.js');
+const { Client, Events, GatewayIntentBits, Collection, ActivityType } = require('discord.js');
 const dotenv = require('dotenv')
 dotenv.config()
 const { TOKEN, CLIENTE_ID, GUILD_ID } = process.env

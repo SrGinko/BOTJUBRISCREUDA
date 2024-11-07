@@ -38,7 +38,7 @@ module.exports = {
                 { name: '\u200B', value: '\u200B', inline: true },
                 { name: `${quarto.lvl}`, value: '\u200B', inline: true },
             )
-            .setFooter({ text: '`By Jubscreuda`', iconURL: 'https://i.ytimg.com/vi/s6V4BjURhOs/maxresdefault.jpg' })
+            .setFooter({ text: 'By Jubscreuda', iconURL: 'https://i.ytimg.com/vi/s6V4BjURhOs/maxresdefault.jpg' })
 
 
         await interaction.reply({ embeds: [embed] })
