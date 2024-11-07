@@ -58,7 +58,7 @@ module.exports = {
             context.fillStyle = '#ffffffaa';
             context.fillText(`${user.xp} / ${requiredXP} XP`, 200, 210);
 
-            // Enviar o card como um anexo no Discord
+            // Enviar o card como um anexo no Discord.
             const attachment = new AttachmentBuilder(canvas.encode('jpg'), { name: 'rank-card.jpg' });
             interaction.reply({ files: [attachment] });
 
