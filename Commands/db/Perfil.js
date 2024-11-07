@@ -26,7 +26,7 @@ module.exports = {
                 { name: 'XP:', value: `${user.xp}` }
             )
             .setThumbnail(avatar)
-            .setFooter({ text: `By Jubscreuda ∘ ${agora.horas}:${agora.minutos} - ${agora.dia}/` , iconURL: 'https://i.ytimg.com/vi/s6V4BjURhOs/maxresdefault.jpg' })
+            .setFooter({ text: `By Jubscreuda ∘ ${agora.horas}:${agora.minutos} - ${agora.dia}/${agora.mes}` , iconURL: 'https://i.ytimg.com/vi/s6V4BjURhOs/maxresdefault.jpg' })
 
         await interaction.channel.sendTyping();
         await interaction.reply({ embeds: [embed]})
