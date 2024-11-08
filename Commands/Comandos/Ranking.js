@@ -11,7 +11,7 @@ module.exports = {
         const sumt = db.prepare(`SELECT * from users`)
         const user = sumt.all()
 
-        user.sort((a, b) => b.xp - a.xp)
+        user.sort((a, b) => b.lvl - a.lvl)
 
         var primeiro = user[0]
         var segundo = user[1]

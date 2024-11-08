@@ -75,4 +75,116 @@ async function addXp(userId, add) {
     return { dia, mes, ano, horas, minutos }
 }
 
-module.exports = { controler, addXp, Hoje }
+/**
+ * 
+ * @param {Inteiro} userId id usuário
+ * 
+ */
+async function addLVL(userId) {
+
+    const selectXp = db.prepare(`SELECT xp from users WHERE id = ?`)
+    const selectLvl = db.prepare(`SELECT lvl from users WHERE id = ?`)
+    const updateLvl = db.prepare(`UPDATE users SET lvl = ? WHERE id = ?`)
+    const updatexp = db.prepare(`UPDATE users SET lvl = ? WHERE id = ?`)
+
+    var experiencia = selectXp.get(userId)
+    var nivel = selectLvl.get(userId)
+
+    switch (nivel.lvl) {
+        case 1:
+            if (experiencia.xp >= 100) {
+                let newXp = 100 - experiencia.xp
+                let newLvl = nivel.lvl + 1
+                updateLvl.run(newLvl, userId)
+                updatexp.run(newXp, userId)
+            }
+            return 100
+            break;
+        case 2:
+            if (experiencia.xp >= 500) {
+                let newXp = 500 - experiencia.xp
+                let newLvl = nivel.lvl + 1
+                updateLvl.run(newLvl, userId)
+                updatexp.run(newXp, userId)
+                
+            }
+            return 500
+            break;
+        case 3:
+            if (experiencia.xp >= 1000) {
+                let newXp = 1000 - experiencia.xp
+                let newLvl = nivel.lvl + 1
+                updateLvl.run(newLvl, userId)
+                updatexp.run(newXp, userId)
+            }
+            return 1000
+            break;
+        case 4:
+            if (experiencia.xp >= 1500) {
+                let newXp = 1500 - experiencia.xp
+                let newLvl = nivel.lvl + 1
+                updateLvl.run(newLvl, userId)
+                updatexp.run(newXp, userId)
+            }
+            return 1500
+            break;
+        case 5:
+            if (experiencia.xp >= 2000) {
+                let newXp = 2000 - experiencia.xp
+                let newLvl = nivel.lvl + 1
+                updateLvl.run(newLvl, userId)
+                updatexp.run(newXp, userId)
+            }
+            return 2000
+            break;
+        case 6:
+            if (experiencia.xp >= 3000) {
+                let newXp = 3000 - experiencia.xp
+                let newLvl = nivel.lvl + 1
+                updateLvl.run(newLvl, userId)
+                updatexp.run(newXp, userId)
+            }
+            return 3000
+            break;
+        case 7:
+            if (experiencia.xp >= 4000) {
+                let newXp = 4000 - experiencia.xp
+                let newLvl = nivel.lvl + 1
+                updateLvl.run(newLvl, userId)
+                updatexp.run(newXp, userId)
+            }
+            return 4000
+            break;
+        case 8:
+            if (experiencia.xp >= 6000) {
+                let newXp = 6000 - experiencia.xp
+                let newLvl = nivel.lvl + 1
+                updateLvl.run(newLvl, userId)
+                updatexp.run(newXp, userId)
+            }
+            return 6000
+            break;
+        case 9:
+            if (experiencia.xp >= 8000) {
+                let newXp = 8000 - experiencia.xp
+                let newLvl = nivel.lvl + 1
+                updateLvl.run(newLvl, userId)
+                updatexp.run(newXp, userId)
+            }
+            return 8000
+            break;
+        case 10:
+            if (experiencia.xp >= 10000) {
+                let newXp = 10000 - experiencia.xp
+                let newLvl = nivel.lvl + 1
+                updateLvl.run(newLvl, userId)
+                updatexp.run(newXp, userId)
+            }
+            return 10000
+            break;
+        default:
+            break;
+    }
+}   
+
+module.exports = { controler, addXp, Hoje, addLVL }

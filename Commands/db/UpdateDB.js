@@ -5,17 +5,21 @@ const embed = new EmbedBuilder()
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('updatelvl')
-        .setDescription('Atualiza dados do BD')
+        .setName('updatedb')
+        .setDescription('Atualizar dados do BD')
         .addStringOption(option => option.setName('id').setDescription('Adicionar id').setRequired(true))
-        .addIntegerOption(option => option.setName('nivel').setDescription('Modificar novo nível').setRequired(true)),
+        .addStringOption(option => option.setName('tabela').setDescription('Selecionar tabela').setRequired(true))
+        .addStringOption(option => option.setName('entidade').setDescription('Selecionar a entidade').setRequired(true))
+        .addStringOption(option => option.setName('valor').setDescription('Altera o valor').setRequired(true)),
 
     async execute(interaction) {
 
         const { options } = interaction
 
         const userId = options.getString('id')
-        const nivel = options.getInteger('nivel')
+        const tabela = options.getString('tabela')
+        const entidade = options.getString('entidade')
+        const valor = options.getString('valor')
 
         const member = interaction.member
         const adm = member.guild.roles.cache.some(r => r.name === 'Adm')
@@ -23,15 +27,17 @@ module.exports = {
         if (adm === true) {
 
             try {
-                const updateLvl = db.prepare(`UPDATE users SET lvl = ? WHERE id = ?`)
+                const updateLvl = db.prepare(`UPDATE ${tabela} SET ${entidade} = ? WHERE id = ?`)
 
-                updateLvl.run(nivel, userId)
+                updateLvl.run(valor, userId)
 
                 embed.setColor('Green')
                 embed.setDescription('Usuário Atualizado com sucesso!')
 
             } catch (error) {
                 console.log(error)
+                embed.setColor('Red')
+                embed.setDescription('Ocorreu algum erro!')
             }
 
         } else if (adm === false) {
