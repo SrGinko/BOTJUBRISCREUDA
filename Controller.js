@@ -105,12 +105,6 @@ async function controler(interaction) {
                 embed.setColor('Green')
                 return await interaction.reply({ embeds: [embed], ephemeral: true })
                 break;
-            case '10':
-                updateFundo.run(select, userId)
-                embed.setDescription('Banner Alterado com sucesso')
-                embed.setColor('Green')
-                return await interaction.reply({ embeds: [embed], ephemeral: true })
-                break;
 
             default:
                 embed.setDescription('Não foi possível Alterar o Banner')
@@ -134,6 +128,7 @@ async function addXp(userId, add) {
     const updateXp = db.prepare(`UPDATE users SET xp = ? WHERE id = ?`)
 
     const xp = selectXp.get(userId)
+    console.log(xp)
     var newXp = xp.xp + add
 
     await updateXp.run(newXp, userId)

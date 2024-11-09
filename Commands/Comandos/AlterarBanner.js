@@ -61,11 +61,6 @@ module.exports = {
                         .setLabel('Imperfection')
                         .setDescription('imperfection')
                         .setValue('9'),
-                    new StringSelectMenuOptionBuilder()
-                        .setLabel('Travis')
-                        .setDescription('Travis')
-                        .setValue('10'),
-
                 )
 
             const Button = new ActionRowBuilder()

@@ -130,3 +130,5 @@ client.on(Events.InteractionCreate, interaction => {
 })
 
 client.login(TOKEN);
+
+module.exports = {client}
