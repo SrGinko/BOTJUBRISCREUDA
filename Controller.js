@@ -1,6 +1,8 @@
 const { EmbedBuilder } = require('discord.js')
 const db = require('./db')
 
+const embed = new EmbedBuilder()
+
 const EndCitys = new EmbedBuilder()
     .setTitle('EndsCitys')
     .setColor('Purple')
@@ -26,6 +28,10 @@ const OverWorld = new EmbedBuilder()
 
 async function controler(interaction) {
     if (interaction.isStringSelectMenu()) {
+        const userId = interaction.user.id
+
+        const updateFundo = db.prepare(`UPDATE users SET fundo = ? WHERE id = ?`)
+
         const select = interaction.values[0]
 
         switch (select) {
@@ -34,6 +40,83 @@ async function controler(interaction) {
             case 'nether': return await interaction.reply({ embeds: [Nether], ephemeral: true })
                 break;
             case 'overworld': return await interaction.reply({ embeds: [OverWorld], ephemeral: true })
+        }
+
+
+
+        switch (select) {
+            case '0':
+                updateFundo.run(select, userId)
+                embed.setDescription('Banner Alterado com sucesso')
+                embed.setColor('Green')
+                return await interaction.reply({ embeds: [embed], ephemeral: true })
+                break;
+            case '1':
+                updateFundo.run(select, userId)
+                embed.setDescription('Banner Alterado com sucesso')
+                embed.setColor('Green')
+                return await interaction.reply({ embeds: [embed], ephemeral: true })
+                break;
+            case '2':
+                updateFundo.run(select, userId)
+                embed.setDescription('Banner Alterado com sucesso')
+                embed.setColor('Green')
+                return await interaction.reply({ embeds: [embed], ephemeral: true })
+                break;
+            case '3':
+                updateFundo.run(select, userId)
+                embed.setDescription('Banner Alterado com sucesso')
+                embed.setColor('Green')
+                return await interaction.reply({ embeds: [embed], ephemeral: true })
+                break;
+            case '4':
+                updateFundo.run(select, userId)
+                embed.setDescription('Banner Alterado com sucesso')
+                embed.setColor('Green')
+                return await interaction.reply({ embeds: [embed], ephemeral: true })
+                break;
+            case '5':
+                updateFundo.run(select, userId)
+                embed.setDescription('Banner Alterado com sucesso')
+                embed.setColor('Green')
+                return await interaction.reply({ embeds: [embed], ephemeral: true })
+                break;
+            case '6':
+                updateFundo.run(select, userId)
+                embed.setDescription('Banner Alterado com sucesso')
+                embed.setColor('Green')
+                return await interaction.reply({ embeds: [embed], ephemeral: true })
+                break;
+            case '7':
+                updateFundo.run(select, userId)
+                embed.setDescription('Banner Alterado com sucesso')
+                embed.setColor('Green')
+                return await interaction.reply({ embeds: [embed], ephemeral: true })
+                break;
+            case '8':
+                updateFundo.run(select, userId)
+                embed.setDescription('Banner Alterado com sucesso')
+                embed.setColor('Green')
+                return await interaction.reply({ embeds: [embed], ephemeral: true })
+                break;
+            case '9':
+                updateFundo.run(select, userId)
+                embed.setDescription('Banner Alterado com sucesso')
+                embed.setColor('Green')
+                return await interaction.reply({ embeds: [embed], ephemeral: true })
+                break;
+            case '10':
+                updateFundo.run(select, userId)
+                embed.setDescription('Banner Alterado com sucesso')
+                embed.setColor('Green')
+                return await interaction.reply({ embeds: [embed], ephemeral: true })
+                break;
+
+            default:
+                embed.setDescription('Não foi possível Alterar o Banner')
+                embed.setColor('Red')
+                return await interaction.reply({ embeds: [embed], ephemeral: true })
+                break;
         }
 
     } else return
@@ -62,7 +145,7 @@ async function addXp(userId, add) {
  * 
  * @returns dia, mes, ano, horas, minutos
  */
- function Hoje() {
+function Hoje() {
 
     const agora = new Date();
     const dia = String(agora.getDate()).padStart(2, '0');
@@ -106,7 +189,7 @@ async function addLVL(userId) {
                 let newLvl = nivel.lvl + 1
                 updateLvl.run(newLvl, userId)
                 updatexp.run(newXp, userId)
-                
+
             }
             return 500
             break;
@@ -185,6 +268,6 @@ async function addLVL(userId) {
         default:
             break;
     }
-}   
+}
 
 module.exports = { controler, addXp, Hoje, addLVL }
