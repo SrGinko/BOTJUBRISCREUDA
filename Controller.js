@@ -163,7 +163,6 @@ async function addXp(userId, add) {
     const updateXp = db.prepare(`UPDATE users SET xp = ? WHERE id = ?`)
 
     const xp = selectXp.get(userId)
-    console.log(xp)
     var newXp = xp.xp + add
 
     await updateXp.run(newXp, userId)
