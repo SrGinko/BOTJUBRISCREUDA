@@ -12,10 +12,10 @@ module.exports = {
 
 			voiceChannels.forEach(channel => {
 				channel.members.forEach(member => {
-					console.log(member)
-					const userId = member.user.id
-
-					addXp(userId, 10)
+					if(member.user.bot){
+						const userId = member.user.id
+						addXp(userId, 10)
+					}
 				});
 			});
 		}

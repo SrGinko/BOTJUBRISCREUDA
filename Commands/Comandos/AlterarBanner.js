@@ -41,26 +41,37 @@ module.exports = {
                         .setLabel('Floresta')
                         .setDescription('Floresta')
                         .setValue('4'),
+
                     new StringSelectMenuOptionBuilder()
                         .setLabel('Astronalta')
                         .setDescription('Astronalta')
                         .setValue('5'),
+
                     new StringSelectMenuOptionBuilder()
                         .setLabel('Folha')
                         .setDescription('Folha')
                         .setValue('6'),
+
                     new StringSelectMenuOptionBuilder()
                         .setLabel('Samael')
                         .setDescription('Samael')
                         .setValue('7'),
+
                     new StringSelectMenuOptionBuilder()
                         .setLabel('Vaquinha')
-                        .setDescription('Vaquinha')
+                        .setDescription('+18')
                         .setValue('8'),
+
                     new StringSelectMenuOptionBuilder()
                         .setLabel('Imperfection')
                         .setDescription('imperfection')
                         .setValue('9'),
+
+                    new StringSelectMenuOptionBuilder()
+                        .setLabel('Neblina')
+                        .setDescription('Neblina')
+                        .setValue('10'),
+                        
                 )
 
             const Button = new ActionRowBuilder()

@@ -62,7 +62,7 @@ module.exports = {
             context.fillStyle = `#ffffff`;
             context.fillText(`By Jubriscreuda  ${agora.ano}`, canvas.width / 1.3, canvas.height / 1.1);
 
-            const attachment = new AttachmentBuilder(canvas.toBuffer('image/png'), { name: 'profile-image.png' });
+            const attachment = new AttachmentBuilder(canvas.toBuffer('image/png'), { name: 'BemVindo-image.png' });
 
 		
 		await member.roles.add(player)

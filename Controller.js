@@ -49,60 +49,78 @@ async function controler(interaction) {
                 updateFundo.run(select, userId)
                 embed.setDescription('Banner Alterado com sucesso')
                 embed.setColor('Green')
+                addXp(userId, 5)
                 return await interaction.reply({ embeds: [embed], ephemeral: true })
                 break;
             case '1':
                 updateFundo.run(select, userId)
                 embed.setDescription('Banner Alterado com sucesso')
                 embed.setColor('Green')
+                addXp(userId, 5)
                 return await interaction.reply({ embeds: [embed], ephemeral: true })
                 break;
             case '2':
                 updateFundo.run(select, userId)
                 embed.setDescription('Banner Alterado com sucesso')
                 embed.setColor('Green')
+                addXp(userId, 5)
                 return await interaction.reply({ embeds: [embed], ephemeral: true })
                 break;
             case '3':
                 updateFundo.run(select, userId)
                 embed.setDescription('Banner Alterado com sucesso')
                 embed.setColor('Green')
+                addXp(userId, 5)
                 return await interaction.reply({ embeds: [embed], ephemeral: true })
                 break;
             case '4':
                 updateFundo.run(select, userId)
                 embed.setDescription('Banner Alterado com sucesso')
                 embed.setColor('Green')
+                addXp(userId, 5)
                 return await interaction.reply({ embeds: [embed], ephemeral: true })
                 break;
             case '5':
                 updateFundo.run(select, userId)
                 embed.setDescription('Banner Alterado com sucesso')
                 embed.setColor('Green')
+                addXp(userId, 5)
                 return await interaction.reply({ embeds: [embed], ephemeral: true })
                 break;
             case '6':
                 updateFundo.run(select, userId)
                 embed.setDescription('Banner Alterado com sucesso')
                 embed.setColor('Green')
+                addXp(userId, 5)
                 return await interaction.reply({ embeds: [embed], ephemeral: true })
                 break;
             case '7':
                 updateFundo.run(select, userId)
                 embed.setDescription('Banner Alterado com sucesso')
                 embed.setColor('Green')
+                addXp(userId, 5)
                 return await interaction.reply({ embeds: [embed], ephemeral: true })
                 break;
             case '8':
                 updateFundo.run(select, userId)
                 embed.setDescription('Banner Alterado com sucesso')
                 embed.setColor('Green')
+                addXp(userId, 5)
                 return await interaction.reply({ embeds: [embed], ephemeral: true })
                 break;
             case '9':
                 updateFundo.run(select, userId)
                 embed.setDescription('Banner Alterado com sucesso')
                 embed.setColor('Green')
+                addXp(userId, 5)
+                return await interaction.reply({ embeds: [embed], ephemeral: true })
+                break;
+
+            case '10':
+                updateFundo.run(select, userId)
+                embed.setDescription('Banner Alterado com sucesso')
+                embed.setColor('Green')
+                addXp(userId, 5)
                 return await interaction.reply({ embeds: [embed], ephemeral: true })
                 break;
 
@@ -114,6 +132,23 @@ async function controler(interaction) {
         }
 
     } else return
+}
+
+
+/**
+ * 
+ * @param {Array} user - Array de usuários para realizar a comparação 
+ * @returns  {Array} - Retorna um array de usuários já em ordem crescente 
+ */
+async function ranking(user){
+    user.sort((a, b) => {
+        if(b.lvl === a.lvl){
+            return b.xp - a.xp
+        }
+        return b.lvl - a.lvl
+    })
+
+    return user
 }
 
 
@@ -265,4 +300,4 @@ async function addLVL(userId) {
     }
 }
 
-module.exports = { controler, addXp, Hoje, addLVL }
+module.exports = { controler, addXp, Hoje, addLVL, ranking }

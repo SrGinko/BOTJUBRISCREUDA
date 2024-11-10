@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js")
 const db = require('../../db')
+const { ranking } = require("../../Controller")
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -9,9 +10,12 @@ module.exports = {
     async execute(interaction) {
 
         const sumt = db.prepare(`SELECT * from users`)
-        const user = sumt.all()
+        var user = sumt.all()
 
-        user.sort((a, b) => b.lvl - a.lvl)
+        user = await ranking(user)
+
+        console.log(user)
+        
 
         var primeiro = user[0]
         var segundo = user[1]
