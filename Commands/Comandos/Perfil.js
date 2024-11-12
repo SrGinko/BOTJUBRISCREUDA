@@ -108,7 +108,8 @@ module.exports = {
             const attachment = new AttachmentBuilder(canvas.toBuffer('image/png'), { name: 'profile-image.png' });
     
             await interaction.channel.sendTyping();
-            await interaction.reply({ files: [attachment] })
+            await interaction.deferReply();
+            await interaction.editReply({ files: [attachment] })
         }catch(error){
             console.log(error)
             

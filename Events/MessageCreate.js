@@ -1,17 +1,29 @@
-const { Events } = require('discord.js')
+const { Events, EmbedBuilder } = require('discord.js')
 const db = require('../db');
 const { addXp, addLVL } = require('../Controller');
 
+const embed = new EmbedBuilder()
+    .setColor('Random')
+    .setTitle('Comandos')
+    .setFields(
+        { name: '/perfil', value: '\u200B', inline: true },
+        { name: '\u200B', value: '\u200B', inline: true },
+        { name: '/perfil', value: '\u200B', inline: true },
+        { name: '/perfil', value: '\u200B', inline: true },
+        { name: '\u200B', value: '\u200B', inline: true },
+
+    )
 
 module.exports = {
     name: Events.MessageCreate,
     on: true,
     async execute(message) {
 
-        
+
         if (message.channel.type === 1 && !message.author.bot) {
-            if(message.content === 'oi' ||  message.content === 'Ola'){
-                message.reply({ content: `Olá`})
+            if (message.content === 'oi' || message.content === 'Ola') {
+                await message.channel.sendTyping();
+                await message.reply({ content: `Olá! Você poderá utilizar esses comandos no chat privado comigo`, embeds: [embed] })
             }
         }
 

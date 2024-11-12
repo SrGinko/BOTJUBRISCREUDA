@@ -12,9 +12,9 @@ module.exports = {
 
 			voiceChannels.forEach(channel => {
 				channel.members.forEach(member => {
-					if(member.user.bot){
+					if(!member.user.bot){
 						const userId = member.user.id
-						addXp(userId, 10)
+						addXp(userId, 5)
 					}
 				});
 			});
@@ -25,6 +25,6 @@ module.exports = {
 			if (guild) {
 				addXpToVoiceChannelUsers(guild);
 			}
-		}, 300000)
+		}, 30000)
 	}
 }

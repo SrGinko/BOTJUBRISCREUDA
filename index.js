@@ -18,7 +18,8 @@ const client = new Client({
 		],
 	partials:
 		[
-			Partials.Channel
+			Partials.Channel,
+			Partials.Message
 		]
 });
 
