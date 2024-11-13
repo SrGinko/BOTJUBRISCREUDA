@@ -24,7 +24,7 @@ module.exports = {
             
             const IdUser = allUsers.map(i => i.id)
             const id = Number(userId)
-            const ranking = IdUser.indexOf(id) + 1
+            const Ranking = IdUser.indexOf(id) + 1
 
             var bannerIndice = user.fundo
             const banners = await Banner(bannerIndice)
@@ -69,7 +69,7 @@ module.exports = {
             context.fillText(`TOP/ `, canvas.width / 1.25, canvas.height / 1.9);
             context.font = '30px Ubuntu';
             context.fillStyle = `#43fef5`;
-            context.fillText(`#${ranking}`, canvas.width / 1.1, canvas.height / 1.9);
+            context.fillText(`#${Ranking}`, canvas.width / 1.1, canvas.height / 1.9);
     
             context.font = '15px Ubuntu';
             context.fillStyle = '#ffffff';

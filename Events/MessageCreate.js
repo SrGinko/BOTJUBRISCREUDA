@@ -1,4 +1,4 @@
-const { Events, EmbedBuilder } = require('discord.js')
+const { Events, EmbedBuilder, Client } = require('discord.js')
 const db = require('../db');
 const { addXp, addLVL } = require('../Controller');
 
@@ -18,7 +18,6 @@ const embed = new EmbedBuilder()
         { name: '\u200B', value: '`/upload`', inline: true },
 
     )
-
 module.exports = {
     name: Events.MessageCreate,
     on: true,
@@ -42,6 +41,21 @@ module.exports = {
                         message.delete()
                     }
                 }
+            }
+
+            if (message.channel.id === '1038287340889706498') {
+
+                const jogoGratis = message.guild.roles.cache.find(r => r.name === 'JogosGratis')
+                const chat = message.client.channels.cache.get('1031036295482454069')
+
+                const gratis = new EmbedBuilder()
+                    .setColor('Random')
+                    .setDescription(`Venha pegar seus jogos grátis da semana! ${jogoGratis}`)
+                    .addFields(
+                        { name: '``https://discord.com/channels/1031036294433865850/1038287340889706498``', value: '\u200B' }
+                    )
+
+                await chat.send({ embeds: [gratis] })
             }
 
             if (message.author.bot) {
