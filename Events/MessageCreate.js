@@ -6,11 +6,16 @@ const embed = new EmbedBuilder()
     .setColor('Random')
     .setTitle('Comandos')
     .setFields(
-        { name: '/perfil', value: '\u200B', inline: true },
+        { name: '\u200B', value: '`/perfil`', inline: true },
         { name: '\u200B', value: '\u200B', inline: true },
-        { name: '/perfil', value: '\u200B', inline: true },
-        { name: '/perfil', value: '\u200B', inline: true },
+        { name: '\u200B', value: '`/mac`', inline: true },
+        { name: '\u200B', value: '`/minecraft`', inline: true },
         { name: '\u200B', value: '\u200B', inline: true },
+        { name: '\u200B', value: '`/alterbanner`', inline: true },
+        { name: '\u200B', value: '`/pokemmo`', inline: true },
+        { name: '\u200B', value: '\u200B', inline: true },
+        { name: '\u200B', value: '`/down`', inline: true },
+        { name: '\u200B', value: '`/upload`', inline: true },
 
     )
 

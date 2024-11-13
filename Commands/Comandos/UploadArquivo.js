@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js")
 const axios = require('axios')
 const db = require('../../db')
-const { addXp } = require('../../Controller')
+const { addXp, addLVL } = require('../../Controller')
 
 const embed = new EmbedBuilder()
 
@@ -34,6 +34,7 @@ module.exports = {
             embed.setDescription(`Arquivo **${file.name}**, id **${id.id}** salvo com sucesso!`)
             embed.setColor('Green')
             addXp(userId, 20)
+            addLVL(userId)
             
         } catch (error) {
             console.log(error)

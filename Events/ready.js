@@ -1,5 +1,5 @@
 const { Events } = require('discord.js');
-const { addXp } = require('../Controller');
+const { addXp, addLVL } = require('../Controller');
 
 module.exports = {
 	name: Events.ClientReady,
@@ -15,6 +15,7 @@ module.exports = {
 					if(!member.user.bot){
 						const userId = member.user.id
 						addXp(userId, 5)
+						addLVL(userId)
 					}
 				});
 			});

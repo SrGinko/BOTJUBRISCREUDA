@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js")
-const { addXp } = require('../../Controller')
+const { addXp, addLVL } = require('../../Controller')
 
 const embed = new EmbedBuilder()
 
@@ -31,6 +31,7 @@ module.exports = {
                     embed.setDescription(`Excluídas **${deletedMessages.size}** mensagens.`)
                     embed.setColor('Green')
                     addXp(userId, 20)
+                    addLVL(userId)
                 }
             } else if (lixeiro === false) {
 

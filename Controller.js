@@ -140,9 +140,9 @@ async function controler(interaction) {
  * @param {Array} user - Array de usuários para realizar a comparação 
  * @returns  {Array} - Retorna um array de usuários já em ordem crescente 
  */
-async function ranking(user){
+async function ranking(user) {
     user.sort((a, b) => {
-        if(b.lvl === a.lvl){
+        if (b.lvl === a.lvl) {
             return b.xp - a.xp
         }
         return b.lvl - a.lvl
@@ -166,6 +166,31 @@ async function addXp(userId, add) {
     var newXp = xp.xp + add
 
     await updateXp.run(newXp, userId)
+}
+
+
+/**
+ * 
+ * @param {Inteiro} indice Numero inteiro responsável por selecionar o banner do usuário
+ * @returns Retorna banner como objeto para ser usado
+ */
+async function Banner(indice) {
+
+    const banners = [
+        { banner: 'https://marketplace.canva.com/EAF_ZFGfAwE/1/0/1600w/canva-banner-para-twitch-montanha-vintage-retr%C3%B4-roxo-nqw7QjAVpKo.jpg', cor: '#be81d5' },
+        { banner: 'https://t4.ftcdn.net/jpg/06/45/12/47/360_F_645124745_3CGfuoRYiXRME36HMs4EFvr0qjeejuhV.jpg', cor: '#f74922' },
+        { banner: 'https://wallpapers.com/images/featured/4k-minimalista-2dpumtq7d6vnq2fv.jpg', cor: '#ffffff' },
+        { banner: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTouyrbJzJZPnrtdcvmjrPmH3hClu7EuJZuJqB0MPJqCWrmCtfJYtQ5cE-rxs76GTaEOxM&usqp=CAU', cor: '#0398ce' },
+        { banner: 'https://img.freepik.com/fotos-premium/imagens-de-papel-de-parede-em-4k_655257-1108.jpg', cor: '#6628f6' },
+        { banner: 'https://res.cloudinary.com/dte7upwcr/image/upload/v1677788739/blog/blog2/ia-criar-imagens/ia-criar-imagens2.jpg', cor: '#01e4ca' },
+        { banner: 'https://img.freepik.com/fotos-gratis/beleza-abstrata-de-outono-em-padrao-multicolorido-de-veios-de-folhas-gerado-por-ia_188544-9871.jpg', cor: '#a20104' },
+        { banner: 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/d6d9158f-1b03-4024-9f88-9d599c4c968a/df29tev-80fc62a5-5763-45a3-8b61-ec7f6d703924.png/v1/fit/w_600,h_240,q_70,strp/discord_banner__2__watermarked__by_gothymoth_df29tev-375w-2x.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MjQwIiwicGF0aCI6IlwvZlwvZDZkOTE1OGYtMWIwMy00MDI0LTlmODgtOWQ1OTljNGM5NjhhXC9kZjI5dGV2LTgwZmM2MmE1LTU3NjMtNDVhMy04YjYxLWVjN2Y2ZDcwMzkyNC5wbmciLCJ3aWR0aCI6Ijw9NjAwIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmltYWdlLm9wZXJhdGlvbnMiXX0.PWzYbhsRZ8zU0Xn4y16vSFFyHg4SgbHE4pEw_O7_-LQ', cor: '#741111' },
+        { banner: 'https://i.pinimg.com/1200x/ad/17/d5/ad17d516ba4254ead5cb9bd2747dcc53.jpg', cor: '#9600db' },
+        { banner: 'https://i.pinimg.com/originals/95/d0/3c/95d03cf844c7c024347258f8953236dd.gif', cor: '#db00a1' },
+        { banner: 'https://images-ext-1.discordapp.net/external/VqkxJ18-8oJKiLMoLUyz46VNBRb1XtCQjrFbJiLfqfo/https/wallpapers.com/images/hd/calm-aesthetic-desktop-8t7o1e3i0gaoodqz.jpg?format=webp&width=1258&height=683', cor: '#2172a1' },
+    ]
+
+    return banners[indice]
 }
 
 
@@ -197,7 +222,7 @@ async function addLVL(userId) {
     const selectXp = db.prepare(`SELECT xp from users WHERE id = ?`)
     const selectLvl = db.prepare(`SELECT lvl from users WHERE id = ?`)
     const updateLvl = db.prepare(`UPDATE users SET lvl = ? WHERE id = ?`)
-    const updatexp = db.prepare(`UPDATE users SET lvl = ? WHERE id = ?`)
+    const updatexp = db.prepare(`UPDATE users SET xp = ? WHERE id = ?`)
 
     var experiencia = selectXp.get(userId)
     var nivel = selectLvl.get(userId)
@@ -205,7 +230,7 @@ async function addLVL(userId) {
     switch (nivel.lvl) {
         case 1:
             if (experiencia.xp >= 100) {
-                let newXp = 100 - experiencia.xp
+                let newXp = experiencia.xp - 100
                 let newLvl = nivel.lvl + 1
                 updateLvl.run(newLvl, userId)
                 updatexp.run(newXp, userId)
@@ -214,7 +239,7 @@ async function addLVL(userId) {
             break;
         case 2:
             if (experiencia.xp >= 500) {
-                let newXp = 500 - experiencia.xp
+                let newXp = - experiencia.xp - 500
                 let newLvl = nivel.lvl + 1
                 updateLvl.run(newLvl, userId)
                 updatexp.run(newXp, userId)
@@ -224,7 +249,7 @@ async function addLVL(userId) {
             break;
         case 3:
             if (experiencia.xp >= 1000) {
-                let newXp = 1000 - experiencia.xp
+                let newXp = experiencia.xp - 1000 
                 let newLvl = nivel.lvl + 1
                 updateLvl.run(newLvl, userId)
                 updatexp.run(newXp, userId)
@@ -233,7 +258,7 @@ async function addLVL(userId) {
             break;
         case 4:
             if (experiencia.xp >= 1500) {
-                let newXp = 1500 - experiencia.xp
+                let newXp = experiencia.xp - 1500 
                 let newLvl = nivel.lvl + 1
                 updateLvl.run(newLvl, userId)
                 updatexp.run(newXp, userId)
@@ -242,7 +267,7 @@ async function addLVL(userId) {
             break;
         case 5:
             if (experiencia.xp >= 2000) {
-                let newXp = 2000 - experiencia.xp
+                let newXp =  experiencia.xp - 2000
                 let newLvl = nivel.lvl + 1
                 updateLvl.run(newLvl, userId)
                 updatexp.run(newXp, userId)
@@ -251,7 +276,7 @@ async function addLVL(userId) {
             break;
         case 6:
             if (experiencia.xp >= 3000) {
-                let newXp = 3000 - experiencia.xp
+                let newXp = experiencia.xp - 3000
                 let newLvl = nivel.lvl + 1
                 updateLvl.run(newLvl, userId)
                 updatexp.run(newXp, userId)
@@ -260,7 +285,7 @@ async function addLVL(userId) {
             break;
         case 7:
             if (experiencia.xp >= 4000) {
-                let newXp = 4000 - experiencia.xp
+                let newXp = experiencia.xp - 4000
                 let newLvl = nivel.lvl + 1
                 updateLvl.run(newLvl, userId)
                 updatexp.run(newXp, userId)
@@ -269,7 +294,7 @@ async function addLVL(userId) {
             break;
         case 8:
             if (experiencia.xp >= 6000) {
-                let newXp = 6000 - experiencia.xp
+                let newXp = experiencia.xp - 6000
                 let newLvl = nivel.lvl + 1
                 updateLvl.run(newLvl, userId)
                 updatexp.run(newXp, userId)
@@ -278,7 +303,7 @@ async function addLVL(userId) {
             break;
         case 9:
             if (experiencia.xp >= 8000) {
-                let newXp = 8000 - experiencia.xp
+                let newXp = experiencia.xp - 8000
                 let newLvl = nivel.lvl + 1
                 updateLvl.run(newLvl, userId)
                 updatexp.run(newXp, userId)
@@ -287,16 +312,53 @@ async function addLVL(userId) {
             break;
         case 10:
             if (experiencia.xp >= 10000) {
-                let newXp = 10000 - experiencia.xp
+                let newXp = experiencia.xp - 10000
                 let newLvl = nivel.lvl + 1
                 updateLvl.run(newLvl, userId)
                 updatexp.run(newXp, userId)
             }
             return 10000
             break;
+        case 11:
+            if (experiencia.xp >= 12000) {
+                let newXp = experiencia.xp - 12000
+                let newLvl = nivel.lvl + 1
+                updateLvl.run(newLvl, userId)
+                updatexp.run(newXp, userId)
+            }
+            return 12000
+            break;
+        case 12:
+            if (experiencia.xp >= 14000) {
+                let newXp = experiencia.xp - 14000
+                let newLvl = nivel.lvl + 1
+                updateLvl.run(newLvl, userId)
+                updatexp.run(newXp, userId)
+            }
+            return 14000
+            break;
+        case 13:
+            if (experiencia.xp >= 16000) {
+                let newXp = experiencia.xp - 16000
+                let newLvl = nivel.lvl + 1
+                updateLvl.run(newLvl, userId)
+                updatexp.run(newXp, userId)
+            }
+            return 16000
+            break;
+        case 14:
+            if (experiencia.xp >= 18000) {
+                let newXp = experiencia.xp - 18000
+                let newLvl = nivel.lvl + 1
+                updateLvl.run(newLvl, userId)
+                updatexp.run(newXp, userId)
+            }
+            return 18000
+            break;
+
         default:
             break;
     }
 }
 
-module.exports = { controler, addXp, Hoje, addLVL, ranking }
+module.exports = { controler, addXp, Hoje, addLVL, ranking, Banner }
