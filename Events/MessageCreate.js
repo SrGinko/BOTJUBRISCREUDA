@@ -1,4 +1,4 @@
-const { Events, EmbedBuilder, Client } = require('discord.js')
+const { Events, EmbedBuilder, Client, MessageActivityType } = require('discord.js')
 const db = require('../db');
 const { addXp, addLVL } = require('../Controller');
 
@@ -6,16 +6,18 @@ const embed = new EmbedBuilder()
     .setColor('Random')
     .setTitle('Comandos')
     .setFields(
-        { name: '\u200B', value: '`/perfil`', inline: true },
+        { name: '``/perfil``', value: 'Consultar seu Nível e quantidade de XP', inline: true },
         { name: '\u200B', value: '\u200B', inline: true },
-        { name: '\u200B', value: '`/mac`', inline: true },
-        { name: '\u200B', value: '`/minecraft`', inline: true },
+        { name: '``/mac``', value: 'Realiza uma busca da marca do equipamento pelo mac', inline: true },
+        { name: '``/minecraft``', value: 'Minecraft apk para download', inline: true },
         { name: '\u200B', value: '\u200B', inline: true },
-        { name: '\u200B', value: '`/alterbanner`', inline: true },
-        { name: '\u200B', value: '`/pokemmo`', inline: true },
+        { name: '`/alterbanner`', value: 'Alteração do banner do perfil', inline: true },
+        { name: '``/pokemmo``', value: 'Acesso aos Links para poder Jogar PokeMMO', inline: true },
         { name: '\u200B', value: '\u200B', inline: true },
-        { name: '\u200B', value: '`/down`', inline: true },
-        { name: '\u200B', value: '`/upload`', inline: true },
+        { name: '``/down``', value: 'Puxar o arquivo do banco de dados por ID', inline: true },
+        { name: '``/upload``', value: 'Subir um arquivo para o BD do bot', inline: true },
+        { name: '\u200B', value: '\u200B', inline: true },
+        { name: '`/documentacao`', value: 'Documentações de algumas linguagens de programação', inline: true },
 
     )
 module.exports = {
@@ -26,8 +28,9 @@ module.exports = {
 
         if (message.channel.type === 1 && !message.author.bot) {
             if (message.content === 'oi' || message.content === 'Ola') {
+                
                 await message.channel.sendTyping();
-                await message.reply({ content: `Olá! Você poderá utilizar esses comandos no chat privado comigo`, embeds: [embed] })
+                await message.reply({ content: `Olá, ${message.author}! Você poderá utilizar esses comandos no chat privado comigo`, embeds: [embed] })
             }
         }
 
@@ -84,8 +87,5 @@ module.exports = {
                 }
             }
         }
-
-
-
     }
 }
