@@ -1,7 +1,19 @@
-const { EmbedBuilder } = require('discord.js')
+const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle} = require('discord.js')
 const db = require('./db')
+const dotenv = require('dotenv')
+dotenv.config()
+const { RAWG_API } = process.env
+const axios = require('axios')
 
 const embed = new EmbedBuilder()
+
+const excluir = new ButtonBuilder()
+    .setCustomId('excluir')
+    .setLabel('Excluir')
+    .setStyle(ButtonStyle.Danger)
+
+const row = new ActionRowBuilder()
+    .addComponents(excluir)
 
 const EndCitys = new EmbedBuilder()
     .setTitle('EndsCitys')
@@ -27,6 +39,35 @@ const OverWorld = new EmbedBuilder()
  */
 
 async function controler(interaction) {
+
+    if (interaction.isButton()) {
+        const id = interaction.customId
+
+        if (id === 'excluir') {
+            interaction.message.delete()
+        } else {
+            const response = await Buscarjogo(id)
+            const jogo = response.find(resp => resp.name === id)
+            const imagens = jogo.short_screenshots.map(img => img.image)
+
+            const img1 = new EmbedBuilder()
+                .setColor(jogo.dominant_color)
+                .setImage(imagens[1])
+
+            const img2 = new EmbedBuilder()
+                .setColor(jogo.dominant_color)
+                .setImage(imagens[2])
+
+            const img3 = new EmbedBuilder()
+                .setColor(jogo.dominant_color)
+                .setImage(imagens[3])
+
+            interaction.channel.send({ embeds: [img1, img2, img3], components: [row], ephemeral:true})
+        }
+
+
+    }
+
     if (interaction.isStringSelectMenu()) {
         const userId = interaction.user.id
 
@@ -133,6 +174,36 @@ async function controler(interaction) {
 
     } else return
 }
+
+
+/**
+ * 
+ * @param {String} nameGame 
+ * @returns {Objeto} Informações do jogo pesquisado na API
+ */
+async function Buscarjogo(nameGame) {
+    const url = `https://api.rawg.io/api/games`
+
+    try {
+        const response = await axios.get(url, {
+            params: {
+                key: RAWG_API,
+                search: nameGame
+            }
+        })
+
+        if (response.data && response.data.results.length > 0) {
+            return response.data.results;
+        } else {
+            console.log('Nenhum jogo encontrado.');
+            return [];
+        }
+    } catch (error) {
+        console.error('Erro ao buscar o jogo:', error.message);
+        return null;
+    }
+}
+
 
 
 /**
@@ -249,7 +320,7 @@ async function addLVL(userId) {
             break;
         case 3:
             if (experiencia.xp >= 1000) {
-                let newXp = experiencia.xp - 1000 
+                let newXp = experiencia.xp - 1000
                 let newLvl = nivel.lvl + 1
                 updateLvl.run(newLvl, userId)
                 updatexp.run(newXp, userId)
@@ -258,7 +329,7 @@ async function addLVL(userId) {
             break;
         case 4:
             if (experiencia.xp >= 1500) {
-                let newXp = experiencia.xp - 1500 
+                let newXp = experiencia.xp - 1500
                 let newLvl = nivel.lvl + 1
                 updateLvl.run(newLvl, userId)
                 updatexp.run(newXp, userId)
@@ -267,7 +338,7 @@ async function addLVL(userId) {
             break;
         case 5:
             if (experiencia.xp >= 2000) {
-                let newXp =  experiencia.xp - 2000
+                let newXp = experiencia.xp - 2000
                 let newLvl = nivel.lvl + 1
                 updateLvl.run(newLvl, userId)
                 updatexp.run(newXp, userId)
@@ -329,15 +400,6 @@ async function addLVL(userId) {
             return 12000
             break;
         case 12:
-            if (experiencia.xp >= 14000) {
-                let newXp = experiencia.xp - 14000
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
-            }
-            return 14000
-            break;
-        case 13:
             if (experiencia.xp >= 16000) {
                 let newXp = experiencia.xp - 16000
                 let newLvl = nivel.lvl + 1
@@ -346,14 +408,23 @@ async function addLVL(userId) {
             }
             return 16000
             break;
-        case 14:
-            if (experiencia.xp >= 18000) {
-                let newXp = experiencia.xp - 18000
+        case 13:
+            if (experiencia.xp >= 22000) {
+                let newXp = experiencia.xp - 22000
                 let newLvl = nivel.lvl + 1
                 updateLvl.run(newLvl, userId)
                 updatexp.run(newXp, userId)
             }
-            return 18000
+            return 22000
+            break;
+        case 14:
+            if (experiencia.xp >= 26000) {
+                let newXp = experiencia.xp - 26000
+                let newLvl = nivel.lvl + 1
+                updateLvl.run(newLvl, userId)
+                updatexp.run(newXp, userId)
+            }
+            return 26000
             break;
 
         default:
@@ -361,4 +432,4 @@ async function addLVL(userId) {
     }
 }
 
-module.exports = { controler, addXp, Hoje, addLVL, ranking, Banner }
+module.exports = { controler, addXp, Hoje, addLVL, ranking, Banner, Buscarjogo }

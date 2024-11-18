@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, Colors } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 const hydra = new EmbedBuilder()
     .setTitle('HydraLaucher <:hydra:1255365685232537651>')

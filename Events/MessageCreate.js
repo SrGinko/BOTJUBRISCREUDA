@@ -55,7 +55,7 @@ module.exports = {
                     .setColor('Random')
                     .setDescription(`Venha pegar seus jogos grátis da semana! ${jogoGratis}`)
                     .addFields(
-                        { name: '``https://discord.com/channels/1031036294433865850/1038287340889706498``', value: '\u200B' }
+                        { name: 'Acesse por aqui:', value: 'https://discord.com/channels/1031036294433865850/1038287340889706498' }
                     )
 
                 await chat.send({ embeds: [gratis] })
