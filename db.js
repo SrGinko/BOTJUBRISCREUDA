@@ -26,5 +26,4 @@ db.prepare(`CREATE TABLE IF NOT EXISTS personagem (
   danoPersonagem INTEGER
 )`).run()
 
-
   module.exports = db;

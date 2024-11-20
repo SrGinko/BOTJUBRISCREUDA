@@ -15,6 +15,7 @@ module.exports = {
 		const user = member.user
 
 		const player = member.guild.roles.cache.find(r => r.name === 'Players')
+        const jogoGratis = member.guild.roles.cache.find(r => r.name === 'JogosGratis')
 		const channel = member.guild.channels.cache.find(ch => ch.name === 'bem-vindo')
 
 		const agora = Hoje()
@@ -64,7 +65,7 @@ module.exports = {
 
             const attachment = new AttachmentBuilder(canvas.toBuffer('image/png'), { name: 'BemVindo-image.png' });
 
-		
+		await member.roles.add(jogoGratis)
 		await member.roles.add(player)
 		channel.send({ content: `Bem Vindo(a) ${member.user}`, files: [attachment] })
 

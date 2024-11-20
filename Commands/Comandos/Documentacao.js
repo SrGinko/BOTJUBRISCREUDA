@@ -16,6 +16,7 @@ const Documentacao = new EmbedBuilder()
         { name: 'Cores: ', value: hyperlink('Clique aqui', 'https://www.w3schools.com/colors/colors_hexadecimal.asp'), inline:true},
         {name: '\u200B', value:'\u200B', inline:true},
         { name: 'TailwindCSS: ', value: hyperlink('Clique aqui', 'https://tailwindcss.com/docs/installation'), inline:true},
+        { name: 'RAWG API: ', value: hyperlink('Clique aqui', 'https://api.rawg.io/docs/'), inline:true},
     )
 
 module.exports = {

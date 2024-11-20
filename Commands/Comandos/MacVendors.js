@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js")
 const axios = require('axios')
-const { addXp } = require("../../Controller")
+const { addXp, addLVL } = require("../../Controller")
 
 
 module.exports = {
@@ -42,6 +42,7 @@ module.exports = {
         
         await interaction.channel.sendTyping();
         addXp(userId, 10)
+        addLVL(userId)
         await interaction.reply({embeds: [embed], ephemeral: true})
 
     }

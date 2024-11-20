@@ -1,5 +1,5 @@
 const { Events } = require('discord.js');
-const { addXp } = require('../Controller');
+const { addXp, addLVL } = require('../Controller');
 
 module.exports = {
 	name: Events.ClientReady,
@@ -12,9 +12,10 @@ module.exports = {
 
 			voiceChannels.forEach(channel => {
 				channel.members.forEach(member => {
-					if(member.user.bot){
+					if(!member.user.bot){
 						const userId = member.user.id
-						addXp(userId, 10)
+						addXp(userId, 5)
+						addLVL(userId)
 					}
 				});
 			});

@@ -27,15 +27,15 @@ for (const folder of commandFolders) {
 const rest = new REST().setToken(TOKEN);
 (async () => {
 	try {
-		console.log(`Started refreshing ${commands.length} application (/) commands.`);
+		console.log(`Começando a carregar ${commands.length} comandos da aplicação (/）`);
 
 		
 		const data = await rest.put(
-			Routes.applicationGuildCommands(CLIENTE_ID, GUILD_ID),
+			Routes.applicationCommands(CLIENTE_ID),
 			{ body: commands },
 		);
 
-		console.log(`Successfully reloaded ${data.length} application (/) commands.`);
+		console.log(`Comandos carregados com sucesso! ${data.length} comandos carregados (/) `);
 	} catch (error) {
 		
 		console.error(error);

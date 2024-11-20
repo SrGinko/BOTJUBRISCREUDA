@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js")
-const { addXp } = require('../../Controller')
+const { addXp, addLVL } = require('../../Controller')
 
 const embed = new EmbedBuilder()
 
@@ -17,30 +17,30 @@ module.exports = {
 
         const quantidade = options.getInteger('quantidade')
 
-        const member = interaction.member
-        const lixeiro = member.roles.cache.some(r => r.name === 'Lixeiro')
+            const member = interaction.member
+            const lixeiro = member.roles.cache.some(r => r.name === 'Lixeiro')
+            const platina = member.roles.cache.some(r => r.name === 'Falador Platina')
+            const diamante = member.roles.cache.some(r => r.name === 'Falador Diamante')
 
-        if (lixeiro === true) {
-            if (quantidade < 1 || quantidade > 100) {
-                embed.setDescription(`Por favor, forneça um número entre 1 e 100.`)
+            if (lixeiro === true || platina === true || diamante === true) {
+                if (quantidade < 1 || quantidade > 100) {
+                    embed.setDescription(`Por favor, forneça um número entre 1 e 100.`)
+                    embed.setColor('Red')
+
+                } else {
+                    const deletedMessages = await interaction.channel.bulkDelete(quantidade);
+
+                    embed.setDescription(`Excluídas **${deletedMessages.size}** mensagens.`)
+                    embed.setColor('Green')
+                    addXp(userId, 20)
+                    addLVL(userId)
+                }
+            } else if (lixeiro === false) {
+
+                embed.setDescription(`Você não tem permição de Lixeiro para executar este comando!`)
                 embed.setColor('Red')
-
-            } else {
-                const deletedMessages = await interaction.channel.bulkDelete(quantidade);
-
-                embed.setDescription(`Excluídas **${deletedMessages.size}** mensagens.`)
-                embed.setColor('Green')
-                addXp(userId, 20)
             }
-        } else if (lixeiro === false) {
-
-            embed.setDescription(`Você não tem permição de Lixeiro para executar este comando!`)
-            embed.setColor('Red')
-        }
-
-
-        await interaction.channel.sendTyping();
-        interaction.reply({ embeds: [embed], ephemeral:true });
+        interaction.reply({ embeds: [embed], ephemeral: true });
 
     }
 }

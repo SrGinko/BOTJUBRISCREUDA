@@ -12,7 +12,7 @@ module.exports = {
 		const command = interaction.client.commands.get(interaction.commandName)
 
 		if (!command) {
-			console.error(`comando ${interaction.commandName} não encontrado`)
+			console.error(`Comando ${interaction.commandName} não encontrado`)
 		}
 		try {
 			await command.execute(interaction)

@@ -71,7 +71,11 @@ module.exports = {
                         .setLabel('Neblina')
                         .setDescription('Neblina')
                         .setValue('10'),
-                        
+                    new StringSelectMenuOptionBuilder()
+                        .setLabel('Minecraft')
+                        .setDescription('Minecraft')
+                        .setValue('11'),
+
                 )
 
             const Button = new ActionRowBuilder()
