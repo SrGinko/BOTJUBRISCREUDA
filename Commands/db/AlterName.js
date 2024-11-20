@@ -5,24 +5,24 @@ const embed = new EmbedBuilder()
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('creatcolum')
-        .setDescription('Criar uma nova coluna no BD')
-        .addStringOption(option => option.setName('nome').setDescription('Adicionar nome da coluna').setRequired(true))
-        .addStringOption(option => option.setName('tabela').setDescription('Selecionar qual tabela irá adicionar').addChoices(
+        .setName('altername')
+        .setDescription('Alterar nome da Tabela')
+        .addStringOption(option => option.setName('tabela').setDescription('Nome da tabela que você quer altera').addChoices(
             { name: 'Users', value: 'users' },
             { name: 'Files', value: 'files' }
         ).setRequired(true))
-        .addStringOption(option => option.setName('tipo').setDescription('Tipo de dado').setRequired(true))
-        .addStringOption(option => option.setName('value').setDescription('Valor Padrão do dado').setRequired(true)),
+        .addStringOption(option => option.setName('nomeantigo').setDescription('Selecionar qual tabela irá adicionar').setRequired(true))
+        .addStringOption(option => option.setName('nomenovo').setDescription('Selecione o novo nome da tabela').setRequired(true)),
 
     async execute(interaction) {
 
         const { options } = interaction
 
-        const nome = options.getString('nome')
         const tabela = options.getString('tabela')
-        const tipo = options.getString('tipo')
-        const value = options.getString('value')
+        const nomeAntigo = options.getString('nomeantigo')
+        const nomeNovo = options.getString('nomenovo')
+
+        console.log(nomeAntigo, nomeNovo)
 
         const member = interaction.member
         const adm = member.guild.roles.cache.some(r => r.name === 'Adm')
@@ -30,7 +30,7 @@ module.exports = {
         if (adm === true) {
 
             try {
-                const alterTable = db.prepare(`ALTER TABLE ${tabela} ADD COLUMN ${nome} ${tipo} DEFAULT ${value} `)
+                const alterTable = db.prepare(`ALTER TABLE ${tabela} RENAME COLUMN ${nomeAntigo} TO ${nomeNovo} `)
 
                 alterTable.run()
 

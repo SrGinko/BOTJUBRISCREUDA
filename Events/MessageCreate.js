@@ -1,6 +1,6 @@
-const { Events, EmbedBuilder, Client, MessageActivityType } = require('discord.js')
+const { Events, EmbedBuilder } = require('discord.js')
 const db = require('../db');
-const { addXp, addLVL } = require('../Controller');
+const { addXp, addLVL, addMensages } = require('../Controller');
 
 const embed = new EmbedBuilder()
     .setColor('Random')
@@ -80,6 +80,7 @@ module.exports = {
 
                         addXp(userId, 10)
                         addLVL(userId)
+                        addMensages(userId, message)
 
                     } else {
                         console.error('Erro ao registrar usuário:', error);

@@ -19,8 +19,10 @@ module.exports = {
 
             const member = interaction.member
             const lixeiro = member.roles.cache.some(r => r.name === 'Lixeiro')
+            const platina = member.roles.cache.some(r => r.name === 'Falador Platina')
+            const diamante = member.roles.cache.some(r => r.name === 'Falador Diamante')
 
-            if (lixeiro === true) {
+            if (lixeiro === true || platina === true || diamante === true) {
                 if (quantidade < 1 || quantidade > 100) {
                     embed.setDescription(`Por favor, forneça um número entre 1 e 100.`)
                     embed.setColor('Red')
@@ -38,8 +40,6 @@ module.exports = {
                 embed.setDescription(`Você não tem permição de Lixeiro para executar este comando!`)
                 embed.setColor('Red')
             }
-
-        await interaction.channel.sendTyping();
         interaction.reply({ embeds: [embed], ephemeral: true });
 
     }

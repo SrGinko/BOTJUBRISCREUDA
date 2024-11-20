@@ -1,4 +1,4 @@
-const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle} = require('discord.js')
+const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js')
 const db = require('./db')
 const dotenv = require('dotenv')
 dotenv.config()
@@ -62,7 +62,7 @@ async function controler(interaction) {
                 .setColor(jogo.dominant_color)
                 .setImage(imagens[3])
 
-            interaction.channel.send({ embeds: [img1, img2, img3], components: [row], ephemeral:true})
+            interaction.channel.send({ embeds: [img1, img2, img3], components: [row], ephemeral: true })
         }
 
 
@@ -164,6 +164,13 @@ async function controler(interaction) {
                 addXp(userId, 5)
                 return await interaction.reply({ embeds: [embed], ephemeral: true })
                 break;
+            case '11':
+                updateFundo.run(select, userId)
+                embed.setDescription('Banner Alterado com sucesso')
+                embed.setColor('Green')
+                addXp(userId, 5)
+                return await interaction.reply({ embeds: [embed], ephemeral: true })
+                break;
 
             default:
                 embed.setDescription('Não foi possível Alterar o Banner')
@@ -242,6 +249,87 @@ async function addXp(userId, add) {
 
 /**
  * 
+ * @param {Inteiro} userId - id do usuário para realizar a busca pleo BD 
+ * @param {Objeto} mensage - Objeto usado para alterar o cargo além de encaminhar a mensagem de aviso ao usuário 
+ */
+async function addMensages(userId, mensage) {
+
+    if(mensage.author.bot)return
+
+    const selctMensages = db.prepare(`SELECT mensages from users WHERE id = ?`)
+    const upMensages = db.prepare(`UPDATE users SET mensages = ? WHERE id = ?`)
+
+    const mensagens = selctMensages.get(userId)
+
+    var newMensages
+    if (selctMensages === null) {
+        newMensages = 1
+    } else {
+        newMensages = mensagens.mensages + 1
+    }
+
+    await upMensages.run(newMensages, userId)
+
+
+    const FaladorBronze = mensage.guild.roles.cache.find(r => r.name === 'Falador Bronze')
+    const FaladorPrata = mensage.guild.roles.cache.find(r => r.name === 'Falador Prata')
+    const FaladorOuro = mensage.guild.roles.cache.find(r => r.name === 'Falador Ouro')
+    const FaladorPlatina = mensage.guild.roles.cache.find(r => r.name === 'Falador Platina')
+    const FaladorDiamante = mensage.guild.roles.cache.find(r => r.name === 'Falador Diamante')
+
+    console.log(FaladorBronze)
+
+    const user = mensage.guild.members.cache.get(mensage.author.id)
+    const chat = mensage.client.channels.cache.get(mensage.channel.id)
+
+
+    switch (newMensages) {
+        case 500:
+            user.roles.add(FaladorBronze)
+            addXp(userId, 200)
+            addLVL(userId)
+            chat.send({ content: `Parabêns ${user} você mandou 500 mensagens agora você é ${FaladorBronze}`, ephemeral: true })
+            break;
+        case 1500:
+            user.roles.remove(FaladorBronze)
+            user.roles.add(FaladorPrata)
+            addXp(userId, 600)
+            addLVL(userId)
+            chat.send({ content: `Parabêns ${user} você mandou 1500 mensagens agora você é ${FaladorPrata}`, ephemeral: true })
+            break;
+
+        case 3000:
+            user.roles.remove(FaladorPrata)
+            user.roles.add(FaladorOuro)
+            addXp(userId, 1000)
+            addLVL(userId)
+            chat.send({ content: `Parabêns ${user} você mandou 3000 mensagens agora você é ${FaladorOuro}`, ephemeral: true })
+            break;
+
+        case 5000:
+            user.roles.remove(FaladorOuro)
+            user.roles.add(FaladorPlatina)
+            addXp(userId, 1500)
+            addLVL(userId)
+            chat.send({ content: `Parabêns ${user} você mandou 5000 mensagens agora você é ${FaladorPlatina} agora você pode utilizar o comando ${`/delete`}`, ephemeral: true })
+            break;
+
+        case 7000:
+            user.roles.remove(FaladorPlatina)
+            user.roles.add(FaladorDiamante)
+            addXp(userId, 2000)
+            addLVL(userId)
+            chat.send({ content: `Parabêns ${user} você mandou 7000 mensagens agora você é ${FaladorDiamante}`, ephemeral: true })
+            break;
+        default:
+            break;
+    }
+
+}
+
+
+/**
+ * 
  * @param {Inteiro} indice Numero inteiro responsável por selecionar o banner do usuário
  * @returns Retorna banner como objeto para ser usado
  */
@@ -258,7 +346,8 @@ async function Banner(indice) {
         { banner: 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/d6d9158f-1b03-4024-9f88-9d599c4c968a/df29tev-80fc62a5-5763-45a3-8b61-ec7f6d703924.png/v1/fit/w_600,h_240,q_70,strp/discord_banner__2__watermarked__by_gothymoth_df29tev-375w-2x.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MjQwIiwicGF0aCI6IlwvZlwvZDZkOTE1OGYtMWIwMy00MDI0LTlmODgtOWQ1OTljNGM5NjhhXC9kZjI5dGV2LTgwZmM2MmE1LTU3NjMtNDVhMy04YjYxLWVjN2Y2ZDcwMzkyNC5wbmciLCJ3aWR0aCI6Ijw9NjAwIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmltYWdlLm9wZXJhdGlvbnMiXX0.PWzYbhsRZ8zU0Xn4y16vSFFyHg4SgbHE4pEw_O7_-LQ', cor: '#741111' },
         { banner: 'https://i.pinimg.com/1200x/ad/17/d5/ad17d516ba4254ead5cb9bd2747dcc53.jpg', cor: '#9600db' },
         { banner: 'https://i.pinimg.com/originals/95/d0/3c/95d03cf844c7c024347258f8953236dd.gif', cor: '#db00a1' },
-        { banner: 'https://images-ext-1.discordapp.net/external/VqkxJ18-8oJKiLMoLUyz46VNBRb1XtCQjrFbJiLfqfo/https/wallpapers.com/images/hd/calm-aesthetic-desktop-8t7o1e3i0gaoodqz.jpg?format=webp&width=1258&height=683', cor: '#2172a1' },
+        { banner: 'https://images-ext-1.discordapp.net/external/VqkxJ18-8oJKiLMoLUyz46VNBRb1XtCQjrFbJiLfqfo/https/wallpapers.com/images/hd/calm-aesthetic-desktop-8t7o1e3i0gaoodqz.jpg?format=webp&width=1258&height=683', cor: '#1f84ff' },
+        { banner: 'https://cdn.discordapp.com/attachments/1031036409231986778/1282072139708633088/image.png?ex=673ba0b9&is=673a4f39&hm=7857eefba104793a135e2e5eb3f254c6168478beb437c0efb613f50b9239f155&', cor: '#1f84ff' },
     ]
 
     return banners[indice]
@@ -432,4 +521,4 @@ async function addLVL(userId) {
     }
 }
 
-module.exports = { controler, addXp, Hoje, addLVL, ranking, Banner, Buscarjogo }
+module.exports = { controler, addXp, Hoje, addLVL, ranking, Banner, Buscarjogo, addMensages }
