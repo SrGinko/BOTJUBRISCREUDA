@@ -30,4 +30,4 @@ module.exports = {
 
         await interaction.reply({ content: `Selecione qual Minecraft`, components: [row] })
     }
-}
+} 

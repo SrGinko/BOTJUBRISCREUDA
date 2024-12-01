@@ -73,7 +73,7 @@ module.exports = {
             try {
                 const stmt = db.prepare(`
                   INSERT INTO users (id, username, xp, lvl, fundo) 
-                  VALUES (?, ?, ?, ?)
+                  VALUES (?, ?, ?, ?, ?)
                 `);
                 stmt.run(userId, username, 0, 1, 1);
 
