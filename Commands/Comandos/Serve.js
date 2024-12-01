@@ -1,15 +1,5 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js")
+const { SlashCommandBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ActionRowBuilder } = require("discord.js")
 
-const Server1 = new EmbedBuilder()
-    .setTitle('Manicomio')
-    .setColor('Green')
-    .setDescription('Servidor com mod DownCraft')
-    .setThumbnail('https://cdn.discordapp.com/attachments/1031036409231986778/1279949054125801512/image.png?ex=66d64cf2&is=66d4fb72&hm=de03c1aaf9c607d86aef8dcad41d7dcb1d8f27bf0fdc54ab5f5b6e88c44c9ee8&')
-    .addFields(
-        { name: 'Endereço do Servidor', value: 'selene.lura.pro:25570', inline: true },
-        { name: 'Porta', value: '25570', inline: true }
-    )
-    .setImage('https://cdn.discordapp.com/attachments/1031036409231986778/1279949054125801512/image.png?ex=66d64cf2&is=66d4fb72&hm=de03c1aaf9c607d86aef8dcad41d7dcb1d8f27bf0fdc54ab5f5b6e88c44c9ee8&')
 
 
 module.exports = {
@@ -19,6 +9,25 @@ module.exports = {
 
     async execute(interaction) {
 
-        await interaction.reply({ embeds: [Server1] })
+        const select = new StringSelectMenuBuilder()
+            .setCustomId('select')
+            .setPlaceholder('Selecione')
+            .addOptions(
+                new StringSelectMenuOptionBuilder()
+                    .setLabel('Java')
+                    .setDescription('Minecraft Java')
+                    .setValue('java'),
+
+                new StringSelectMenuOptionBuilder()
+                    .setLabel('Bedrock')
+                    .setDescription('Minecraft Bedrock')
+                    .setValue('bedrock')
+
+            )
+
+        const row = new ActionRowBuilder()
+            .addComponents(select)
+
+        await interaction.reply({ content: `Selecione qual Minecraft`, components: [row] })
     }
 }

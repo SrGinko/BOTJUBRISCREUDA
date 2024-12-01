@@ -1,24 +1,25 @@
-const { Events, EmbedBuilder, AttachmentBuilder} = require('discord.js')
+const { Events, EmbedBuilder, AttachmentBuilder } = require('discord.js')
 const { Hoje } = require('../Controller')
 const Canvas = require('@napi-rs/canvas');
-
-
+const db = require('../db');
 
 const embed = new EmbedBuilder()
-	.setColor('Random')
+    .setColor('Random')
 
 module.exports = {
-	name: Events.GuildMemberAdd,
+    name: Events.GuildMemberAdd,
 
-	async execute(member) {
-		
-		const user = member.user
+    async execute(member) {
 
-		const player = member.guild.roles.cache.find(r => r.name === 'Players')
-        const jogoGratis = member.guild.roles.cache.find(r => r.name === 'JogosGratis')
-		const channel = member.guild.channels.cache.find(ch => ch.name === 'bem-vindo')
+        const userId = member.user.id
+        const username = member.user.globalName
+        try {
 
-		const agora = Hoje()
+            const player = member.guild.roles.cache.find(r => r.name === 'Players')
+            const jogoGratis = member.guild.roles.cache.find(r => r.name === 'JogosGratis')
+            const channel = member.guild.channels.cache.find(ch => ch.name === 'bem-vindo')
+
+            const agora = Hoje()
 
             const banners = [
                 { banner: 'https://t4.ftcdn.net/jpg/06/45/12/47/360_F_645124745_3CGfuoRYiXRME36HMs4EFvr0qjeejuhV.jpg' },
@@ -27,7 +28,7 @@ module.exports = {
                 { banner: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTouyrbJzJZPnrtdcvmjrPmH3hClu7EuJZuJqB0MPJqCWrmCtfJYtQ5cE-rxs76GTaEOxM&usqp=CAU' },
                 { banner: 'https://img.freepik.com/fotos-premium/imagens-de-papel-de-parede-em-4k_655257-1108.jpg' },
                 { banner: 'https://cdn.discordapp.com/attachments/1119014051033403473/1237802264719003739/image.png?ex=672f8cb1&is=672e3b31&hm=739a59b8238555ab5435994adf2182c7432cdaa6cc678fbdf42d6a9b82ffef70&' },
-				{ banner: 'https://img.freepik.com/fotos-gratis/beleza-abstrata-de-outono-em-padrao-multicolorido-de-veios-de-folhas-gerado-por-ia_188544-9871.jpg' }
+                { banner: 'https://img.freepik.com/fotos-gratis/beleza-abstrata-de-outono-em-padrao-multicolorido-de-veios-de-folhas-gerado-por-ia_188544-9871.jpg' }
             ]
 
             const indice = Math.floor(Math.random() * 6)
@@ -65,10 +66,27 @@ module.exports = {
 
             const attachment = new AttachmentBuilder(canvas.toBuffer('image/png'), { name: 'BemVindo-image.png' });
 
-		await member.roles.add(jogoGratis)
-		await member.roles.add(player)
-		channel.send({ content: `Bem Vindo(a) ${member.user}`, files: [attachment] })
+            await member.roles.add(jogoGratis)
+            await member.roles.add(player)
+            channel.send({ content: `Bem Vindo(a) ${member.user}`, files: [attachment] })
 
+            try {
+                const stmt = db.prepare(`
+                  INSERT INTO users (id, username, xp, lvl, fundo) 
+                  VALUES (?, ?, ?, ?)
+                `);
+                stmt.run(userId, username, 0, 1, 1);
 
-	}
+            } catch (error) {
+                if (error.code === 'SQLITE_CONSTRAINT_PRIMARYKEY') {
+
+                } else {
+                    console.error('Erro ao registrar usuário:', error);
+                }
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
 }

@@ -1,4 +1,4 @@
-const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js')
+const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle, hyperlink } = require('discord.js')
 const db = require('./db')
 const dotenv = require('dotenv')
 dotenv.config()
@@ -81,6 +81,28 @@ async function controler(interaction) {
             case 'nether': return await interaction.reply({ embeds: [Nether], ephemeral: true })
                 break;
             case 'overworld': return await interaction.reply({ embeds: [OverWorld], ephemeral: true })
+                break
+                
+            case 'java':
+                embed.setColor('Green')
+                embed.setDescription('Servidor Minecraft Java')
+                embed.setFields(
+                    { name: 'Servidor', value: 'Null' },
+                    { name: 'Porta', value: 'Null' }
+                )
+
+                return await interaction.reply({ embeds: [embed] })
+                break
+
+            case 'bedrock':
+                embed.setColor('Green')
+                embed.setDescription('Servidor Minecraft Bedrock')
+                embed.setFields(
+                    { name: 'Servidor', value: hyperlink('Clique Aqui', 'https://realms.gg/D-jF9JUN5AY') },
+                    { name: 'Porta', value: 'Não precisa' }
+                )
+                return await interaction.reply({ embeds: [embed] })
+                break
         }
 
 
@@ -254,7 +276,7 @@ async function addXp(userId, add) {
  */
 async function addMensages(userId, mensage) {
 
-    if(mensage.author.bot)return
+    if (mensage.author.bot) return
 
     const selctMensages = db.prepare(`SELECT mensages from users WHERE id = ?`)
     const upMensages = db.prepare(`UPDATE users SET mensages = ? WHERE id = ?`)
@@ -347,7 +369,7 @@ async function Banner(indice) {
         { banner: 'https://i.pinimg.com/1200x/ad/17/d5/ad17d516ba4254ead5cb9bd2747dcc53.jpg', cor: '#9600db' },
         { banner: 'https://i.pinimg.com/originals/95/d0/3c/95d03cf844c7c024347258f8953236dd.gif', cor: '#db00a1' },
         { banner: 'https://images-ext-1.discordapp.net/external/VqkxJ18-8oJKiLMoLUyz46VNBRb1XtCQjrFbJiLfqfo/https/wallpapers.com/images/hd/calm-aesthetic-desktop-8t7o1e3i0gaoodqz.jpg?format=webp&width=1258&height=683', cor: '#1f84ff' },
-        { banner: 'https://cdn.discordapp.com/attachments/1031036409231986778/1282072139708633088/image.png?ex=673ba0b9&is=673a4f39&hm=7857eefba104793a135e2e5eb3f254c6168478beb437c0efb613f50b9239f155&', cor: '#1f84ff' },
+        { banner: 'https://media.discordapp.net/attachments/1031036409231986778/1282072139708633088/image.png?ex=674cc439&is=674b72b9&hm=2cd5926d5af062ee6f13f1d97e0fa892901ec8ccf1acf04fac336108902085bd&=&format=webp&quality=lossless&width=550&height=309', cor: '#1f84ff' },
     ]
 
     return banners[indice]
