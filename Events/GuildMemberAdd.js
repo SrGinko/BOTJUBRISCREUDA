@@ -1,5 +1,5 @@
 const { Events, EmbedBuilder, AttachmentBuilder } = require('discord.js')
-const { Hoje } = require('../Controller')
+const { Hoje, Banner } = require('../Controller')
 const Canvas = require('@napi-rs/canvas');
 const db = require('../db');
 
@@ -21,22 +21,13 @@ module.exports = {
 
             const agora = Hoje()
 
-            const banners = [
-                { banner: 'https://t4.ftcdn.net/jpg/06/45/12/47/360_F_645124745_3CGfuoRYiXRME36HMs4EFvr0qjeejuhV.jpg' },
-                { banner: 'https://wallpapers.com/images/featured/4k-minimalista-2dpumtq7d6vnq2fv.jpg' },
-                { banner: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIGgpqwiMDOC_lnHXGgDQgYduap-y6C4TqgoXCmyQctqTnp2AouHCLO0pwEmgAXwu-F3w&usqp=CAU' },
-                { banner: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTouyrbJzJZPnrtdcvmjrPmH3hClu7EuJZuJqB0MPJqCWrmCtfJYtQ5cE-rxs76GTaEOxM&usqp=CAU' },
-                { banner: 'https://img.freepik.com/fotos-premium/imagens-de-papel-de-parede-em-4k_655257-1108.jpg' },
-                { banner: 'https://cdn.discordapp.com/attachments/1119014051033403473/1237802264719003739/image.png?ex=672f8cb1&is=672e3b31&hm=739a59b8238555ab5435994adf2182c7432cdaa6cc678fbdf42d6a9b82ffef70&' },
-                { banner: 'https://img.freepik.com/fotos-gratis/beleza-abstrata-de-outono-em-padrao-multicolorido-de-veios-de-folhas-gerado-por-ia_188544-9871.jpg' }
-            ]
-
-            const indice = Math.floor(Math.random() * 6)
+            const indice = Math.floor(Math.random() * 11)
+            const banners = Banner(indice)
 
             const canvas = Canvas.createCanvas(700, 250);
             const context = canvas.getContext('2d');
 
-            const background = await Canvas.loadImage(banners[indice].banner)
+            const background = await Canvas.loadImage(banners.banner)
 
             context.drawImage(background, 0, 0, 700, 250)
             context.filter = 'blur(5px)'
