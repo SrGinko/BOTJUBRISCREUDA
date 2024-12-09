@@ -82,7 +82,7 @@ async function controler(interaction) {
                 break;
             case 'overworld': return await interaction.reply({ embeds: [OverWorld], ephemeral: true })
                 break
-                
+
             case 'java':
                 embed.setColor('Green')
                 embed.setDescription('Servidor Minecraft Java')
@@ -537,7 +537,89 @@ async function addLVL(userId) {
             }
             return 26000
             break;
+        case 15:
+            if (experiencia.xp >= 30000) {
+                let newXp = experiencia.xp - 30000
+                let newLvl = nivel.lvl + 1
+                updateLvl.run(newLvl, userId)
+                updatexp.run(newXp, userId)
+            }
+            return 30000
+            break;
+        case 16:
+            if (experiencia.xp >= 35000) {
+                let newXp = experiencia.xp - 35000
+                let newLvl = nivel.lvl + 1
+                updateLvl.run(newLvl, userId)
+                updatexp.run(newXp, userId)
+            }
+            return 35000
+            break;
+        case 17:
+            if (experiencia.xp >= 40000) {
+                let newXp = experiencia.xp - 40000
+                let newLvl = nivel.lvl + 1
+                updateLvl.run(newLvl, userId)
+                updatexp.run(newXp, userId)
+            }
+            return 40000
+            break;
+        case 18:
+            if (experiencia.xp >= 55500) {
+                let newXp = experiencia.xp - 55500
+                let newLvl = nivel.lvl + 1
+                updateLvl.run(newLvl, userId)
+                updatexp.run(newXp, userId)
+            }
+            return 55500
+            break;
+        case 19:
+            if (experiencia.xp >= 60000) {
+                let newXp = experiencia.xp - 60000
+                let newLvl = nivel.lvl + 1
+                updateLvl.run(newLvl, userId)
+                updatexp.run(newXp, userId)
+            }
+            return 60000
+            break;
+        case 20:
+            if (experiencia.xp >= 60000) {
+                let newXp = experiencia.xp - 60000
+                let newLvl = nivel.lvl + 1
+                updateLvl.run(newLvl, userId)
+                updatexp.run(newXp, userId)
+            }
+            return 60000
+            break;
+        case 21:
+            if (experiencia.xp >= 70000) {
+                let newXp = experiencia.xp - 70000
+                let newLvl = nivel.lvl + 1
+                updateLvl.run(newLvl, userId)
+                updatexp.run(newXp, userId)
+            }
+            return 70000
+            break;
+        case 22:
+            if (experiencia.xp >= 80000) {
+                let newXp = experiencia.xp - 80000
+                let newLvl = nivel.lvl + 1
+                updateLvl.run(newLvl, userId)
+                updatexp.run(newXp, userId)
+            }
+            return 80000
+            break;
 
+        case 23:
+            if (experiencia.xp >= 95000) {
+                let newXp = experiencia.xp - 95000
+                let newLvl = nivel.lvl + 1
+                updateLvl.run(newLvl, userId)
+                updatexp.run(newXp, userId)
+            }
+            return 95000
+            break;
+            
         default:
             break;
     }
