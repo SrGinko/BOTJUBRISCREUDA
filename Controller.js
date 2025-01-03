@@ -194,6 +194,14 @@ async function controler(interaction) {
                 return await interaction.reply({ embeds: [embed], ephemeral: true })
                 break;
 
+            case '12':
+                updateFundo.run(select, userId)
+                embed.setDescription('Banner Alterado com sucesso')
+                embed.setColor('Green')
+                addXp(userId, 5)
+                return await interaction.reply({ embeds: [embed], ephemeral: true })
+                break;
+
             default:
                 embed.setDescription('Não foi possível Alterar o Banner')
                 embed.setColor('Red')
@@ -264,7 +272,7 @@ async function addXp(userId, add) {
 
     const xp = selectXp.get(userId)
     var newXp = xp.xp + add
-
+    console.log(newXp)
     await updateXp.run(newXp, userId)
 }
 
@@ -369,7 +377,8 @@ async function Banner(indice) {
         { banner: 'https://i.pinimg.com/1200x/ad/17/d5/ad17d516ba4254ead5cb9bd2747dcc53.jpg', cor: '#9600db' },
         { banner: 'https://i.pinimg.com/originals/95/d0/3c/95d03cf844c7c024347258f8953236dd.gif', cor: '#db00a1' },
         { banner: 'https://images-ext-1.discordapp.net/external/VqkxJ18-8oJKiLMoLUyz46VNBRb1XtCQjrFbJiLfqfo/https/wallpapers.com/images/hd/calm-aesthetic-desktop-8t7o1e3i0gaoodqz.jpg?format=webp&width=1258&height=683', cor: '#1f84ff' },
-        { banner: 'https://media.discordapp.net/attachments/1031036409231986778/1282072139708633088/image.png?ex=674cc439&is=674b72b9&hm=2cd5926d5af062ee6f13f1d97e0fa892901ec8ccf1acf04fac336108902085bd&=&format=webp&quality=lossless&width=550&height=309', cor: '#1f84ff' },
+        { banner: 'https://i.pinimg.com/736x/0d/85/82/0d85822f43f90509960301de14d4786e.jpg', cor: '#f27900' },
+        { banner: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgMl2_YrppPp5AgsNi9DHOjJkCFMDXPC55vQ&s', cor: '#6600ff' },
     ]
 
     return banners[indice]
@@ -396,233 +405,38 @@ function Hoje() {
 
 /**
  * 
- * @param {Inteiro} userId id usuário
+ * @param {Inteiro} level - Nivel atual do usuario
+ * @returns {Inteiro} - Xp necessária para o próximo nivel
+ */
+function calculateXpForNextLevel(level) {
+    return 100 * Math.pow(1.5, level - 1)
+}
+
+/**
+ * 
+ * @param {Inteiro} userId - id usuário
  * 
  */
 async function addLVL(userId) {
 
-    const selectXp = db.prepare(`SELECT xp from users WHERE id = ?`)
-    const selectLvl = db.prepare(`SELECT lvl from users WHERE id = ?`)
-    const updateLvl = db.prepare(`UPDATE users SET lvl = ? WHERE id = ?`)
-    const updatexp = db.prepare(`UPDATE users SET xp = ? WHERE id = ?`)
+    const selectXp = db.prepare(`SELECT xp from users WHERE id = ?`);
+    const selectLvl = db.prepare(`SELECT lvl from users WHERE id = ?`);
+    const updateLvl = db.prepare(`UPDATE users SET lvl = ? WHERE id = ?`);
+    const updateXp = db.prepare(`UPDATE users SET xp = ? WHERE id = ?`);
 
-    var experiencia = selectXp.get(userId)
-    var nivel = selectLvl.get(userId)
+    var experiencia = selectXp.get(userId);
+    var nivel = selectLvl.get(userId);
 
-    switch (nivel.lvl) {
-        case 1:
-            if (experiencia.xp >= 100) {
-                let newXp = experiencia.xp - 100
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
-            }
-            return 100
-            break;
-        case 2:
-            if (experiencia.xp >= 500) {
-                let newXp = - experiencia.xp - 500
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
+    const xpForNextLevel = await calculateXpForNextLevel(nivel.lvl);
 
-            }
-            return 500
-            break;
-        case 3:
-            if (experiencia.xp >= 1000) {
-                let newXp = experiencia.xp - 1000
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
-            }
-            return 1000
-            break;
-        case 4:
-            if (experiencia.xp >= 1500) {
-                let newXp = experiencia.xp - 1500
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
-            }
-            return 1500
-            break;
-        case 5:
-            if (experiencia.xp >= 2000) {
-                let newXp = experiencia.xp - 2000
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
-            }
-            return 2000
-            break;
-        case 6:
-            if (experiencia.xp >= 3000) {
-                let newXp = experiencia.xp - 3000
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
-            }
-            return 3000
-            break;
-        case 7:
-            if (experiencia.xp >= 4000) {
-                let newXp = experiencia.xp - 4000
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
-            }
-            return 4000
-            break;
-        case 8:
-            if (experiencia.xp >= 6000) {
-                let newXp = experiencia.xp - 6000
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
-            }
-            return 6000
-            break;
-        case 9:
-            if (experiencia.xp >= 8000) {
-                let newXp = experiencia.xp - 8000
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
-            }
-            return 8000
-            break;
-        case 10:
-            if (experiencia.xp >= 10000) {
-                let newXp = experiencia.xp - 10000
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
-            }
-            return 10000
-            break;
-        case 11:
-            if (experiencia.xp >= 12000) {
-                let newXp = experiencia.xp - 12000
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
-            }
-            return 12000
-            break;
-        case 12:
-            if (experiencia.xp >= 16000) {
-                let newXp = experiencia.xp - 16000
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
-            }
-            return 16000
-            break;
-        case 13:
-            if (experiencia.xp >= 22000) {
-                let newXp = experiencia.xp - 22000
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
-            }
-            return 22000
-            break;
-        case 14:
-            if (experiencia.xp >= 26000) {
-                let newXp = experiencia.xp - 26000
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
-            }
-            return 26000
-            break;
-        case 15:
-            if (experiencia.xp >= 30000) {
-                let newXp = experiencia.xp - 30000
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
-            }
-            return 30000
-            break;
-        case 16:
-            if (experiencia.xp >= 35000) {
-                let newXp = experiencia.xp - 35000
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
-            }
-            return 35000
-            break;
-        case 17:
-            if (experiencia.xp >= 40000) {
-                let newXp = experiencia.xp - 40000
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
-            }
-            return 40000
-            break;
-        case 18:
-            if (experiencia.xp >= 55500) {
-                let newXp = experiencia.xp - 55500
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
-            }
-            return 55500
-            break;
-        case 19:
-            if (experiencia.xp >= 60000) {
-                let newXp = experiencia.xp - 60000
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
-            }
-            return 60000
-            break;
-        case 20:
-            if (experiencia.xp >= 60000) {
-                let newXp = experiencia.xp - 60000
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
-            }
-            return 60000
-            break;
-        case 21:
-            if (experiencia.xp >= 70000) {
-                let newXp = experiencia.xp - 70000
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
-            }
-            return 70000
-            break;
-        case 22:
-            if (experiencia.xp >= 80000) {
-                let newXp = experiencia.xp - 80000
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
-            }
-            return 80000
-            break;
-
-        case 23:
-            if (experiencia.xp >= 95000) {
-                let newXp = experiencia.xp - 95000
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
-            }
-            return 95000
-            break;
-            
-        default:
-            break;
+    if (experiencia.xp >= xpForNextLevel) {
+        let newXp = experiencia.xp - xpForNextLevel
+        let newLvl = nivel.lvl + 1;
+        updateLvl.run(newLvl, userId);
+        updateXp.run(newXp, userId);
     }
+
+    return xpForNextLevel;
 }
 
 module.exports = { controler, addXp, Hoje, addLVL, ranking, Banner, Buscarjogo, addMensages }

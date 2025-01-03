@@ -8,7 +8,10 @@ module.exports = {
         .setName('updatedb')
         .setDescription('Atualizar dados do BD')
         .addStringOption(option => option.setName('id').setDescription('Adicionar id').setRequired(true))
-        .addStringOption(option => option.setName('tabela').setDescription('Selecionar tabela').setRequired(true))
+        .addStringOption(option => option.setName('tabela').setDescription('Selecionar tabela').setRequired(true).addChoices(
+            {name: 'Users', value: 'users'},
+            {name: 'Files', value: 'files'}
+        ))
         .addStringOption(option => option.setName('entidade').setDescription('Selecionar a entidade').setRequired(true))
         .addStringOption(option => option.setName('valor').setDescription('Altera o valor').setRequired(true)),
 

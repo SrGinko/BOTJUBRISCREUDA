@@ -14,6 +14,7 @@ module.exports = {
         try {
 
             const userId = interaction.user.id
+            const memeber = interaction.member
 
             const sumt = db.prepare(`SELECT * from users WHERE id = ?`)
             const all = db.prepare(`SELECT * from users`)
@@ -21,6 +22,8 @@ module.exports = {
             var allUsers = all.all()
 
             allUsers = await ranking(allUsers)
+
+            const ServerBooster = memeber.roles.cache.some(r => r.name === 'Burgês') 
 
             const IdUser = allUsers.map(i => i.id)
             const id = Number(userId)
@@ -61,6 +64,12 @@ module.exports = {
             context.clip();
             context.drawImage(avatar, 20, 20, 200, 200);
             context.restore();
+
+            if(ServerBooster === true){
+                const booster = await Canvas.loadImage('./src/Assets/booster.png');
+                context.drawImage(booster, canvas.width / 2.6, canvas.height / 3.1 , 32, 32)
+                console.log('Booster')  
+            }
 
             context.font = '20px  Ubuntu';
             context.fillStyle = '#ffffff';

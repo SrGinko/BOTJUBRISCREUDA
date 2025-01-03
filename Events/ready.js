@@ -46,6 +46,6 @@ module.exports = {
 			if (guild) {
 				addXpToVoiceChannelUsers(guild);
 			}
-		}, 60000)
+		}, 90000)
 	}
 }

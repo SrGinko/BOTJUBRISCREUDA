@@ -1,6 +1,6 @@
 const { Events, EmbedBuilder } = require('discord.js')
 const db = require('../db');
-const { addXp, addLVL, addMensages } = require('../Controller');
+const { addXp, addLVL, addMensages } = require('../Controller')
 
 const embed = new EmbedBuilder()
     .setColor('Random')
@@ -35,7 +35,6 @@ module.exports = {
         }
 
         if (message.channel.type === 0) {
-
             const bot = message.guild.members.cache.get(message.author.id)
             const cargo = '1286201893516742696'
             if (message.channel.id !== '1053145878594068571') {
@@ -47,7 +46,7 @@ module.exports = {
             }
 
             if (message.channel.id === '1038287340889706498') {
-
+                console
                 const jogoGratis = message.guild.roles.cache.find(r => r.name === 'JogosGratis')
                 const chat = message.client.channels.cache.get('1031036295482454069')
 
@@ -77,7 +76,7 @@ module.exports = {
 
                 } catch (error) {
                     if (error.code === 'SQLITE_CONSTRAINT_PRIMARYKEY') {
-
+                        
                         addXp(userId, 10)
                         addLVL(userId)
                         addMensages(userId, message)
