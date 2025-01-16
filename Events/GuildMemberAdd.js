@@ -21,7 +21,8 @@ module.exports = {
 
             const agora = Hoje()
 
-            const indice = Math.floor(Math.random() * 11)
+
+            const indice = Math.floor(Math.random() * 12) + 1;
             const banners = Banner(indice)
 
             const canvas = Canvas.createCanvas(700, 250);

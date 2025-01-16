@@ -272,7 +272,6 @@ async function addXp(userId, add) {
 
     const xp = selectXp.get(userId)
     var newXp = xp.xp + add
-    console.log(newXp)
     await updateXp.run(newXp, userId)
 }
 
@@ -431,12 +430,12 @@ async function addLVL(userId) {
 
     if (experiencia.xp >= xpForNextLevel) {
         let newXp = experiencia.xp - xpForNextLevel
-        let newLvl = nivel.lvl + 1;
-        updateLvl.run(newLvl, userId);
-        updateXp.run(newXp, userId);
+        let newLvl = nivel.lvl + 1
+        updateLvl.run(newLvl, userId)
+        updateXp.run(Math.round(newXp), userId)
     }
 
-    return xpForNextLevel;
+    return Math.round(xpForNextLevel)
 }
 
 module.exports = { controler, addXp, Hoje, addLVL, ranking, Banner, Buscarjogo, addMensages }

@@ -90,7 +90,7 @@ module.exports = {
             context.fillText(`XP: `, canvas.width / 2.55, canvas.height / 1.5);
             context.font = '20px Ubuntu';
             context.fillStyle = '#43fef5';
-            context.fillText(` #${user.xp} / #${maxXp}`, canvas.width / 2.33, canvas.height / 1.5);
+            context.fillText(` #${Math.round(user.xp)} / #${maxXp}`, canvas.width / 2.33, canvas.height / 1.5);
 
             context.fillStyle = '#444241';
             context.fillRect(canvas.width / 2.5, canvas.height / 1.3 - alturaBarra / 1.3, larguraBarra, alturaBarra);
