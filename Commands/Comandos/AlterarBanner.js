@@ -72,8 +72,8 @@ module.exports = {
                         .setDescription('Neblina by SrGinko')
                         .setValue('10'),
                     new StringSelectMenuOptionBuilder()
-                        .setLabel('The Bad Guys 2')
-                        .setDescription('by SrGinko')
+                        .setLabel('LOL')
+                        .setDescription('by Jabiroco')
                         .setValue('11'),
 
                     new StringSelectMenuOptionBuilder()
@@ -81,6 +81,10 @@ module.exports = {
                         .setDescription('by SrGinko')
                         .setValue('12'),
 
+                    new StringSelectMenuOptionBuilder()
+                        .setLabel('Hajime no Ippo')
+                        .setDescription('by LordeEscanor225')
+                        .setValue('13'),
                 )
 
             const Button = new ActionRowBuilder()

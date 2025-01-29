@@ -52,7 +52,10 @@ module.exports = {
             const larguraPreenchida = larguraBarra * porcentagemXP;
 
             context.drawImage(background, 0, 0, 700, 250)
-            // context.filter = 'blur(5px)'
+            if(banners.banner === 'https://www.riotgames.com/darkroom/1440/056b96aab9c107bfb72c1cc818be712a:8e765b8b8b63d537b82096f248c2f169/tf-graves-pride-0.png'){
+                context.filter = 'blur(2px)'
+            }
+
             context.drawImage(background, 0, 0, 700, 250)
             context.filter = 'none'
 
@@ -70,7 +73,7 @@ module.exports = {
                 context.drawImage(booster, canvas.width / 2.6, canvas.height / 3.1 , 32, 32)
                 console.log('Booster')  
             }
-
+            
             context.font = '20px  Ubuntu';
             context.fillStyle = '#ffffff';
             context.fillText(`Nível / `, canvas.width / 1.25, canvas.height / 3.8);
@@ -111,6 +114,7 @@ module.exports = {
             await interaction.channel.sendTyping();
             await interaction.deferReply();
             await interaction.editReply({ files: [attachment] })
+            
         } catch (error) {
             console.log(error)
 

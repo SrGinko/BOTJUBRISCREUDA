@@ -1,11 +1,7 @@
-const { Events, EmbedBuilder, AttachmentBuilder } = require('discord.js')
+const { Events, AttachmentBuilder } = require('discord.js')
 const { Hoje, Banner } = require('../Controller')
 const Canvas = require('@napi-rs/canvas');
 const db = require('../db');
-
-const embed = new EmbedBuilder()
-    .setColor('Random')
-
 module.exports = {
     name: Events.GuildMemberAdd,
 
@@ -13,22 +9,22 @@ module.exports = {
 
         const userId = member.user.id
         const username = member.user.globalName
+
         try {
 
             const player = member.guild.roles.cache.find(r => r.name === 'Players')
             const jogoGratis = member.guild.roles.cache.find(r => r.name === 'JogosGratis')
-            const channel = member.guild.channels.cache.find(ch => ch.name === 'bem-vindo')
+            const channel = member.guild.channels.cache.find(ch => ch.name === 'banco-de-dados-genshin')
 
             const agora = Hoje()
 
-
-            const indice = Math.floor(Math.random() * 12) + 1;
-            const banners = Banner(indice)
+            const indice = Math.floor(Math.random() * 13);
+            const banners = await Banner(indice)
 
             const canvas = Canvas.createCanvas(700, 250);
             const context = canvas.getContext('2d');
 
-            const background = await Canvas.loadImage(banners.banner)
+            var background = await Canvas.loadImage(banners.banner)
 
             context.drawImage(background, 0, 0, 700, 250)
             context.filter = 'blur(5px)'
@@ -60,6 +56,7 @@ module.exports = {
 
             await member.roles.add(jogoGratis)
             await member.roles.add(player)
+             
             channel.send({ content: `Bem Vindo(a) ${member.user}`, files: [attachment] })
 
             try {

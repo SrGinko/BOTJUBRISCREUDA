@@ -202,6 +202,14 @@ async function controler(interaction) {
                 return await interaction.reply({ embeds: [embed], ephemeral: true })
                 break;
 
+            case '13':
+                updateFundo.run(select, userId)
+                embed.setDescription('Banner Alterado com sucesso')
+                embed.setColor('Green')
+                addXp(userId, 5)
+                return await interaction.reply({ embeds: [embed], ephemeral: true })
+                break;
+
             default:
                 embed.setDescription('Não foi possível Alterar o Banner')
                 embed.setColor('Red')
@@ -376,8 +384,9 @@ async function Banner(indice) {
         { banner: 'https://i.pinimg.com/1200x/ad/17/d5/ad17d516ba4254ead5cb9bd2747dcc53.jpg', cor: '#9600db' },
         { banner: 'https://i.pinimg.com/originals/95/d0/3c/95d03cf844c7c024347258f8953236dd.gif', cor: '#db00a1' },
         { banner: 'https://images-ext-1.discordapp.net/external/VqkxJ18-8oJKiLMoLUyz46VNBRb1XtCQjrFbJiLfqfo/https/wallpapers.com/images/hd/calm-aesthetic-desktop-8t7o1e3i0gaoodqz.jpg?format=webp&width=1258&height=683', cor: '#1f84ff' },
-        { banner: 'https://i.pinimg.com/736x/0d/85/82/0d85822f43f90509960301de14d4786e.jpg', cor: '#f27900' },
+        { banner: 'https://www.riotgames.com/darkroom/1440/056b96aab9c107bfb72c1cc818be712a:8e765b8b8b63d537b82096f248c2f169/tf-graves-pride-0.png', cor: '#f27900' },
         { banner: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgMl2_YrppPp5AgsNi9DHOjJkCFMDXPC55vQ&s', cor: '#6600ff' },
+        { banner: 'https://m.media-amazon.com/images/S/pv-target-images/2e1f13308ead2fc251f71910b50e253af2f566d717f64dfcfd69a6ab5d8b00dd._SX1080_FMjpg_.jpg', cor: '#bf2126' },
     ]
 
     return banners[indice]
