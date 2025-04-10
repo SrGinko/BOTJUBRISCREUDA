@@ -87,8 +87,8 @@ async function controler(interaction) {
                 embed.setColor('Green')
                 embed.setDescription('Servidor Minecraft Java')
                 embed.setFields(
-                    { name: 'Servidor', value: 'Null' },
-                    { name: 'Porta', value: 'Null' }
+                    { name: 'Servidor', value: 'valk.lura.pro' },
+                    { name: 'Porta', value: '35606' }
                 )
 
                 return await interaction.reply({ embeds: [embed] })
@@ -98,8 +98,8 @@ async function controler(interaction) {
                 embed.setColor('Green')
                 embed.setDescription('Servidor Minecraft Bedrock')
                 embed.setFields(
-                    { name: 'Servidor', value: hyperlink('Clique Aqui', 'https://realms.gg/D-jF9JUN5AY') },
-                    { name: 'Porta', value: 'Não precisa' }
+                    { name: 'Servidor', value: 'valk.lura.pro' }, 
+                    { name: 'Porta', value: '35606' }
                 )
                 return await interaction.reply({ embeds: [embed] })
                 break

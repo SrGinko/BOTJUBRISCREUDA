@@ -1,8 +1,9 @@
 
 const { Client, Events, GatewayIntentBits, Collection, ActivityType, Partials } = require('discord.js');
+const { Rcon } = require("rcon-client");
 const dotenv = require('dotenv')
 dotenv.config()
-const { TOKEN, CLIENTE_ID, GUILD_ID } = process.env
+const { TOKEN, CLIENTE_ID, GUILD_ID, RCON_PASSWORD } = process.env
 const fs = require('node:fs');
 const path = require('node:path')
 

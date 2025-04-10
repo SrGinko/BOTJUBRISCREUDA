@@ -4,6 +4,7 @@ const { Hoje, addLVL, ranking, Banner } = require("../../Controller")
 const Canvas = require('@napi-rs/canvas');
 
 
+
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('perfil')
@@ -74,24 +75,24 @@ module.exports = {
                 console.log('Booster')  
             }
             
-            context.font = '20px  Ubuntu';
+            context.font = '20px  "OpenSans"';
             context.fillStyle = '#ffffff';
             context.fillText(`Nível / `, canvas.width / 1.25, canvas.height / 3.8);
-            context.font = '28px Ubuntu';
+            context.font = '28px "OpenSans"';
             context.fillStyle = `${banners.cor}`;
             context.fillText(`#${user.lvl}`, canvas.width / 1.1, canvas.height / 3.8);
 
-            context.font = '20px  Ubuntu';
+            context.font = '20px  "OpenSans"';
             context.fillStyle = '#ffffff';
             context.fillText(`TOP/ `, canvas.width / 1.25, canvas.height / 1.9);
-            context.font = '30px Ubuntu';
+            context.font = '30px "OpenSans"';
             context.fillStyle = `#43fef5`;
             context.fillText(`#${Ranking}`, canvas.width / 1.1, canvas.height / 1.9);
 
-            context.font = '15px Ubuntu';
+            context.font = '15px "OpenSans"';
             context.fillStyle = '#ffffff';
             context.fillText(`XP: `, canvas.width / 2.55, canvas.height / 1.5);
-            context.font = '20px Ubuntu';
+            context.font = '20px "OpenSans"';
             context.fillStyle = '#43fef5';
             context.fillText(` #${Math.round(user.xp)} / #${maxXp}`, canvas.width / 2.33, canvas.height / 1.5);
 
@@ -101,11 +102,11 @@ module.exports = {
             context.fillStyle = `${banners.cor}`;
             context.fillRect(canvas.width / 2.5, canvas.height / 1.3 - alturaBarra / 1.3, larguraPreenchida, alturaBarra);
 
-            context.font = '28px Ubuntu';
+            context.font = '28px "OpenSans"';
             context.fillStyle = '#ffffff';
             context.fillText(`${user.username}`, canvas.width / 2.5, canvas.height / 3.8);
 
-            context.font = '12px Ubuntu';
+            context.font = '12px "OpenSans"';
             context.fillStyle = `#ffffff`;
             context.fillText(`By Jubriscreuda  ${agora.ano}`, canvas.width / 1.3, canvas.height / 1.1);
 
@@ -114,7 +115,7 @@ module.exports = {
             await interaction.channel.sendTyping();
             await interaction.deferReply();
             await interaction.editReply({ files: [attachment] })
-            
+
         } catch (error) {
             console.log(error)
 

@@ -2,6 +2,7 @@ const { Events, AttachmentBuilder } = require('discord.js')
 const { Hoje, Banner } = require('../Controller')
 const Canvas = require('@napi-rs/canvas');
 const db = require('../db');
+
 module.exports = {
     name: Events.GuildMemberAdd,
 
@@ -14,7 +15,7 @@ module.exports = {
 
             const player = member.guild.roles.cache.find(r => r.name === 'Players')
             const jogoGratis = member.guild.roles.cache.find(r => r.name === 'JogosGratis')
-            const channel = member.guild.channels.cache.find(ch => ch.name === 'banco-de-dados-genshin')
+            const channel = member.guild.channels.cache.find(ch => ch.name === 'bem-vindo')
 
             const agora = Hoje()
 
@@ -44,11 +45,11 @@ module.exports = {
             context.drawImage(avatar, posicaoX, posicaoY, tamanhoImagem, tamanhoImagem);
             context.restore();
 
-            context.font = '25px Ubuntu';
+            context.font = '25px OpenSans';
             context.fillStyle = '#ffffff';
             context.fillText(`${member.user.globalName}`, canvas.width / 2.4, canvas.height / 4.9);
 
-            context.font = '12px Ubuntu';
+            context.font = '12px OpenSans';
             context.fillStyle = `#ffffff`;
             context.fillText(`By Jubriscreuda  ${agora.ano}`, canvas.width / 1.3, canvas.height / 1.1);
 
@@ -64,7 +65,7 @@ module.exports = {
                   INSERT INTO users (id, username, xp, lvl, fundo) 
                   VALUES (?, ?, ?, ?, ?)
                 `);
-                stmt.run(userId, username, 0, 1, 1);
+                stmt.run(userId, username, 0, 1, indice);
 
             } catch (error) {
                 if (error.code === 'SQLITE_CONSTRAINT_PRIMARYKEY') {
