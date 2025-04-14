@@ -1,8 +1,10 @@
 const { SlashCommandBuilder, AttachmentBuilder, } = require("discord.js")
-const db = require('../../db')
 const { Hoje, addLVL, ranking, Banner } = require("../../Controller")
 const Canvas = require('@napi-rs/canvas');
-
+const axios = require('axios')
+const dotenv = require('dotenv')
+dotenv.config()
+const { URL_USUARIO } = process.env
 
 
 module.exports = {
@@ -13,25 +15,23 @@ module.exports = {
     async execute(interaction) {
 
         try {
+            await interaction.deferReply();
+            await interaction.channel.sendTyping();
 
             const userId = interaction.user.id
             const memeber = interaction.member
-
-            const sumt = db.prepare(`SELECT * from users WHERE id = ?`)
-            const all = db.prepare(`SELECT * from users`)
-            const user = sumt.get(userId)
-            var allUsers = all.all()
-
-            allUsers = await ranking(allUsers)
-
             const ServerBooster = memeber.roles.cache.some(r => r.name === 'Burgês') 
 
-            const IdUser = allUsers.map(i => i.id)
-            const id = Number(userId)
-            const Ranking = IdUser.indexOf(id) + 1
+            const response = await axios.get(`${URL_USUARIO}/${userId}`)
 
-            var bannerIndice = user.fundo
-            const banners = await Banner(bannerIndice)
+            const user = response.data
+
+            allUsers = await ranking()
+
+            const IdUser = allUsers.map(i => i.id)
+            const Ranking = IdUser.indexOf(userId) + 1
+
+            const banners = await Banner(user.wallpaper)
 
             var maxXp = await addLVL(userId)
             const agora = Hoje()
@@ -80,7 +80,7 @@ module.exports = {
             context.fillText(`Nível / `, canvas.width / 1.25, canvas.height / 3.8);
             context.font = '28px "OpenSans"';
             context.fillStyle = `${banners.cor}`;
-            context.fillText(`#${user.lvl}`, canvas.width / 1.1, canvas.height / 3.8);
+            context.fillText(`#${user.nivel}`, canvas.width / 1.1, canvas.height / 3.8);
 
             context.font = '20px  "OpenSans"';
             context.fillStyle = '#ffffff';
@@ -112,8 +112,6 @@ module.exports = {
 
             const attachment = new AttachmentBuilder(canvas.toBuffer('image/png'), { name: 'profile-image.png' });
 
-            await interaction.channel.sendTyping();
-            await interaction.deferReply();
             await interaction.editReply({ files: [attachment] })
 
         } catch (error) {
