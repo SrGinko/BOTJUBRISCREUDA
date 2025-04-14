@@ -1,7 +1,9 @@
 const { Events, AttachmentBuilder } = require('discord.js')
 const { Hoje, Banner } = require('../Controller')
+const dotenv = require('dotenv')
+dotenv.config()
+const { URL_USUARIO } = process.env
 const Canvas = require('@napi-rs/canvas');
-const db = require('../db');
 
 module.exports = {
     name: Events.GuildMemberAdd,
@@ -57,24 +59,22 @@ module.exports = {
 
             await member.roles.add(jogoGratis)
             await member.roles.add(player)
-             
+
             channel.send({ content: `Bem Vindo(a) ${member.user}`, files: [attachment] })
 
             try {
-                const stmt = db.prepare(`
-                  INSERT INTO users (id, username, xp, lvl, fundo) 
-                  VALUES (?, ?, ?, ?, ?)
-                `);
-                stmt.run(userId, username, 0, 1, indice);
+                await axios.post(URL_USUARIO, {
+                    id: userId,
+                    username: username,
+                    xp: 0,
+                    nivel: 1,
+                    foto: member.user.displayAvatarURL({ extension: 'jpg' }),
+                    wallpaper: banners.banner,
+                })
 
             } catch (error) {
-                if (error.code === 'SQLITE_CONSTRAINT_PRIMARYKEY') {
-
-                } else {
-                    console.error('Erro ao registrar usuário:', error);
-                }
+                console.error('Erro ao registrar usuário:', error);
             }
-
         } catch (error) {
             console.log(error)
         }

@@ -1,6 +1,5 @@
 const { Events } = require('discord.js');
 const { addXp, addLVL } = require('../Controller');
-const db = require('../db');
 
 
 module.exports = {
@@ -15,27 +14,12 @@ module.exports = {
 			voiceChannels.forEach(channel => {
 				channel.members.forEach(member => {
 					if (!member.user.bot) {
-						
+
 						const userId = member.user.id
 						const username = member.user.globalName
 
-						try {
-							const stmt = db.prepare(`
-							  INSERT INTO users (id, username, xp, lvl, fundo) 
-							  VALUES (?, ?, ?, ?, ?)
-							`);
-							stmt.run(userId, username, 0, 1, 1);
-
-						} catch (error) {
-							if (error.code === 'SQLITE_CONSTRAINT_PRIMARYKEY') {
-		
-								addXp(userId, 10)
-								addLVL(userId)
-
-							} else {
-								console.error('Erro ao registrar usuário:', error);
-							}
-						}
+							addXp(userId, 20)
+							addLVL(userId)
 					}
 				});
 			});

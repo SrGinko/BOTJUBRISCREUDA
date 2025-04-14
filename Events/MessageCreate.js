@@ -1,6 +1,8 @@
 const { Events, EmbedBuilder } = require('discord.js')
-const db = require('../db');
-const { addXp, addLVL, addMensages } = require('../Controller')
+const { addXp, addLVL } = require('../Controller')
+const dotenv = require('dotenv')
+dotenv.config()
+const { URL_USUARIO } = process.env
 
 const embed = new EmbedBuilder()
     .setColor('Random')
@@ -28,7 +30,7 @@ module.exports = {
 
         if (message.channel.type === 1 && !message.author.bot) {
             if (message.content === 'oi' || message.content === 'Ola') {
-                
+
                 await message.channel.sendTyping();
                 await message.reply({ content: `Olá, ${message.author}! Você poderá utilizar esses comandos no chat privado comigo`, embeds: [embed] })
             }
@@ -45,6 +47,12 @@ module.exports = {
                 }
             }
 
+            if(!message.author.bot){
+
+                addXp(message.author.id, 10)
+                addLVL(message.author.id)
+            }
+
             if (message.channel.id === '1038287340889706498') {
                 console
                 const jogoGratis = message.guild.roles.cache.find(r => r.name === 'JogosGratis')
@@ -58,33 +66,6 @@ module.exports = {
                     )
 
                 await chat.send({ embeds: [gratis] })
-            }
-
-            if (message.author.bot) {
-                return
-            } else {
-
-                const userId = message.author.id
-                const username = message.author.globalName
-
-                try {
-                    const stmt = db.prepare(`
-                      INSERT INTO users (id, username, xp, lvl) 
-                      VALUES (?, ?, ?, ?)
-                    `);
-                    stmt.run(userId, username, 0, 1);
-
-                } catch (error) {
-                    if (error.code === 'SQLITE_CONSTRAINT_PRIMARYKEY') {
-                        
-                        addXp(userId, 10)
-                        addLVL(userId)
-                        addMensages(userId, message)
-
-                    } else {
-                        console.error('Erro ao registrar usuário:', error);
-                    }
-                }
             }
         }
     }
