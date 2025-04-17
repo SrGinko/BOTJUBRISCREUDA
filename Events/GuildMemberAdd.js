@@ -14,6 +14,7 @@ module.exports = {
         const userId = member.user.id
         const username = member.user.globalName
 
+        if (member.user.bot) return
         try {
 
             const player = member.guild.roles.cache.find(r => r.name === 'Players')
