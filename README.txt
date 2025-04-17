@@ -23,7 +23,8 @@ Este é um bot para Discord desenvolvido inteiramente em JavaScript. Ele é proj
 ## Tecnologias Utilizadas
 - **[Node.js](https://nodejs.org)**: Ambiente de execução para JavaScript.
 - **[Discord.js](https://discord.js.org)**: Biblioteca para criar bots no Discord.
-- **[SQLite3](https://www.sqlite.org/)**: Banco de dados leve e eficiente.
+- **[SupaBase](https://supabase.com)**: SGBD Online.
 - **Axios**: Para realizar chamadas HTTP e integrar com a API de busca de jogos.
+- **NestJs**: Backend/API feito em Nest integrado outras aplicações que eu faço.
 
 ---
