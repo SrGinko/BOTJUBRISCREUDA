@@ -26,5 +26,4 @@ Este é um bot para Discord desenvolvido inteiramente em JavaScript. Ele é proj
 - **[SupaBase](https://supabase.com)**: SGBD Online.
 - **Axios**: Para realizar chamadas HTTP e integrar com a API de busca de jogos.
 - **NestJs**: Backend/API feito em Nest integrado outras aplicações que eu faço.
-
 ---
