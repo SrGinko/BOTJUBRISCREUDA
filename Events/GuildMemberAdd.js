@@ -1,5 +1,6 @@
 const { Events, AttachmentBuilder } = require('discord.js')
 const { Hoje, Banner } = require('../Controller')
+const axios = require('axios')
 const dotenv = require('dotenv')
 dotenv.config()
 const { URL_USUARIO } = process.env
@@ -61,7 +62,6 @@ module.exports = {
             await member.roles.add(player)
 
             channel.send({ content: `Bem Vindo(a) ${member.user}`, files: [attachment] })
-
             try {
                 await axios.post(URL_USUARIO, {
                     id: userId,
@@ -69,7 +69,7 @@ module.exports = {
                     xp: 0,
                     nivel: 1,
                     foto: member.user.displayAvatarURL({ extension: 'jpg' }),
-                    wallpaper: banners.banner,
+                    wallpaper: indice,
                 })
 
             } catch (error) {
@@ -78,5 +78,6 @@ module.exports = {
         } catch (error) {
             console.log(error)
         }
+
     }
 }
