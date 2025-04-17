@@ -32,7 +32,7 @@ module.exports = {
 
                     embed.setDescription(`Excluídas **${deletedMessages.size}** mensagens.`)
                     embed.setColor('Green')
-                    addXp(userId, 20)
+                    addXp(userId, quantidade * 5)
                     addLVL(userId)
                 }
             } else if (lixeiro === false) {

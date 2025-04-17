@@ -1,8 +1,7 @@
-const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js')
-const db = require('./db')
+const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle, hyperlink } = require('discord.js')
 const dotenv = require('dotenv')
 dotenv.config()
-const { RAWG_API } = process.env
+const { RAWG_API, URL_USUARIO, URL444444444444444444444444444444 } = process.env
 const axios = require('axios')
 
 const embed = new EmbedBuilder()
@@ -70,9 +69,6 @@ async function controler(interaction) {
 
     if (interaction.isStringSelectMenu()) {
         const userId = interaction.user.id
-
-        const updateFundo = db.prepare(`UPDATE users SET fundo = ? WHERE id = ?`)
-
         const select = interaction.values[0]
 
         switch (select) {
@@ -81,76 +77,98 @@ async function controler(interaction) {
             case 'nether': return await interaction.reply({ embeds: [Nether], ephemeral: true })
                 break;
             case 'overworld': return await interaction.reply({ embeds: [OverWorld], ephemeral: true })
+                break
+
+            case 'java':
+                embed.setColor('Green')
+                embed.setDescription('Servidor Minecraft Java')
+                embed.setFields(
+                    { name: 'Servidor', value: 'valk.lura.pro' },
+                    { name: 'Porta', value: '35606' }
+                )
+
+                return await interaction.reply({ embeds: [embed] })
+                break
+
+            case 'bedrock':
+                embed.setColor('Green')
+                embed.setDescription('Servidor Minecraft Bedrock')
+                embed.setFields(
+                    { name: 'Servidor', value: 'valk.lura.pro' },
+                    { name: 'Porta', value: '35606' }
+                )
+                return await interaction.reply({ embeds: [embed] })
+                break
         }
 
 
 
         switch (select) {
             case '0':
-                updateFundo.run(select, userId)
+                alterarBanner(userId, select)
                 embed.setDescription('Banner Alterado com sucesso')
                 embed.setColor('Green')
                 addXp(userId, 5)
                 return await interaction.reply({ embeds: [embed], ephemeral: true })
                 break;
             case '1':
-                updateFundo.run(select, userId)
+                alterarBanner(userId, select)
                 embed.setDescription('Banner Alterado com sucesso')
                 embed.setColor('Green')
                 addXp(userId, 5)
                 return await interaction.reply({ embeds: [embed], ephemeral: true })
                 break;
             case '2':
-                updateFundo.run(select, userId)
+                alterarBanner(userId, select)
                 embed.setDescription('Banner Alterado com sucesso')
                 embed.setColor('Green')
                 addXp(userId, 5)
                 return await interaction.reply({ embeds: [embed], ephemeral: true })
                 break;
             case '3':
-                updateFundo.run(select, userId)
+                alterarBanner(userId, select)
                 embed.setDescription('Banner Alterado com sucesso')
                 embed.setColor('Green')
                 addXp(userId, 5)
                 return await interaction.reply({ embeds: [embed], ephemeral: true })
                 break;
             case '4':
-                updateFundo.run(select, userId)
+                alterarBanner(userId, select)
                 embed.setDescription('Banner Alterado com sucesso')
                 embed.setColor('Green')
                 addXp(userId, 5)
                 return await interaction.reply({ embeds: [embed], ephemeral: true })
                 break;
             case '5':
-                updateFundo.run(select, userId)
+                alterarBanner(userId, select)
                 embed.setDescription('Banner Alterado com sucesso')
                 embed.setColor('Green')
                 addXp(userId, 5)
                 return await interaction.reply({ embeds: [embed], ephemeral: true })
                 break;
             case '6':
-                updateFundo.run(select, userId)
+                alterarBanner(userId, select)
                 embed.setDescription('Banner Alterado com sucesso')
                 embed.setColor('Green')
                 addXp(userId, 5)
                 return await interaction.reply({ embeds: [embed], ephemeral: true })
                 break;
             case '7':
-                updateFundo.run(select, userId)
+                alterarBanner(userId, select)
                 embed.setDescription('Banner Alterado com sucesso')
                 embed.setColor('Green')
                 addXp(userId, 5)
                 return await interaction.reply({ embeds: [embed], ephemeral: true })
                 break;
             case '8':
-                updateFundo.run(select, userId)
+                alterarBanner(userId, select)
                 embed.setDescription('Banner Alterado com sucesso')
                 embed.setColor('Green')
                 addXp(userId, 5)
                 return await interaction.reply({ embeds: [embed], ephemeral: true })
                 break;
             case '9':
-                updateFundo.run(select, userId)
+                alterarBanner(userId, select)
                 embed.setDescription('Banner Alterado com sucesso')
                 embed.setColor('Green')
                 addXp(userId, 5)
@@ -158,14 +176,30 @@ async function controler(interaction) {
                 break;
 
             case '10':
-                updateFundo.run(select, userId)
+                alterarBanner(userId, select)
                 embed.setDescription('Banner Alterado com sucesso')
                 embed.setColor('Green')
                 addXp(userId, 5)
                 return await interaction.reply({ embeds: [embed], ephemeral: true })
                 break;
             case '11':
-                updateFundo.run(select, userId)
+                alterarBanner(userId, select)
+                embed.setDescription('Banner Alterado com sucesso')
+                embed.setColor('Green')
+                addXp(userId, 5)
+                return await interaction.reply({ embeds: [embed], ephemeral: true })
+                break;
+
+            case '12':
+                alterarBanner(userId, select)
+                embed.setDescription('Banner Alterado com sucesso')
+                embed.setColor('Green')
+                addXp(userId, 5)
+                return await interaction.reply({ embeds: [embed], ephemeral: true })
+                break;
+
+            case '13':
+                alterarBanner(userId, select)
                 embed.setDescription('Banner Alterado com sucesso')
                 embed.setColor('Green')
                 addXp(userId, 5)
@@ -211,21 +245,33 @@ async function Buscarjogo(nameGame) {
     }
 }
 
+async function alterarBanner(userId, idBanner) {
+    try {
+        await axios.patch(`${URL_USUARIO}/${userId}`, {
+            wallpaper: +idBanner
+        })
+
+    } catch (error) {
+        console.log(error.message + error.response.data)
+    }
+
+}
+
 
 
 /**
- * 
- * @param {Array} user - Array de usuários para realizar a comparação 
  * @returns  {Array} - Retorna um array de usuários já em ordem crescente 
  */
-async function ranking(user) {
+async function ranking() {
+    const response = await axios.get(`${URL_USUARIO}`)
+
+    const user = response.data
     user.sort((a, b) => {
-        if (b.lvl === a.lvl) {
+        if (b.nivel === a.nivel) {
             return b.xp - a.xp
         }
-        return b.lvl - a.lvl
+        return b.nivel - a.nivel
     })
-
     return user
 }
 
@@ -237,96 +283,16 @@ async function ranking(user) {
  */
 
 async function addXp(userId, add) {
-    const selectXp = db.prepare(`SELECT xp from users WHERE id = ?`)
-    const updateXp = db.prepare(`UPDATE users SET xp = ? WHERE id = ?`)
 
-    const xp = selectXp.get(userId)
-    var newXp = xp.xp + add
+    const response = await axios.get(`${URL_USUARIO}/${userId}`)
 
-    await updateXp.run(newXp, userId)
+    const usuario = response.data
+    const xp = usuario.xp + add
+
+    await axios.patch(`${URL_USUARIO}/${userId}`, {
+        xp: xp
+    })
 }
-
-
-/**
- * 
- * @param {Inteiro} userId - id do usuário para realizar a busca pleo BD 
- * @param {Objeto} mensage - Objeto usado para alterar o cargo além de encaminhar a mensagem de aviso ao usuário 
- */
-async function addMensages(userId, mensage) {
-
-    if(mensage.author.bot)return
-
-    const selctMensages = db.prepare(`SELECT mensages from users WHERE id = ?`)
-    const upMensages = db.prepare(`UPDATE users SET mensages = ? WHERE id = ?`)
-
-    const mensagens = selctMensages.get(userId)
-
-    var newMensages
-    if (selctMensages === null) {
-        newMensages = 1
-    } else {
-        newMensages = mensagens.mensages + 1
-    }
-
-    await upMensages.run(newMensages, userId)
-
-
-    const FaladorBronze = mensage.guild.roles.cache.find(r => r.name === 'Falador Bronze')
-    const FaladorPrata = mensage.guild.roles.cache.find(r => r.name === 'Falador Prata')
-    const FaladorOuro = mensage.guild.roles.cache.find(r => r.name === 'Falador Ouro')
-    const FaladorPlatina = mensage.guild.roles.cache.find(r => r.name === 'Falador Platina')
-    const FaladorDiamante = mensage.guild.roles.cache.find(r => r.name === 'Falador Diamante')
-
-    console.log(FaladorBronze)
-
-    const user = mensage.guild.members.cache.get(mensage.author.id)
-    const chat = mensage.client.channels.cache.get(mensage.channel.id)
-
-
-    switch (newMensages) {
-        case 500:
-            user.roles.add(FaladorBronze)
-            addXp(userId, 200)
-            addLVL(userId)
-            chat.send({ content: `Parabêns ${user} você mandou 500 mensagens agora você é ${FaladorBronze}`, ephemeral: true })
-            break;
-        case 1500:
-            user.roles.remove(FaladorBronze)
-            user.roles.add(FaladorPrata)
-            addXp(userId, 600)
-            addLVL(userId)
-            chat.send({ content: `Parabêns ${user} você mandou 1500 mensagens agora você é ${FaladorPrata}`, ephemeral: true })
-            break;
-
-        case 3000:
-            user.roles.remove(FaladorPrata)
-            user.roles.add(FaladorOuro)
-            addXp(userId, 1000)
-            addLVL(userId)
-            chat.send({ content: `Parabêns ${user} você mandou 3000 mensagens agora você é ${FaladorOuro}`, ephemeral: true })
-            break;
-
-        case 5000:
-            user.roles.remove(FaladorOuro)
-            user.roles.add(FaladorPlatina)
-            addXp(userId, 1500)
-            addLVL(userId)
-            chat.send({ content: `Parabêns ${user} você mandou 5000 mensagens agora você é ${FaladorPlatina} agora você pode utilizar o comando ${`/delete`}`, ephemeral: true })
-            break;
-
-        case 7000:
-            user.roles.remove(FaladorPlatina)
-            user.roles.add(FaladorDiamante)
-            addXp(userId, 2000)
-            addLVL(userId)
-            chat.send({ content: `Parabêns ${user} você mandou 7000 mensagens agora você é ${FaladorDiamante}`, ephemeral: true })
-            break;
-        default:
-            break;
-    }
-
-}
-
 
 /**
  * 
@@ -347,7 +313,9 @@ async function Banner(indice) {
         { banner: 'https://i.pinimg.com/1200x/ad/17/d5/ad17d516ba4254ead5cb9bd2747dcc53.jpg', cor: '#9600db' },
         { banner: 'https://i.pinimg.com/originals/95/d0/3c/95d03cf844c7c024347258f8953236dd.gif', cor: '#db00a1' },
         { banner: 'https://images-ext-1.discordapp.net/external/VqkxJ18-8oJKiLMoLUyz46VNBRb1XtCQjrFbJiLfqfo/https/wallpapers.com/images/hd/calm-aesthetic-desktop-8t7o1e3i0gaoodqz.jpg?format=webp&width=1258&height=683', cor: '#1f84ff' },
-        { banner: 'https://cdn.discordapp.com/attachments/1031036409231986778/1282072139708633088/image.png?ex=673ba0b9&is=673a4f39&hm=7857eefba104793a135e2e5eb3f254c6168478beb437c0efb613f50b9239f155&', cor: '#1f84ff' },
+        { banner: 'https://www.riotgames.com/darkroom/1440/056b96aab9c107bfb72c1cc818be712a:8e765b8b8b63d537b82096f248c2f169/tf-graves-pride-0.png', cor: '#f27900' },
+        { banner: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgMl2_YrppPp5AgsNi9DHOjJkCFMDXPC55vQ&s', cor: '#6600ff' },
+        { banner: 'https://m.media-amazon.com/images/S/pv-target-images/2e1f13308ead2fc251f71910b50e253af2f566d717f64dfcfd69a6ab5d8b00dd._SX1080_FMjpg_.jpg', cor: '#bf2126' },
     ]
 
     return banners[indice]
@@ -374,151 +342,41 @@ function Hoje() {
 
 /**
  * 
- * @param {Inteiro} userId id usuário
+ * @param {Inteiro} level - Nivel atual do usuario
+ * @returns {Inteiro} - Xp necessária para o próximo nivel
+ */
+function calculateXpForNextLevel(level) {
+    return 100 * Math.pow(1.5, level - 1)
+}
+
+/**
+ * 
+ * @param {Inteiro} userId - id usuário
  * 
  */
 async function addLVL(userId) {
 
-    const selectXp = db.prepare(`SELECT xp from users WHERE id = ?`)
-    const selectLvl = db.prepare(`SELECT lvl from users WHERE id = ?`)
-    const updateLvl = db.prepare(`UPDATE users SET lvl = ? WHERE id = ?`)
-    const updatexp = db.prepare(`UPDATE users SET xp = ? WHERE id = ?`)
+    const response = await axios.get(`${URL_USUARIO}/${userId}`, {
 
-    var experiencia = selectXp.get(userId)
-    var nivel = selectLvl.get(userId)
+    })
+    const usuario = response.data
 
-    switch (nivel.lvl) {
-        case 1:
-            if (experiencia.xp >= 100) {
-                let newXp = experiencia.xp - 100
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
-            }
-            return 100
-            break;
-        case 2:
-            if (experiencia.xp >= 500) {
-                let newXp = - experiencia.xp - 500
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
+    const nivel = usuario.nivel
+    const xp = usuario.xp
 
-            }
-            return 500
-            break;
-        case 3:
-            if (experiencia.xp >= 1000) {
-                let newXp = experiencia.xp - 1000
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
-            }
-            return 1000
-            break;
-        case 4:
-            if (experiencia.xp >= 1500) {
-                let newXp = experiencia.xp - 1500
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
-            }
-            return 1500
-            break;
-        case 5:
-            if (experiencia.xp >= 2000) {
-                let newXp = experiencia.xp - 2000
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
-            }
-            return 2000
-            break;
-        case 6:
-            if (experiencia.xp >= 3000) {
-                let newXp = experiencia.xp - 3000
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
-            }
-            return 3000
-            break;
-        case 7:
-            if (experiencia.xp >= 4000) {
-                let newXp = experiencia.xp - 4000
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
-            }
-            return 4000
-            break;
-        case 8:
-            if (experiencia.xp >= 6000) {
-                let newXp = experiencia.xp - 6000
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
-            }
-            return 6000
-            break;
-        case 9:
-            if (experiencia.xp >= 8000) {
-                let newXp = experiencia.xp - 8000
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
-            }
-            return 8000
-            break;
-        case 10:
-            if (experiencia.xp >= 10000) {
-                let newXp = experiencia.xp - 10000
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
-            }
-            return 10000
-            break;
-        case 11:
-            if (experiencia.xp >= 12000) {
-                let newXp = experiencia.xp - 12000
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
-            }
-            return 12000
-            break;
-        case 12:
-            if (experiencia.xp >= 16000) {
-                let newXp = experiencia.xp - 16000
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
-            }
-            return 16000
-            break;
-        case 13:
-            if (experiencia.xp >= 22000) {
-                let newXp = experiencia.xp - 22000
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
-            }
-            return 22000
-            break;
-        case 14:
-            if (experiencia.xp >= 26000) {
-                let newXp = experiencia.xp - 26000
-                let newLvl = nivel.lvl + 1
-                updateLvl.run(newLvl, userId)
-                updatexp.run(newXp, userId)
-            }
-            return 26000
-            break;
+    const xpForNextLevel = await calculateXpForNextLevel(nivel);
 
-        default:
-            break;
+    if (xp >= xpForNextLevel) {
+        let newXp = xp - xpForNextLevel
+        let newLvl = nivel.lvl + 1
+
+        await axios.patch(`${URL_USUARIO}/${userId}`, {
+                xp: newXp,
+                nivel: newLvl
+        })
     }
+
+    return Math.round(xpForNextLevel)
 }
 
-module.exports = { controler, addXp, Hoje, addLVL, ranking, Banner, Buscarjogo, addMensages }
+module.exports = { controler, addXp, Hoje, addLVL, ranking, Banner, Buscarjogo }
