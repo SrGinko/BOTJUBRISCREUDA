@@ -368,7 +368,7 @@ async function addLVL(userId) {
 
     if (xp >= xpForNextLevel) {
         let newXp = xp - xpForNextLevel
-        let newLvl = nivel.lvl + 1
+        let newLvl = nivel + 1
 
         await axios.patch(`${URL_USUARIO}/${userId}`, {
                 xp: newXp,
