@@ -15,6 +15,6 @@ module.exports = {
     async execute(interaction){
         
         await interaction.channel.sendTyping();
-        await interaction.reply({embeds: [hydra], ephemeral: true })
+        await interaction.reply({embeds: [hydra], flags: 64 })
     }
 }

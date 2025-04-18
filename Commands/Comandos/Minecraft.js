@@ -33,6 +33,6 @@ module.exports = {
 
         addXp(userId, 10)
         addLVL(userId)
-        await interaction.reply({ embeds: [Minecraft], components: [row], ephemeral: true })
+        await interaction.reply({ embeds: [Minecraft], components: [row], flags: 64 })
     }
 }

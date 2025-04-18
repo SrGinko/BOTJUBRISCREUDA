@@ -27,6 +27,8 @@ module.exports = {
                     embed.setDescription(`Por favor, forneça um número entre 1 e 100.`)
                     embed.setColor('Red')
 
+                    return await interaction.reply({ embeds: [embed], flags: 64 })
+
                 } else {
                     const deletedMessages = await interaction.channel.bulkDelete(quantidade);
 
@@ -34,13 +36,15 @@ module.exports = {
                     embed.setColor('Green')
                     addXp(userId, quantidade * 5)
                     addLVL(userId)
+
+                    return await interaction.reply({ embeds: [embed], flags: 64 })
                 }
             } else if (lixeiro === false) {
 
                 embed.setDescription(`Você não tem permição de Lixeiro para executar este comando!`)
                 embed.setColor('Red')
-            }
-        interaction.reply({ embeds: [embed], ephemeral: true });
 
+                return await interaction.reply({ embeds: [embed], flags: 64 })
+            }
     }
 }
