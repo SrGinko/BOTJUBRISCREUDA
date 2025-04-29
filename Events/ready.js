@@ -12,12 +12,14 @@ module.exports = {
 			const voiceChannels = guild.channels.cache.filter(channel => channel.isVoiceBased());
 
 			voiceChannels.forEach(channel => {
+				if(channel.id === '1366801220374630400') return;	
+
 				channel.members.forEach(member => {
 					if (!member.user.bot) {
 
 						const userId = member.user.id
 						const username = member.user.globalName
-
+						
 							addXp(userId, 20)
 							addLVL(userId)
 					}
@@ -30,6 +32,6 @@ module.exports = {
 			if (guild) {
 				addXpToVoiceChannelUsers(guild);
 			}
-		}, 90000)
+		}, 70000)
 	}
 }

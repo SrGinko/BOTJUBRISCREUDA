@@ -29,7 +29,7 @@ module.exports = {
 
     async execute(interaction) {
         try {
-            const userId = interaction.user.id
+            
             const { options } = interaction
             const canalLogs = interaction.guild.channels.cache.find(c => c.name === 'logs')
     

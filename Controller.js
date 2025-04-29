@@ -283,15 +283,15 @@ async function ranking() {
  */
 
 async function addXp(userId, add) {
-
-    const response = await axios.get(`${URL_USUARIO}/${userId}`)
-
-    const usuario = response.data
-    const xp = usuario.xp + add
-
-    await axios.patch(`${URL_USUARIO}/${userId}`, {
-        xp: xp
-    })
+    
+        const response = await axios.get(`${URL_USUARIO}/${userId}`)
+    
+        const usuario = response.data
+        const xp = usuario.xp + add
+        await axios.patch(`${URL_USUARIO}/${userId}`, {
+            xp: xp
+        })
+        
 }
 
 /**
