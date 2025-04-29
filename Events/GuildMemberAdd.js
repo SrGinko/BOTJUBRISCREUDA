@@ -67,6 +67,7 @@ module.exports = {
                 await axios.post(URL_USUARIO, {
                     id: userId,
                     username: username,
+                    email: member.user.email, 
                     xp: 0,
                     nivel: 1,
                     foto: member.user.displayAvatarURL({ extension: 'jpg' }),
