@@ -275,6 +275,24 @@ async function ranking() {
     return user
 }
 
+/**
+ * 
+ * @param {Inteiro} userId - id do usuário
+ * @param {Inteiro} add - Quantidade de mensagem que será adicionada
+ */
+async function addMenssage(userId, add) {
+    const response = await axios.get(`${URL_USUARIO}/${userId}`)
+
+    const usuario = response.data
+    const msg = usuario.quantidadeMensagens + add
+    await axios.patch(`${URL_USUARIO}/${userId}`, {
+        quantidadeMensagens: msg
+    })
+
+    return msg
+}
+
+
 
 /**
  * 
@@ -379,4 +397,4 @@ async function addLVL(userId) {
     return Math.round(xpForNextLevel)
 }
 
-module.exports = { controler, addXp, Hoje, addLVL, ranking, Banner, Buscarjogo }
+module.exports = { controler, addXp, Hoje, addLVL, ranking, Banner, Buscarjogo, addMenssage }

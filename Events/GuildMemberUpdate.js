@@ -9,7 +9,7 @@ module.exports = {
 
     if (!oldMember.roles.cache.has(boosterRole.id) && newMember.roles.cache.has(boosterRole.id)) {
         newMember.guild.channels.cache.get('1031036295482454069').send(`Obrigada ${newMember} por impulsionar o servidor! :heart:`);
-        newMember.roles.add(burges.id).catch(console.error);
+        newMember.roles.add(burges).catch();
     }
   },
 };
