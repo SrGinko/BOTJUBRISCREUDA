@@ -11,6 +11,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('perfil')
         .setDescription('Consultar seu Nível e quantidade de XP'),
+        
 
     async execute(interaction) {
 

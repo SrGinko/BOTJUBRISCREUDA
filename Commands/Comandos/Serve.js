@@ -11,6 +11,7 @@ module.exports = {
 
         const select = new StringSelectMenuBuilder()
             .setCustomId('select')
+            .setTimestamp()
             .setPlaceholder('Selecione')
             .addOptions(
                 new StringSelectMenuOptionBuilder()

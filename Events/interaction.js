@@ -1,7 +1,6 @@
 const { Events } = require('discord.js')
 const { controler } = require('../Controller')
 
-
 module.exports = {
 	name: Events.InteractionCreate,
 	async execute(interaction) {

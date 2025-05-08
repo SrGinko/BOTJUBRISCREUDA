@@ -4,6 +4,7 @@ const Coordenadas = new EmbedBuilder()
     .setTitle('Alteração do Banner')
     .setColor('Random')
     .setDescription('Selecione o Banner')
+    .setTimestamp()
 
 module.exports = {
     data: new SlashCommandBuilder()
