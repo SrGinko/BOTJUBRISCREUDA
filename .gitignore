@@ -1,6 +1,4 @@
 .env
 node_modules
 package-lock.json
-package.json
-database.sqlite
 discloud.config

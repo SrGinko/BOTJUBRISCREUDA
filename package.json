@@ -1,0 +1,30 @@
+{
+  "dependencies": {
+    "@napi-rs/canvas": "^0.1.67",
+    "axios": "^1.9.0",
+    "canvas": "^3.1.0",
+    "discord.js": "^14.19.3",
+    "dotenv": "^16.5.0",
+    "node-fetch": "^3.3.2",
+    "npm": "^11.1.0"
+  },
+  "name": "botjubriscreuda",
+  "version": "1.7.5",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SrGinko/BOTJUBRISCREUDA.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/SrGinko/BOTJUBRISCREUDA/issues"
+  },
+  "homepage": "https://github.com/SrGinko/BOTJUBRISCREUDA#readme"
+}
