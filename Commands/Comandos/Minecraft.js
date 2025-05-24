@@ -30,7 +30,6 @@ module.exports = {
         const row = new ActionRowBuilder()
             .addComponents(LinkButton);
 
-
         addXp(userId, 10)
         addLVL(userId)
         await interaction.reply({ embeds: [Minecraft], components: [row], flags: 64 })
