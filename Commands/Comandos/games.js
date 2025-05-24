@@ -19,7 +19,6 @@ module.exports = {
         try {
 
             const response = await Buscarjogo(nameGame)
-            console.log(response)
 
             if (response.length > 0) {
                 const row = new StringSelectMenuBuilder()

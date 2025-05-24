@@ -49,7 +49,6 @@ async function controler(interaction) {
                 const game = interaction.values[0]
                 const response = await Buscarjogo(game)
                 const jogo = response[0]
-
                 try {
                     const container = new ContainerBuilder({
                         accent_color: 0x3c1099,
@@ -60,7 +59,7 @@ async function controler(interaction) {
 **Plataformas:** ${jogo.platforms.map(element => { return element.platform.name })}
 **Data de Lançamento:** ${jogo.released}
 **Nota:** ${jogo.rating}
-**Tags:** ${jogo.tags.map(element => { return element.name })}`,
+**Tags:** ${jogo.tags.filter(tag => tag.language === 'eng').map(tag => tag.name).join(', ')}`,
                                 style: 'Short',
                             }),
                             new SeparatorBuilder(),
@@ -76,7 +75,7 @@ async function controler(interaction) {
                             }),
                         ]
                     })
-
+                    addXp(userId, 30)
                     await interaction.update({ flags: [MessageFlags.IsComponentsV2], components: [container] })
 
                 } catch (error) {
