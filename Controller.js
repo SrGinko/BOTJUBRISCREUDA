@@ -334,6 +334,13 @@ async function addMenssage(userId, add) {
 
 async function addXp(userId, add) {
 
+    const date = new Date()
+    const diaSemana = date.getDay()
+
+    if (diaSemana === 0 || diaSemana === 6) {
+        add = add * 2
+    }
+
     const response = await axios.get(`${URL_USUARIO}/${userId}`)
 
     const usuario = response.data
