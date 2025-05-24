@@ -15,7 +15,7 @@ module.exports = {
     async execute(interaction) {
 
         const select = new StringSelectMenuBuilder()
-            .setCustomId('select')
+            .setCustomId('coordenadas')
             .setPlaceholder('Selecione')
             .addOptions(
                 new StringSelectMenuOptionBuilder()

@@ -15,7 +15,7 @@ module.exports = {
         try {
 
             const select = new StringSelectMenuBuilder()
-                .setCustomId('select')
+                .setCustomId('alterbanner')
                 .setPlaceholder('Selecione')
                 .addOptions(
                     new StringSelectMenuOptionBuilder()
