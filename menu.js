@@ -15,7 +15,7 @@ async function delay(ms){
 
 function exibirMenu() {
     console.clear()
-    console.log(title("Bot Jubscreuda"))
+    console.log(title("========================================================== Bot Jubscreuda ==================================================================="))
     inquirer
     .prompt([
         {

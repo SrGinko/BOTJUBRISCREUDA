@@ -51,7 +51,5 @@ module.exports = {
         } else {
             await interaction.reply({ embeds: [Embed] })
         }
-
-
     }
 }

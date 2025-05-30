@@ -31,6 +31,7 @@ const OverWorld = new EmbedBuilder()
 
 
 
+
 /**
  * 
  * @param {Objeto} interaction - Necessaria para execção dos comando
@@ -52,6 +53,7 @@ async function controler(interaction) {
                 try {
                     const container = new ContainerBuilder({
                         accent_color: 0x3c1099,
+                        timestamp: true,
                         components: [
                             new TextDisplayBuilder({
                                 content: `# ${jogo.name}                        
@@ -356,7 +358,7 @@ async function addXp(userId, add) {
  * @param {Inteiro} indice Numero inteiro responsável por selecionar o banner do usuário
  * @returns Retorna banner como objeto para ser usado
  */
-async function Banner(indice) {
+async function Banner() {
 
     const banners = [
         { name: 'Wave', id: 'wave', banner: 'https://marketplace.canva.com/EAF_ZFGfAwE/1/0/1600w/canva-banner-para-twitch-montanha-vintage-retr%C3%B4-roxo-nqw7QjAVpKo.jpg', cor: '#be81d5' },
@@ -375,7 +377,7 @@ async function Banner(indice) {
         { name: 'Hajime no Ippo', id: 'hajime-no-ippo', banner: 'https://m.media-amazon.com/images/S/pv-target-images/2e1f13308ead2fc251f71910b50e253af2f566d717f64dfcfd69a6ab5d8b00dd._SX1080_FMjpg_.jpg', cor: '#bf2126' },
     ]
 
-    return banners[indice]
+    return banners 
 }
 
 

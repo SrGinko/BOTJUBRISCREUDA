@@ -1,5 +1,4 @@
 const { SlashCommandBuilder, StringSelectMenuBuilder, ContainerBuilder, TextDisplayBuilder, ActionRowBuilder, MessageFlags } = require("discord.js")
-const Canvas = require('@napi-rs/canvas');
 const { Buscarjogo  } = require("../../Controller")
 
 module.exports = {

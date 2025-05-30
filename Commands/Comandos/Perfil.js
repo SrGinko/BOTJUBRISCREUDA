@@ -32,7 +32,7 @@ module.exports = {
             const IdUser = allUsers.map(i => i.id)
             const Ranking = IdUser.indexOf(userId) + 1
 
-            const banners = await Banner(user.wallpaper)
+            const banners = await Banner()
 
             var maxXp = await addLVL(userId)
             const agora = Hoje()
@@ -42,7 +42,7 @@ module.exports = {
             const canvas = Canvas.createCanvas(700, 250);
             const context = canvas.getContext('2d');
 
-            var background = await Canvas.loadImage(banners.banner)
+            var background = await Canvas.loadImage(banners[user.wallpaper].banner)
 
             const porcentagemXP = user.xp / maxXp;
 
@@ -54,7 +54,7 @@ module.exports = {
             const larguraPreenchida = larguraBarra * porcentagemXP;
 
             context.drawImage(background, 0, 0, 700, 250)
-            if(banners.banner === 'https://www.riotgames.com/darkroom/1440/056b96aab9c107bfb72c1cc818be712a:8e765b8b8b63d537b82096f248c2f169/tf-graves-pride-0.png'){
+            if(banners[user.wallpaper].banner === 'https://www.riotgames.com/darkroom/1440/056b96aab9c107bfb72c1cc818be712a:8e765b8b8b63d537b82096f248c2f169/tf-graves-pride-0.png'){
                 context.filter = 'blur(2px)'
             }
 
@@ -80,7 +80,7 @@ module.exports = {
             context.fillStyle = '#ffffff';
             context.fillText(`Nível / `, canvas.width / 1.25, canvas.height / 3.8);
             context.font = '28px "OpenSans"';
-            context.fillStyle = `${banners.cor}`;
+            context.fillStyle = `${banners[user.wallpaper].cor}`;
             context.fillText(`#${user.nivel}`, canvas.width / 1.1, canvas.height / 3.8);
 
             context.font = '20px  "OpenSans"';
@@ -100,7 +100,7 @@ module.exports = {
             context.fillStyle = '#444241';
             context.fillRect(canvas.width / 2.5, canvas.height / 1.3 - alturaBarra / 1.3, larguraBarra, alturaBarra);
 
-            context.fillStyle = `${banners.cor}`;
+            context.fillStyle = `${banners[user.wallpaper].cor}`;
             context.fillRect(canvas.width / 2.5, canvas.height / 1.3 - alturaBarra / 1.3, larguraPreenchida, alturaBarra);
 
             context.font = '28px "OpenSans"';
