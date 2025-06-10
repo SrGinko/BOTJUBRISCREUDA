@@ -1,8 +1,12 @@
 
 const { Client, Events, GatewayIntentBits, Collection, ActivityType, Partials } = require('discord.js');
+const { Player } = require('discord-player');
+const { YoutubeiExtractor } = require('discord-player-youtubei');
+const { DefaultExtractors } = require('@discord-player/extractor');
+
 const dotenv = require('dotenv')
 dotenv.config()
-const { TOKEN, CLIENTE_ID, GUILD_ID, RCON_PASSWORD } = process.env
+const { TOKEN } = process.env
 const fs = require('node:fs');
 const path = require('node:path')
 
@@ -24,6 +28,8 @@ const client = new Client({
 });
 
 client.commands = new Collection()
+
+const player = new Player(client);
 
 const foldersPath = path.join(__dirname, 'Commands')
 const commandfolders = fs.readdirSync(foldersPath)
@@ -54,12 +60,15 @@ for (const file of eventFiles) {
 	}
 }
 
-client.on('ready', () => {
+client.on('ready', async () => {
 	client.user.setActivity({
 		name: 'Minecraft',
 		type: ActivityType.Playing
 	})
 	client.user.setStatus('online')
+	
+	await player.extractors.register(YoutubeiExtractor)
+	await player.extractors.loadMulti(DefaultExtractors)
 })
 
 client.on(Events.Raw, async (menssage) => {
