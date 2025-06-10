@@ -1,21 +1,27 @@
 {
   "dependencies": {
-    "@napi-rs/canvas": "^0.1.67",
+    "@discord-player/extractor": "^7.1.0",
+    "@discordjs/voice": "^0.18.0",
+    "@napi-rs/canvas": "^0.1.71",
     "axios": "^1.9.0",
     "canvas": "^3.1.0",
     "chalk": "^4.1.2",
+    "discord-player": "^7.1.0",
+    "discord-player-youtubei": "^1.4.6",
     "discord.js": "^14.19.3",
     "dotenv": "^16.5.0",
+    "ffmpeg-static": "^5.2.0",
     "inquirer": "^8.2.6",
     "node-fetch": "^3.3.2",
-    "npm": "^11.1.0"
+    "npm": "^11.1.0",
+    "ytdl-core": "^4.11.5"
   },
   "name": "botjubriscreuda",
   "version": "1.7.5",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node menu.js"
   },
   "repository": {
     "type": "git",
