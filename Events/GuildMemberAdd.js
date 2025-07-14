@@ -23,13 +23,13 @@ module.exports = {
 
             const agora = Hoje()
 
-            const indice = Math.floor(Math.random() * 13);
-            const banners = await Banner(indice)
+            const banners = await Banner()
+            const indice = Math.floor(Math.random() * banners.length);
 
             const canvas = Canvas.createCanvas(700, 250);
             const context = canvas.getContext('2d');
 
-            var background = await Canvas.loadImage(banners.banner)
+            var background = await Canvas.loadImage(banners[indice].banner)
 
             context.drawImage(background, 0, 0, 700, 250)
             context.filter = 'blur(5px)'
@@ -67,7 +67,6 @@ module.exports = {
                 await axios.post(URL_USUARIO, {
                     id: userId,
                     username: username,
-                    email: member.user.email, 
                     xp: 0,
                     nivel: 1,
                     foto: member.user.displayAvatarURL({ extension: 'jpg' }),

@@ -1,8 +1,10 @@
-const { SlashCommandBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle, ContainerBuilder, TextDisplayBuilder, MessageFlags, SectionBuilder, ThumbnailBuilder, } = require('discord.js');
+const { SlashCommandBuilder, ButtonBuilder, ButtonStyle, ContainerBuilder, TextDisplayBuilder, MessageFlags, SectionBuilder, ThumbnailBuilder } = require('discord.js');
+const { getRandonCores } = require('../../Utils/Cores');
 
+const cor = getRandonCores()
 
 const pokeConteiner = new ContainerBuilder({
-    accent_color: 0xff0000,
+    accent_color: cor,
 });
 
 pokeConteiner.addSectionComponents(

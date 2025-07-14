@@ -19,5 +19,4 @@ module.exports = {
 			await interaction.reply("Houve um erro ao executar o comando.")
 		}
 	}
-
 }
