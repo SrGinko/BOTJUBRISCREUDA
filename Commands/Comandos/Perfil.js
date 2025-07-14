@@ -1,8 +1,9 @@
-const { SlashCommandBuilder, AttachmentBuilder, } = require("discord.js")
+const { SlashCommandBuilder, AttachmentBuilder, MediaGalleryBuilder, ContainerBuilder, MessageFlags, ThumbnailBuilder, SectionBuilder, TextDisplayBuilder } = require("discord.js")
 const { Hoje, addLVL, ranking, Banner } = require("../../Controller")
 const Canvas = require('@napi-rs/canvas');
 const axios = require('axios')
-const dotenv = require('dotenv')
+const dotenv = require('dotenv');
+const { getRandonCores } = require("../../Utils/Cores");
 dotenv.config()
 const { URL_USUARIO } = process.env
 
@@ -11,17 +12,23 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('perfil')
         .setDescription('Consultar seu Nível e quantidade de XP'),
-        
+
 
     async execute(interaction) {
 
         try {
             await interaction.deferReply();
-            await interaction.channel.sendTyping();
 
             const userId = interaction.user.id
-            const memeber = interaction.member
-            const ServerBooster = memeber.roles.cache.some(r => r.name === 'Burgês') 
+            const member = interaction.member
+            const dataEntrada = member.joinedAt.toLocaleDateString('pt-BR', {
+                timeZone: 'America/Sao_Paulo'
+
+            });
+            
+            console.log(member)
+
+            const ServerBooster = member.roles.cache.some(r => r.name === 'Burgês')
 
             const response = await axios.get(`${URL_USUARIO}/${userId}`)
 
@@ -54,7 +61,7 @@ module.exports = {
             const larguraPreenchida = larguraBarra * porcentagemXP;
 
             context.drawImage(background, 0, 0, 700, 250)
-            if(banners[user.wallpaper].banner === 'https://www.riotgames.com/darkroom/1440/056b96aab9c107bfb72c1cc818be712a:8e765b8b8b63d537b82096f248c2f169/tf-graves-pride-0.png'){
+            if (banners[user.wallpaper].banner === 'https://www.riotgames.com/darkroom/1440/056b96aab9c107bfb72c1cc818be712a:8e765b8b8b63d537b82096f248c2f169/tf-graves-pride-0.png') {
                 context.filter = 'blur(2px)'
             }
 
@@ -70,12 +77,11 @@ module.exports = {
             context.drawImage(avatar, 20, 20, 200, 200);
             context.restore();
 
-            if(ServerBooster === true){
+            if (ServerBooster === true) {
                 const booster = await Canvas.loadImage('./src/Assets/booster.png');
-                context.drawImage(booster, canvas.width / 2.6, canvas.height / 3.1 , 32, 32)
-                console.log('Booster')  
+                context.drawImage(booster, canvas.width / 2.6, canvas.height / 3.1, 32, 32)
             }
-            
+
             context.font = '20px  "OpenSans"';
             context.fillStyle = '#ffffff';
             context.fillText(`Nível / `, canvas.width / 1.25, canvas.height / 3.8);
@@ -113,12 +119,38 @@ module.exports = {
 
             const attachment = new AttachmentBuilder(canvas.toBuffer('image/png'), { name: 'profile-image.png' });
 
-            await interaction.editReply({ files: [attachment] })
+            const conteiner = new ContainerBuilder({
+                accent_color: banners[user.wallpaper].corHEX,
+                timestamp: true,
+                components: [
+                    new MediaGalleryBuilder({
+                        items: [
+                            {
+                                media: {
+                                    url: `attachment://profile-image.png`
+                                }
+                            }
+                        ]
+                    }),
+                    new SectionBuilder()
+                        .addTextDisplayComponents(
+                            new TextDisplayBuilder({
+                                content: `**Tags:** \`\`Em Breve\`\` **Usuário desde:** \`\`${dataEntrada}\`\` \n \`\`\`${user.Descricao}\`\`\` \n **Mensagens enviadas:** \`\`${user.quantidadeMensagens}\`\``
+                            })
+                        )
+                        .setThumbnailAccessory(
+                            new ThumbnailBuilder({
+                                media: { url: `${user.foto}` }
+                            })
+                        )
+                ]
+            })
+
+            await interaction.editReply({ flags: [MessageFlags.IsComponentsV2], components: [conteiner], files: [attachment] })
 
         } catch (error) {
             console.log(error)
 
         }
     }
-
 }
