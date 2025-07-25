@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, ContainerBuilder, TextDisplayBuilder, MessageFlags } = require('discord.js');
 const { Banner, controler } = require('../../Controller');
-const { getRandonCores } = require('../../Utils/Cores');
+const { getRandonCores } = require('../../Utils/cores');
 
 const Coordenadas = new EmbedBuilder()
     .setTitle('Alteração do Banner')

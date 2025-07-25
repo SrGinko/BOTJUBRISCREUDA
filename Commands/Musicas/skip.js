@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js')
 const { useQueue } = require('discord-player')
+const { addXp } = require('../../Controller')
 
 const embed = new EmbedBuilder()
 
@@ -35,8 +36,8 @@ module.exports = {
             return musicChannel.send({ embeds: [embed] })
         }
 
+        addXp(userId, 5)
         queue.node.skip()
 
-        return interaction.editReply({contents: 'Pulando a musica', flags: [MessageFlags.Ephemeral]})
     }
 }

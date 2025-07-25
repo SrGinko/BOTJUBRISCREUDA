@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, ButtonBuilder, ButtonStyle, ContainerBuilder, TextDisplayBuilder, MessageFlags, SectionBuilder, ThumbnailBuilder } = require('discord.js');
-const { getRandonCores } = require('../../Utils/Cores');
+const { getRandonCores } = require('../../Utils/cores');
 
 const cor = getRandonCores()
 
@@ -22,7 +22,7 @@ pokeConteiner.addSectionComponents(
 )
 
 pokeConteiner.addSeparatorComponents({
-    color: 0x000000,
+    color: cor,
     size: 'Small'
 })
 
@@ -30,7 +30,7 @@ pokeConteiner.addSectionComponents(
     new SectionBuilder()
         .addTextDisplayComponents(
             new TextDisplayBuilder({
-                content: `# Dowmload PokeMMO
+                content: `- Download PokeMMO
 Clique no botão para baixar o cliente do PokeMMO`
             })
         )
@@ -48,7 +48,7 @@ pokeConteiner.addSectionComponents(
     new SectionBuilder()
         .addTextDisplayComponents(
             new TextDisplayBuilder({
-                content: `# Dowmload ROMs
+                content: `- Download ROMs
 Clique no botão para baixar as ROMs necessárias para jogar PokeMMO.`
             })
         )

@@ -1,10 +1,8 @@
 const { SlashCommandBuilder, PermissionsBitField, EmbedBuilder, MessageFlags } = require('discord.js');
 const { useMainPlayer, useQueue } = require('discord-player');
 const { addXp } = require('../../Controller')
-const { entersState, VoiceConnectionStatus } = require('@discordjs/voice');
 
 const embed = new EmbedBuilder()
-
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -44,16 +42,7 @@ module.exports = {
             },
         })
 
-        console.log(track)
+        addXp(userId, 10)
 
-        embed.setTitle('Musica')
-        embed.setDescription(`Música adicionada à fila: [${track.title}](${track.url})
-    Duração: ${track.duration}`)
-        embed.setColor('#00ff15')
-        embed.setThumbnail(track.thumbnail)
-        embed.setTimestamp()
-        embed.setFooter({ text: 'Jubscreuda' })
-
-        await interaction.editReply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
     }
 }

@@ -22,7 +22,7 @@ module.exports = {
         const cor = options.getString('cor') || "Random"
         const descricao = options.getString('descrição') || ''
         const imagem = options.getString('imagem')
-        const botao = options.getBoolean('botao') || false
+        const botao = options.getBoolean('botao') || falseu7yn6
         const link = options.getString('link')
 
         const Embed = new EmbedBuilder()

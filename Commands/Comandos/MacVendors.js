@@ -42,7 +42,6 @@ module.exports = {
         
         await interaction.channel.sendTyping();
         addXp(userId, 10)
-        addLVL(userId)
         await interaction.reply({embeds: [embed], ephemeral: true})
 
     }

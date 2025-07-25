@@ -1,9 +1,9 @@
 const { SlashCommandBuilder, AttachmentBuilder, MediaGalleryBuilder, ContainerBuilder, MessageFlags, ThumbnailBuilder, SectionBuilder, TextDisplayBuilder } = require("discord.js")
+const { getEmoji } = require("../../Utils/emojis");
 const { Hoje, addLVL, ranking, Banner } = require("../../Controller")
 const Canvas = require('@napi-rs/canvas');
 const axios = require('axios')
 const dotenv = require('dotenv');
-const { getRandonCores } = require("../../Utils/Cores");
 dotenv.config()
 const { URL_USUARIO } = process.env
 
@@ -25,10 +25,10 @@ module.exports = {
                 timeZone: 'America/Sao_Paulo'
 
             });
-            
-            console.log(member)
 
-            const ServerBooster = member.roles.cache.some(r => r.name === 'Burgês')
+            const nomeCargos = member.roles.cache.filter(role => role.name !== '@everyone').map(role => role.name);
+            
+            const emojis = nomeCargos.map(cargo => getEmoji(cargo)).filter(emojis => emojis?.trim()).join(' ');
 
             const response = await axios.get(`${URL_USUARIO}/${userId}`)
 
@@ -76,11 +76,6 @@ module.exports = {
             context.clip();
             context.drawImage(avatar, 20, 20, 200, 200);
             context.restore();
-
-            if (ServerBooster === true) {
-                const booster = await Canvas.loadImage('./src/Assets/booster.png');
-                context.drawImage(booster, canvas.width / 2.6, canvas.height / 3.1, 32, 32)
-            }
 
             context.font = '20px  "OpenSans"';
             context.fillStyle = '#ffffff';
@@ -135,7 +130,7 @@ module.exports = {
                     new SectionBuilder()
                         .addTextDisplayComponents(
                             new TextDisplayBuilder({
-                                content: `**Tags:** \`\`Em Breve\`\` **Usuário desde:** \`\`${dataEntrada}\`\` \n \`\`\`${user.Descricao}\`\`\` \n **Mensagens enviadas:** \`\`${user.quantidadeMensagens}\`\``
+                                content: `**Tags:** ${emojis} **Usuário desde:** \`\`${dataEntrada}\`\` \n \`\`\`${user.Descricao}\`\`\` \n **Mensagens enviadas:** \`\`${user.quantidadeMensagens}\`\``
                             })
                         )
                         .setThumbnailAccessory(
