@@ -1,4 +1,3 @@
-
 const { Client, Events, GatewayIntentBits, Collection, ActivityType, Partials } = require('discord.js');
 const { Player } = require('discord-player');
 const { YoutubeiExtractor } = require('discord-player-youtubei');
