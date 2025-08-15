@@ -1,4 +1,4 @@
-const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle, ContainerBuilder, TextDisplayBuilder, MessageFlags, MediaGalleryBuilder, SeparatorBuilder } = require('discord.js')
+const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle, ContainerBuilder, TextDisplayBuilder, MessageFlags, MediaGalleryBuilder, SeparatorBuilder, SectionBuilder, ThumbnailBuilder, hyperlink } = require('discord.js')
 const dotenv = require('dotenv')
 dotenv.config()
 const { RAWG_API, URL_USUARIO } = process.env
@@ -144,7 +144,7 @@ async function controler(interaction) {
                 }
 
                 const banners = await Banner()
-                
+
                 const conteiner = new ContainerBuilder({
                     accent_color: 0x00f521,
                     timestamp: true,
@@ -156,7 +156,7 @@ async function controler(interaction) {
                         new MediaGalleryBuilder({
                             items: [
                                 {
-                                    media:{
+                                    media: {
                                         type: 'Image',
                                         url: banners[+alterarBanner].banner
                                     }
@@ -166,7 +166,57 @@ async function controler(interaction) {
                     ]
                 })
 
-                return await interaction.reply({ flags:[MessageFlags.IsComponentsV2, MessageFlags.Ephemeral], components: [conteiner] })
+                return await interaction.reply({ flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral], components: [conteiner] })
+            }
+
+            case 'hydra': {
+                const id = interaction.values
+                let item
+
+                if (id.includes('todos')) {
+                    item = hydraLinks.slice(1)
+                } else {
+                    item = hydraLinks.filter(item => id.includes(item.id))
+                }
+
+
+                if (item.length > 0) {
+                    const container = new ContainerBuilder({
+                        accent_color: getRandonCores()
+                    })
+
+                    container.addSectionComponents(
+                        new SectionBuilder()
+                            .addTextDisplayComponents(
+                                new TextDisplayBuilder({
+                                    content: `# HydraLauncher
+- Link de Download da HydraLauncher ${hyperlink('Clique aqui', 'https://github.com/hydralauncher/hydra/releases/')}
+- Tutorial de como Instalar ${hyperlink('Clique aqui', 'https://youtu.be/Yo9fka6A6RE?si=zSjO1txthuQsFcjU')}
+`
+                                })
+                            )
+                            .setThumbnailAccessory(
+                                new ThumbnailBuilder({
+                                    media: { url: 'https://github.com/hydralauncher/hydra/raw/main/resources/icon.png' }
+                                })
+                            )
+                    )
+
+                    container.addSeparatorComponents()
+
+                    item.forEach(element => {
+                        container.addTextDisplayComponents(
+                            new TextDisplayBuilder({
+                                content: `**${element.name}:** \`\`\`${element.link}\`\`\``
+                            })
+                        )
+                    })
+
+                    await interaction.update({ flags: [MessageFlags.IsComponentsV2], components: [container] })
+
+                } else {
+                    await interaction.update({ content: 'Nenhum jogo encontrado.', flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral] })
+                }
             }
         }
     } else return
@@ -262,6 +312,22 @@ async function addXp(userId, add) {
 
 }
 
+const hydraLinks = [
+    { id: 'todos', name: 'Todos', link: '' },
+    { id: 'rutracker', name: 'Rutracker', link: 'https://raw.githubusercontent.com/KekitU/rutracker-hydra-links/main/all_categories.json' },
+    { id: 'onlinefix', name: 'Onlinefix', link: 'https://hydralinks.cloud/sources/onlinefix.json' },
+    { id: 'gog', name: 'GOG', link: 'https://hydralinks.cloud/sources/gog.json' },
+    { id: 'fitgril', name: 'FitGril', link: 'https://hydralinks.cloud/sources/fitgirl.json' },
+    { id: 'dodi', name: 'Dodi', link: 'https://hydralinks.cloud/sources/dodi.json' },
+    { id: 'steamrip', name: 'SteamRip', link: 'https://hydralinks.cloud/sources/steamrip.json' },
+    { id: 'steamrip-apps', name: 'SteamRip[Apps]', link: 'https://hydralinks.cloud/sources/steamrip-software.json' },
+    { id: 'atop', name: 'Atop', link: 'https://hydralinks.cloud/sources/atop-games.json' },
+    { id: 'shisuys-source', name: 'Shisuy`s Source', link: 'https://raw.githubusercontent.com/Shisuiicaro/source/refs/heads/main/shisuyssource.json' },
+    { id: 'repack-games', name: 'Repack-Games', link: 'https://hydralinks.cloud/sources/repack-games.json' },
+    { id: 'byxatab', name: 'ByXatab', link: 'https://hydralinks.pages.dev/sources/xatab.json' },
+    { id: 'empress', name: 'Empress', link: 'https://hydralinks.pages.dev/sources/empress.json' },
+]
+
 /**
  * 
  * @param {Inteiro} indice Numero inteiro responsável por selecionar o banner do usuário
@@ -348,4 +414,4 @@ async function addLVL(userId) {
     return Math.round(xpForNextLevel)
 }
 
-module.exports = { controler, addXp, Hoje, addLVL, ranking, Banner, Buscarjogo, addMenssage }
+module.exports = { controler, addXp, Hoje, addLVL, ranking, Banner, Buscarjogo, addMenssage, hydraLinks }
