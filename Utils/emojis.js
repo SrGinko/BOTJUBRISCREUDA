@@ -40,6 +40,18 @@ function getEmoji(name) {
             name:'Falador Platina',
             emoji: '<:falaplatina:1366816959957827707>'
         },
+        {
+            name:'Players',
+            emoji: '<:players:1406886726689099838>'
+        },
+        {
+            name: 'JogosGratis',
+            emoji: '<:jogosgratis:1406886724583559240>'
+        },
+        {
+            name:'RPG',
+            emoji:'<:rpg:1406886728177946735>'
+        }
     ]
 
     return emojis.find(emoji => emoji.name === name)?.emoji || '';
