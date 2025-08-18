@@ -44,18 +44,22 @@ module.exports = {
                     message.channel.send({ content: `Parabéns! ${message.author} Você já enviou 1500 mensagens!` })
                     addXp(message.author.id, 1500)
                     message.member.roles.add(faladorPrata).catch(console.error)
+                    message.member.roles.add(faladorBronze).catch(console.error)
                 case 3000:
                     message.channel.send({ content: `Parabéns! ${message.author} Você já enviou 3000 mensagens!` })
                     addXp(message.author.id, 3000)
                     message.member.roles.add(faladorOuro).catch(console.error)
+                    message.member.roles.add(faladorPrata).catch(console.error)
                 case 5000:
                     message.channel.send({ content: `Parabéns! ${message.author} Você já enviou 5000 mensagens!` })
                     addXp(message.author.id, 5000)
                     message.member.roles.add(faladorPlatina).catch(console.error)
+                    message.member.roles.add(faladorOuro).catch(console.error)
                 case 10000:
                     message.channel.send({ content: `Parabéns! ${message.author} Você já enviou 10000 mensagens!` })
                     addXp(message.author.id, 10000)
                     message.member.roles.add(faladorDiamante).catch(console.error)
+                    message.member.roles.add(faladorPlatina).catch(console.error)
                     break;
 
                 default:

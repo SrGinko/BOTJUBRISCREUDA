@@ -69,6 +69,6 @@ module.exports = {
         .setDescription('Acesso aos Links para poder Jogar PokeMMO'),
 
     async execute(interaction) {
-        await interaction.reply({ components: [pokeConteiner], flags: [MessageFlags.IsComponentsV2] });
+        await interaction.reply({ components: [pokeConteiner], flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral] });
     }
 }

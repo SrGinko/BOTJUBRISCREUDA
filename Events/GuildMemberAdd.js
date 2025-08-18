@@ -71,7 +71,7 @@ module.exports = {
                     nivel: 1,
                     foto: member.user.displayAvatarURL({ extension: 'jpg' }),
                     wallpaper: indice,
-                    Descricao: "Sem Descição"
+                    Descricao: "Sem Descrição"
                 })
 
             } catch (error) {

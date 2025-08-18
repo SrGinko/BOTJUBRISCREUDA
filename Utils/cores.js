@@ -40,9 +40,9 @@ const Cores = [
         corHEX2: '#ff00ff',
     },
     {
-        nome: 'Rosa',
-        corHEX: 0xffc0cb,
-        corHEX2: '#ffc0cb',
+        nome: 'Roxo Escuro',
+        corHEX: 0x2d2c68ff,
+        corHEX2: '#2d2c68ff',
     },
     {
         nome: 'Lilás',
@@ -55,9 +55,9 @@ const Cores = [
         corHEX2: '#8b4513',
     },
     {
-        nome: 'Cinza',
-        corHEX: 0x808080,
-        corHEX2: '#808080',
+        nome: 'Rosa Chock',
+        corHEX: 0xff0077ff,
+        corHEX2: '#ff0077ff',
     },
     {
         nome: 'Branco',
@@ -66,16 +66,16 @@ const Cores = [
     },
     {
         nome: 'Preto',
-        corHEX: 0x000000,
-        corHEX2: '#000000',
+        corHEX: 0x1f1f1fff,
+        corHEX2: '#1f1f1fff',
     },
     {
-        nome: 'Marrom Claro',
-        corHEX: 0xd2b48c,
-        corHEX2: '#d2b48c',
+        nome: 'Marrom',
+        corHEX: 0x532618ff,
+        corHEX2: '#532618ff',
     },
     {
-        nome:'ouro',
+        nome:'Ouro',
         corHEX: 0xfc5203,
         corHEX2: '#fc5203',
     },
@@ -83,6 +83,11 @@ const Cores = [
         nome:'Verde Água',
         corHEX: 0x03fc73,
         corHEX2: '#03fc73',
+    },
+    {
+        nome:'Verde Limão',
+        corHEX: 0xbafc03ff,
+        corHEX2: '#bafc03ff',
     }
 
 

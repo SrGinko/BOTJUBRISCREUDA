@@ -1,12 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, ContainerBuilder, TextDisplayBuilder, MessageFlags } = require('discord.js');
-const { Banner, controler } = require('../../Controller');
+const { Banner, controler, addXp } = require('../../Controller');
 const { getRandonCores } = require('../../Utils/cores');
-
-const Coordenadas = new EmbedBuilder()
-    .setTitle('Alteração do Banner')
-    .setColor('Random')
-    .setDescription('Selecione o Banner')
-    .setTimestamp()
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -36,13 +30,13 @@ module.exports = {
                 timestamp: true,
                 components: [
                     new TextDisplayBuilder({
-                        content: '# Selecione o banner desejado!\n Você pode alterar o banner a qualquer momento!',
+                        content: '# Selecione o banner desejado!\n  - Você pode alterar o banner a qualquer momento!',
                         style: 'Short',
                     }),
                     Button
                 ]
             })
-
+            addXp(interaction.user.id, 10)
             await interaction.reply({ flags: [MessageFlags.IsComponentsV2], components: [conteiner] })
         } catch (error) {
             console.log(error)

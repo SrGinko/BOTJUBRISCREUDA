@@ -7,6 +7,35 @@ const dotenv = require('dotenv');
 dotenv.config()
 const { URL_USUARIO } = process.env
 
+function formatXp(xp) {
+    const unidades = ['', 'K', 'M', 'B', 'T']
+
+    xp = parseInt(xp)
+
+    let index = 0;
+    while (xp >= 1000 && index < unidades.length - 1) {
+        xp /= 1000;
+        index++;
+    }
+
+    return `${xp.toFixed(1)}${unidades[index]}`
+}
+
+function formatUserXp(xp) {
+    const unidades = ['', 'K', 'M', 'B', 'T']
+
+    xp = parseInt(xp)
+
+    let index = 0;
+    while (xp >= 1000 && index < unidades.length - 1) {
+        xp /= 1000;
+        index++;
+    }
+
+    return `${xp.toFixed(1)}${unidades[index]}`
+}
+
+
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -27,7 +56,7 @@ module.exports = {
             });
 
             const nomeCargos = member.roles.cache.filter(role => role.name !== '@everyone').map(role => role.name);
-            
+
             const emojis = nomeCargos.map(cargo => getEmoji(cargo)).filter(emojis => emojis?.trim()).join(' ');
 
             const response = await axios.get(`${URL_USUARIO}/${userId}`)
@@ -53,10 +82,8 @@ module.exports = {
 
             const porcentagemXP = user.xp / maxXp;
 
-            if (maxXp >= 10000) {
-                maxXp = maxXp.toString()
-                maxXp = maxXp.slice(0, 2) + 'K'
-            }
+            maxXp = formatXp(maxXp)
+           let userXp = formatUserXp(user.xp)
 
             const larguraPreenchida = larguraBarra * porcentagemXP;
 
@@ -96,7 +123,7 @@ module.exports = {
             context.fillText(`XP: `, canvas.width / 2.55, canvas.height / 1.5);
             context.font = '20px "OpenSans"';
             context.fillStyle = '#43fef5';
-            context.fillText(` #${Math.round(user.xp)} / #${maxXp}`, canvas.width / 2.33, canvas.height / 1.5);
+            context.fillText(` #${userXp} / #${maxXp}`, canvas.width / 2.33, canvas.height / 1.5);
 
             context.fillStyle = '#444241';
             context.fillRect(canvas.width / 2.5, canvas.height / 1.3 - alturaBarra / 1.3, larguraBarra, alturaBarra);

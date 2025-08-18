@@ -35,7 +35,7 @@ const OverWorld = new EmbedBuilder()
 
 /**
  * 
- * @param {Objeto} interaction - Necessaria para execção dos comando
+ * @param {Objeto} interaction - Necessaria para execução dos comandos
  * @returns {Objeto} - Retorna valor da interação
  */
 
@@ -51,35 +51,37 @@ async function controler(interaction) {
                 const game = interaction.values[0]
                 const response = await Buscarjogo(game)
                 const jogo = response[0]
+
                 try {
                     const cor = getRandonCores()
 
                     const container = new ContainerBuilder({
                         accent_color: cor,
-                        timestamp: true,
-                        components: [
-                            new TextDisplayBuilder({
-                                content: `# ${jogo.name}                        
-**Metatric:** ${jogo.metacritic}
-**Plataformas:** ${jogo.platforms.map(element => { return element.platform.name })}
-**Data de Lançamento:** ${jogo.released}
-**Nota:** ${jogo.rating}
-**Tags:** ${jogo.tags.filter(tag => tag.language === 'eng').map(tag => tag.name).join(', ')}`,
-                                style: 'Short',
-                            }),
-                            new SeparatorBuilder(),
-                            new MediaGalleryBuilder({
-                                items: [
-                                    ...jogo.short_screenshots.map((screenshot) => ({
-                                        media: {
-                                            type: 'Image',
-                                            url: screenshot.image,
-                                        }
-                                    }))
-                                ]
-                            }),
-                        ]
                     })
+
+                    container.addSectionComponents(
+                        new SectionBuilder()
+                            .addTextDisplayComponents(
+                                new TextDisplayBuilder({
+                                    content: `# ${jogo.name}
+**Metatric:** ${jogo.metacritic}
+**Plataformas:** ${jogo.platforms.map(element => { return element.platform.name }).join(', ')}
+**Data de Lançamento:** ${formatDate(jogo.released)}
+**Gêneros:** ${jogo.genres.map(element => { return element.name }).join(', ')}
+`
+                                })
+                            )
+                            .setThumbnailAccessory(
+                                new ThumbnailBuilder({ media: { url: jogo.background_image } })
+                            )
+                    )
+
+                    container.addMediaGalleryComponents({
+                        items: jogo.short_screenshots.map(element => {
+                            return { media: { url: element.image } }
+                        })
+                    })
+
                     addXp(userId, 30)
                     await interaction.update({ flags: [MessageFlags.IsComponentsV2], components: [container] })
 
@@ -223,6 +225,12 @@ async function controler(interaction) {
 }
 
 
+function formatDate(date) {
+    const parter = date.split('-')
+    return dataFormatada = `${parter[2]}/${parter[1]}/${parter[0]}`
+}
+
+
 /**
  * 
  * @param {String} nameGame 
@@ -256,7 +264,11 @@ async function Buscarjogo(nameGame) {
  * @returns  {Array} - Retorna um array de usuários já em ordem crescente 
  */
 async function ranking() {
-    const response = await axios.get(`${URL_USUARIO}`)
+    const response = await axios.get(`${URL_USUARIO}`, {
+        headers: {
+            apikey: API_MONTEIR_KEY
+        },
+    })
 
     const user = response.data
     user.sort((a, b) => {
@@ -274,12 +286,20 @@ async function ranking() {
  * @param {Inteiro} add - Quantidade de mensagem que será adicionada
  */
 async function addMenssage(userId, add) {
-    const response = await axios.get(`${URL_USUARIO}/${userId}`)
+    const response = await axios.get(`${URL_USUARIO}/${userId}`, {
+        headers: {
+            apikey: API_MONTEIR_KEY
+        }
+    })
 
     const usuario = response.data
     const msg = usuario.quantidadeMensagens + add
     await axios.patch(`${URL_USUARIO}/${userId}`, {
         quantidadeMensagens: msg
+    }, {
+        headers: {
+            apikey: API_MONTEIR_KEY
+        }
     })
 
     return msg
@@ -302,12 +322,20 @@ async function addXp(userId, add) {
         add = add * 2
     }
 
-    const response = await axios.get(`${URL_USUARIO}/${userId}`)
+    const response = await axios.get(`${URL_USUARIO}/${userId}`, {
+        headers: {
+            apikey: API_MONTEIR_KEY
+        }
+    })
 
     const usuario = response.data
     const xp = usuario.xp + add
     await axios.patch(`${URL_USUARIO}/${userId}`, {
         xp: xp
+    }, {
+        headers: {
+            apikey: API_MONTEIR_KEY
+        }
     })
 
 }
@@ -392,6 +420,9 @@ function calculateXpForNextLevel(level) {
 async function addLVL(userId) {
 
     const response = await axios.get(`${URL_USUARIO}/${userId}`, {
+        headers: {
+            apikey: API_MONTEIR_KEY
+        }
 
     })
     const usuario = response.data
@@ -408,6 +439,10 @@ async function addLVL(userId) {
         await axios.patch(`${URL_USUARIO}/${userId}`, {
             xp: newXp,
             nivel: newLvl
+        }, {
+            headers: {
+                apikey: API_MONTEIR_KEY
+            }
         })
     }
 

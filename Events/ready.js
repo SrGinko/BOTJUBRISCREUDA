@@ -12,15 +12,22 @@ module.exports = {
 			const voiceChannels = guild.channels.cache.filter(channel => channel.isVoiceBased());
 
 			voiceChannels.forEach(channel => {
-				if(channel.id === '1366801220374630400') return	
-				
+				if (channel.id === '1366801220374630400') return
+
 				channel.members.forEach(member => {
 					if (!member.user.bot) {
 
 						const userId = member.user.id
-						
+
+						let chance = Math.random()
+
+						if (chance < 0.9) {
 							addXp(userId, 20)
 							addLVL(userId)
+						} else if (chance < 0.3) {
+							addXp(userId, 60)
+							addLVL(userId)
+						}
 					}
 				});
 			});
