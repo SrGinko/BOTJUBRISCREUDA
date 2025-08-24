@@ -3,7 +3,7 @@ const { Hoje, Banner } = require('../Controller')
 const axios = require('axios')
 const dotenv = require('dotenv')
 dotenv.config()
-const { URL_USUARIO } = process.env
+const { URL_USUARIO, API_MONTEIR_KEY } = process.env
 const Canvas = require('@napi-rs/canvas');
 
 module.exports = {
@@ -72,8 +72,13 @@ module.exports = {
                     foto: member.user.displayAvatarURL({ extension: 'jpg' }),
                     wallpaper: indice,
                     Descricao: "Sem Descrição"
-                })
-
+                },
+                    {
+                        headers: {
+                            apikey: API_MONTEIR_KEY
+                        }
+                    }
+                )
             } catch (error) {
                 console.error('Erro ao registrar usuário:', error);
             }

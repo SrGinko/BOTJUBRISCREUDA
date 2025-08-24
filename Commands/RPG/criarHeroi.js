@@ -3,6 +3,8 @@ const axios = require('axios')
 const dotenv = require('dotenv')
 dotenv.config()
 
+const { URL } = process.env
+
 const API_MONTEIR_KEY = process.env.API_MONTEIR_KEY
 
 
@@ -20,7 +22,7 @@ module.exports = {
 
         const heroiName = options.getString('nome')
 
-        await axios.post("http://localhost:8080/heroes", {
+        await axios.post(`${URL}/heroes`, {
             nome: heroiName,
             userID: userId
 
@@ -28,13 +30,14 @@ module.exports = {
             headers: {
                 apikey: API_MONTEIR_KEY
             }
+
         }).then(() => {
             embed.setTitle("Heroi Criado com Sucesso! ✅")
             embed.setColor('Green')
             embed.setTimestamp()
 
         }).catch((error) => {
-            embed.setDescription(`Erro ao criar herói! ${error.response.data.message} 🚫`)
+            embed.setTitle(`Erro ao criar herói! ${error.response.data.message} 🚫`)
             embed.setColor('Red')
             embed.setTimestamp()
 
@@ -42,7 +45,7 @@ module.exports = {
         })
 
         embed.setFooter({ text: 'By Jubriscreuda', iconURL: 'https://i.ytimg.com/vi/s6V4BjURhOs/maxresdefault.jpg' })
-
+        add(userId, 100)
         await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] })
     }
 } 

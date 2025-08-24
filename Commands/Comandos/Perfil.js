@@ -5,7 +5,7 @@ const Canvas = require('@napi-rs/canvas');
 const axios = require('axios')
 const dotenv = require('dotenv');
 dotenv.config()
-const { URL_USUARIO } = process.env
+const { URL_USUARIO, API_MONTEIR_KEY } = process.env
 
 function formatXp(xp) {
     const unidades = ['', 'K', 'M', 'B', 'T']
@@ -59,7 +59,11 @@ module.exports = {
 
             const emojis = nomeCargos.map(cargo => getEmoji(cargo)).filter(emojis => emojis?.trim()).join(' ');
 
-            const response = await axios.get(`${URL_USUARIO}/${userId}`)
+            const response = await axios.get(`${URL_USUARIO}/${userId}`,{
+                headers: {
+                    apikey: API_MONTEIR_KEY
+                }
+            })
 
             const user = response.data
 

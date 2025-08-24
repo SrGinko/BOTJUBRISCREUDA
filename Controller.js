@@ -1,7 +1,7 @@
 const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle, ContainerBuilder, TextDisplayBuilder, MessageFlags, MediaGalleryBuilder, SeparatorBuilder, SectionBuilder, ThumbnailBuilder, hyperlink } = require('discord.js')
 const dotenv = require('dotenv')
 dotenv.config()
-const { RAWG_API, URL_USUARIO } = process.env
+const { RAWG_API, URL_USUARIO, API_MONTEIR_KEY } = process.env
 const axios = require('axios')
 const { getRandonCores } = require('./Utils/cores')
 
@@ -330,6 +330,7 @@ async function addXp(userId, add) {
 
     const usuario = response.data
     const xp = usuario.xp + add
+    
     await axios.patch(`${URL_USUARIO}/${userId}`, {
         xp: xp
     }, {
