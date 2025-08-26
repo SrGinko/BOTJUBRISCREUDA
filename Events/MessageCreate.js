@@ -1,10 +1,7 @@
-const { Events, EmbedBuilder } = require('discord.js')
-const { addXp, addLVL, addMenssage } = require('../Controller')
-const axios = require('axios')
-const dotenv = require('dotenv')
+const { Events } = require('discord.js')
+const { addXp } = require('../Utils/xp')
+const { addMenssage } = require('../Utils/addMensages')
 
-dotenv.config()
-const { URL_USUARIO } = process.env
 
 module.exports = {
     name: Events.MessageCreate,
@@ -32,7 +29,6 @@ module.exports = {
 
             const mensagemTotal = await addMenssage(message.author.id, 1)
             addXp(message.author.id, 10)
-            addLVL(message.author.id)
 
             switch (mensagemTotal) {
                 case 500:

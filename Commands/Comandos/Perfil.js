@@ -1,11 +1,11 @@
 const { SlashCommandBuilder, AttachmentBuilder, MediaGalleryBuilder, ContainerBuilder, MessageFlags, ThumbnailBuilder, SectionBuilder, TextDisplayBuilder } = require("discord.js")
 const { getEmoji } = require("../../Utils/emojis");
-const { Hoje, addLVL, ranking, Banner } = require("../../Controller")
 const Canvas = require('@napi-rs/canvas');
-const axios = require('axios')
-const dotenv = require('dotenv');
-dotenv.config()
-const { URL_USUARIO, API_MONTEIR_KEY } = process.env
+const { Hoje } = require("../../Utils/date");
+const { addLVL } = require("../../Utils/xp");
+const banners = require("../../data/banners");
+const { ranking } = require("../../Controller");
+const api = require("../../Utils/axiosClient");
 
 function formatXp(xp) {
     const unidades = ['', 'K', 'M', 'B', 'T']
@@ -59,11 +59,7 @@ module.exports = {
 
             const emojis = nomeCargos.map(cargo => getEmoji(cargo)).filter(emojis => emojis?.trim()).join(' ');
 
-            const response = await axios.get(`${URL_USUARIO}/${userId}`,{
-                headers: {
-                    apikey: API_MONTEIR_KEY
-                }
-            })
+            const response = await api.get(`/usuario/${userId}`)
 
             const user = response.data
 
@@ -72,17 +68,17 @@ module.exports = {
             const IdUser = allUsers.map(i => i.id)
             const Ranking = IdUser.indexOf(userId) + 1
 
-            const banners = await Banner()
+            const banner = banners
 
             var maxXp = await addLVL(userId)
-            const agora = Hoje()
+            const agora = await Hoje()
 
             const larguraBarra = 200;
             const alturaBarra = 15;
             const canvas = Canvas.createCanvas(700, 250);
             const context = canvas.getContext('2d');
 
-            var background = await Canvas.loadImage(banners[user.wallpaper].banner)
+            var background = await Canvas.loadImage(banner[user.wallpaper].banner)
 
             const porcentagemXP = user.xp / maxXp;
 
@@ -92,7 +88,7 @@ module.exports = {
             const larguraPreenchida = larguraBarra * porcentagemXP;
 
             context.drawImage(background, 0, 0, 700, 250)
-            if (banners[user.wallpaper].banner === 'https://www.riotgames.com/darkroom/1440/056b96aab9c107bfb72c1cc818be712a:8e765b8b8b63d537b82096f248c2f169/tf-graves-pride-0.png') {
+            if (banner[user.wallpaper].banner === 'https://www.riotgames.com/darkroom/1440/056b96aab9c107bfb72c1cc818be712a:8e765b8b8b63d537b82096f248c2f169/tf-graves-pride-0.png') {
                 context.filter = 'blur(2px)'
             }
 
@@ -112,7 +108,7 @@ module.exports = {
             context.fillStyle = '#ffffff';
             context.fillText(`Nível / `, canvas.width / 1.25, canvas.height / 3.8);
             context.font = '28px "OpenSans"';
-            context.fillStyle = `${banners[user.wallpaper].cor}`;
+            context.fillStyle = `${banner[user.wallpaper].cor}`;
             context.fillText(`#${user.nivel}`, canvas.width / 1.1, canvas.height / 3.8);
 
             context.font = '20px  "OpenSans"';
@@ -132,7 +128,7 @@ module.exports = {
             context.fillStyle = '#444241';
             context.fillRect(canvas.width / 2.5, canvas.height / 1.3 - alturaBarra / 1.3, larguraBarra, alturaBarra);
 
-            context.fillStyle = `${banners[user.wallpaper].cor}`;
+            context.fillStyle = `${banner[user.wallpaper].cor}`;
             context.fillRect(canvas.width / 2.5, canvas.height / 1.3 - alturaBarra / 1.3, larguraPreenchida, alturaBarra);
 
             context.font = '28px "OpenSans"';
@@ -146,7 +142,7 @@ module.exports = {
             const attachment = new AttachmentBuilder(canvas.toBuffer('image/png'), { name: 'profile-image.png' });
 
             const conteiner = new ContainerBuilder({
-                accent_color: banners[user.wallpaper].corHEX,
+                accent_color: banner[user.wallpaper].corHEX,
                 timestamp: true,
                 components: [
                     new MediaGalleryBuilder({

@@ -1,12 +1,12 @@
 const { Events } = require('discord.js');
-const { addXp, addLVL } = require('../Controller');
+const { addXp } = require('../Utils/xp');
 
 
 module.exports = {
 	name: Events.ClientReady,
 	once: true,
 	execute(client) {
-		console.log(`Ready! Logged in as ${client.user.tag}`);
+		console.log(`${client.user.tag} pronta pra uso!`);
 
 		async function addXpToVoiceChannelUsers(guild) {
 			const voiceChannels = guild.channels.cache.filter(channel => channel.isVoiceBased());
@@ -21,12 +21,10 @@ module.exports = {
 
 						let chance = Math.random()
 
-						if (chance < 0.9) {
-							addXp(userId, 20)
-							addLVL(userId)
+						if (chance > 0.4) {
+							addXp(userId, 10)
 						} else if (chance < 0.3) {
 							addXp(userId, 60)
-							addLVL(userId)
 						}
 					}
 				});

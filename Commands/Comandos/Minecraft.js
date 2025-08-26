@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle, } = require("discord.js")
-const { addXp, addLVL } = require('../../Controller')
+const { addXp } = require("../../Utils/xp")
 
 let mine = 'https://m0ve-my.sharepoint.com/:f:/g/personal/pmonteiro_m0ve_onmicrosoft_com/EiEzw7PDsk5NiRUHRk_4Xp4BBpZkmlfLhKdJxO9HJsRPQQ?e=bsZRYK'
 
@@ -31,7 +31,6 @@ module.exports = {
             .addComponents(LinkButton);
 
         addXp(userId, 10)
-        addLVL(userId)
         await interaction.reply({ embeds: [Minecraft], components: [row], flags: 64 })
     }
 }

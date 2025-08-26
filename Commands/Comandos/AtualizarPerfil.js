@@ -1,8 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require("discord.js")
-const axios = require('axios')
-const dotenv = require('dotenv')
-dotenv.config()
-const { URL_USUARIO } = process.env
+const api = require("../../Utils/axiosClient")
+const { URL } = process.env
 
 const embed = new EmbedBuilder()
 
@@ -18,7 +16,7 @@ module.exports = {
         const { options } = interaction
         const userId = interaction.user.id
 
-        const response = await axios.get(`${URL_USUARIO}/${userId}`)
+        const response = await api.get(`${URL}/usuario/${userId}`)
         const user = response.data
 
         const descricao = options.getString('descricao') || user.Descricao || 'Sem descrição'
@@ -26,9 +24,10 @@ module.exports = {
 
         try {
 
-            await axios.patch(`${URL_USUARIO}/${userId}`, {
+            await api.patch(`${URL}/usuario/${userId}`, {
                 Descricao: descricao,
                 foto: gifImage
+                
             }).then(() => {
                 embed.setDescription('Perfil Atualizado com Sucesso')
                 embed.setColor('Green')

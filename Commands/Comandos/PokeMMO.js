@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, ButtonBuilder, ButtonStyle, ContainerBuilder, TextDisplayBuilder, MessageFlags, SectionBuilder, ThumbnailBuilder } = require('discord.js');
 const { getRandonCores } = require('../../Utils/cores');
+const { addXp } = require('../../Utils/xp');
 
 const cor = getRandonCores()
 
@@ -69,6 +70,7 @@ module.exports = {
         .setDescription('Acesso aos Links para poder Jogar PokeMMO'),
 
     async execute(interaction) {
+        addXp(interaction.user.id, 10)
         await interaction.reply({ components: [pokeConteiner], flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral] });
     }
 }

@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js")
-const { addXp, addLVL } = require('../../Controller')
+const { addXp } = require("../../Utils/xp")
+
 
 const embed = new EmbedBuilder()
 
@@ -34,8 +35,7 @@ module.exports = {
 
                     embed.setDescription(`Excluídas **${deletedMessages.size}** mensagens.`)
                     embed.setColor('Green')
-                    addXp(userId, quantidade * 5)
-                    addLVL(userId)
+                    addXp(userId, deletedMessages.size * 5)
 
                     return await interaction.reply({ embeds: [embed], flags: 64 })
                 }

@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, StringSelectMenuBuilder, ContainerBuilder, TextDisplayBuilder, ActionRowBuilder, MessageFlags, SectionBuilder, ThumbnailBuilder, hyperlink } = require("discord.js")
-const { hydraLinks } = require("../../Controller")
+const hydraLinks = require('../../data/hydraLinks')
 const { getRandonCores } = require("../../Utils/cores")
+const { addXp } = require("../../Utils/xp")
 
 hydraLinks.sort((a, b) => {
     if(a.name === 'Todos') return -1;
@@ -17,7 +18,7 @@ module.exports = {
         .setDescription('Acesso ao Link de Download da HydraLaucher'),
 
     async execute(interaction) {
-
+        const userId = interaction.user.id
         await interaction.deferReply({ flags: MessageFlags.Ephemeral })
 
         const row = new StringSelectMenuBuilder()
@@ -58,6 +59,7 @@ module.exports = {
                 .addComponents(row)
         )
 
+        addXp(userId, 10)
         await interaction.editReply({ flags: [MessageFlags.IsComponentsV2], components: [container] })
     }
 }

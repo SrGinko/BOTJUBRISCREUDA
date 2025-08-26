@@ -1,12 +1,6 @@
 const { SlashCommandBuilder, MessageFlags, EmbedBuilder } = require('discord.js')
-const axios = require('axios')
-const dotenv = require('dotenv')
-dotenv.config()
-
-const { URL } = process.env
-
-const API_MONTEIR_KEY = process.env.API_MONTEIR_KEY
-
+const api = require('../../Utils/axiosClient')
+const { addXp } = require('../../Utils/xp')
 
 const embed = new EmbedBuilder()
 
@@ -22,14 +16,9 @@ module.exports = {
 
         const heroiName = options.getString('nome')
 
-        await axios.post(`${URL}/heroes`, {
+        await api.post(`/heroes`, {
             nome: heroiName,
             userID: userId
-
-        }, {
-            headers: {
-                apikey: API_MONTEIR_KEY
-            }
 
         }).then(() => {
             embed.setTitle("Heroi Criado com Sucesso! ✅")
@@ -45,7 +34,7 @@ module.exports = {
         })
 
         embed.setFooter({ text: 'By Jubriscreuda', iconURL: 'https://i.ytimg.com/vi/s6V4BjURhOs/maxresdefault.jpg' })
-        add(userId, 100)
+        addXp(userId, 100)
         await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] })
     }
 } 

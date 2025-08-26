@@ -1,6 +1,7 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, ContainerBuilder, TextDisplayBuilder, MessageFlags } = require('discord.js');
-const { Banner, controler, addXp } = require('../../Controller');
+const { SlashCommandBuilder, ActionRowBuilder, StringSelectMenuBuilder, ContainerBuilder, TextDisplayBuilder, MessageFlags } = require('discord.js');
 const { getRandonCores } = require('../../Utils/cores');
+const banners = require('../../data/banners');
+const { addXp } = require('../../Utils/xp');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -9,13 +10,13 @@ module.exports = {
 
     async execute(interaction) {
         try {
-            const banners = await Banner()
+            const banner = banners
 
             const select = new StringSelectMenuBuilder()
                 .setCustomId('alterbanner')
                 .setPlaceholder('Selecione')
                 .addOptions(
-                    banners.map(item => ({
+                    banner.map(item => ({
                         label: item.name,
                         value: item.id
                     }))
@@ -36,6 +37,7 @@ module.exports = {
                     Button
                 ]
             })
+
             addXp(interaction.user.id, 10)
             await interaction.reply({ flags: [MessageFlags.IsComponentsV2], components: [conteiner] })
         } catch (error) {

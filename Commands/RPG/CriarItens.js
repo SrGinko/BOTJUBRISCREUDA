@@ -1,9 +1,6 @@
 const { SlashCommandBuilder, MessageFlags, EmbedBuilder } = require('discord.js')
-const axios = require('axios')
-const dotenv = require('dotenv')
-dotenv.config()
-
-const { URL, API_MONTEIR_KEY } = process.env
+const api = require('../../Utils/axiosClient')
+const { addXp } = require('../../Utils/xp')
 
 const embed = new EmbedBuilder()
 
@@ -50,7 +47,7 @@ module.exports = {
             const imagem = options.getString('imagem')
 
 
-            await axios.post(`${URL}/itens`, {
+            await api.post(`/itens`, {
                 nome: nomeItem,
                 descricao: descicaoItem,
                 raridade,
@@ -60,11 +57,6 @@ module.exports = {
                 ataque,
                 defesa,
                 heal
-
-            }, {
-                headers: {
-                    apikey: API_MONTEIR_KEY
-                }
             })
 
             embed.setTitle("Item criando com sucesso! ✅")
@@ -81,7 +73,7 @@ module.exports = {
         } finally {
 
             embed.setFooter({ text: 'By Jubriscreuda', iconURL: 'https://i.ytimg.com/vi/s6V4BjURhOs/maxresdefault.jpg' })
-            add(userId, 20)
+            addXp(userId, 20)
             await interaction.editReply({ embeds: [embed], flags: [MessageFlags.Ephemeral] })
         }
 
