@@ -1,7 +1,5 @@
 const { SlashCommandBuilder, MessageFlags, ContainerBuilder, StringSelectMenuBuilder, ActionRowBuilder, TextDisplayBuilder, ThumbnailBuilder, SectionBuilder } = require('discord.js')
-const { api, apiTeste } = require('../../Utils/axiosClient')
-const { addXp } = require('../../Utils/xp')
-const { obterItensInventario, obterItens, obterUnicoItem } = require('../../Utils/itensInventario')
+const { obterItensInventario } = require('../../Utils/itensInventario')
 const { getRandonCores } = require('../../Utils/cores')
 
 

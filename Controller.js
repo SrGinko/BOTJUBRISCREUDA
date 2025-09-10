@@ -1,12 +1,12 @@
 const { EmbedBuilder, ContainerBuilder, TextDisplayBuilder, MessageFlags, MediaGalleryBuilder, SectionBuilder, ThumbnailBuilder, hyperlink } = require('discord.js')
 const { RAWG_API } = process.env
-const axios = require('axios')
-const { api, apiTeste } = require('./Utils/axiosClient')
+const { api } = require('./Utils/axiosClient')
 const { formatDate } = require('./Utils/date')
 const { addXp } = require('./Utils/xp')
-const hydraLinks = require('./data/hydraLinks')
 const { getRandonCores } = require('./Utils/cores')
 const { obterUnicoItem } = require('./Utils/itensInventario')
+const axios = require('axios')
+const hydraLinks = require('./data/hydraLinks')
 
 const embed = new EmbedBuilder()
 
@@ -222,7 +222,7 @@ async function controler(interaction) {
                     switch (itens.tipo) {
                         case 'ARMA':
                             console.log(itens.id)
-                            apiTeste.patch(`heroes/${userId}`, {
+                            api.patch(`heroes/${userId}`, {
                                 armaID: itens.id
                             })
 
@@ -235,7 +235,7 @@ async function controler(interaction) {
                                 ]
                             })
 
-                            apiTeste.patch(`heroes/${userId}/inventario/remover`, {
+                            api.patch(`heroes/${userId}/inventario/remover`, {
                                 itemID: itens.id,
                                 quantidade: 1
                             })
@@ -243,13 +243,13 @@ async function controler(interaction) {
                             interaction.update({ components: [container] })
                             break
                         case 'ARMADURA':
-                            apiTeste.patch(`heroes/${userId}`, {
+                            api.patch(`heroes/${userId}`, {
                                 armaduraID: itens.id
                             })
                             interaction.update({ content: 'Armadura equipada com sucesso.' })
                             break
                         case 'CALCA':
-                            apiTeste.patch(`heroes/${userId}`, {
+                            api.patch(`heroes/${userId}`, {
                                 calcaID: itens.id
                             })
                             interaction.update({ content: 'Calca equipada com sucesso.' })

@@ -1,4 +1,4 @@
-const { api, apiTeste } = require("./axiosClient");
+const { api } = require("./axiosClient");
 
 /**
  * 
@@ -28,7 +28,7 @@ async function obterItens() {
  * @returns Objeto com os dados do Item
  */
 async function obterUnicoItem(itemID) {
-    let item = await apiTeste.get(`/itens/${itemID}`)
+    let item = await api.get(`/itens/${itemID}`)
     return item.data
 }
 
@@ -40,7 +40,7 @@ async function obterUnicoItem(itemID) {
  */
 async function addItem(heroiID, itemID, quantidade) {
 
-    await apiTeste.patch(`heroes/${heroiID}/inventario/adicionar`, {
+    await api.patch(`heroes/${heroiID}/inventario/adicionar`, {
         itemID: itemID,
         quantidade: quantidade
     })
@@ -55,7 +55,7 @@ async function addItem(heroiID, itemID, quantidade) {
  */
 async function removeItem(heroiID, itemID, quantidade) {
 
-    await apiTeste.patch(`heroes/${heroiID}/inventario/remover`, {
+    await api.patch(`heroes/${heroiID}/inventario/remover`, {
         itemID: itemID,
         quantidade: quantidade
     })

@@ -15,6 +15,8 @@ module.exports = {
         const userId = interaction.user.id
         const member = interaction.member
 
+        interaction.deferReply()
+
         const RPG = interaction.guild.roles.cache.find(r => r.name === 'RPG')
 
         const heroiName = options.getString('nome')
@@ -40,6 +42,6 @@ module.exports = {
 
         embed.setFooter({ text: 'By Jubriscreuda', iconURL: 'https://i.ytimg.com/vi/s6V4BjURhOs/maxresdefault.jpg' })
         addXp(userId, 100)
-        await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] })
+        await interaction.editReply({ embeds: [embed], flags: [MessageFlags.Ephemeral] })
     }
 } 
