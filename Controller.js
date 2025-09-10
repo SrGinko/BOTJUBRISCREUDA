@@ -1,11 +1,12 @@
 const { EmbedBuilder, ContainerBuilder, TextDisplayBuilder, MessageFlags, MediaGalleryBuilder, SectionBuilder, ThumbnailBuilder, hyperlink } = require('discord.js')
 const { RAWG_API } = process.env
 const axios = require('axios')
-const api = require('./Utils/axiosClient')
+const { api, apiTeste } = require('./Utils/axiosClient')
 const { formatDate } = require('./Utils/date')
 const { addXp } = require('./Utils/xp')
 const hydraLinks = require('./data/hydraLinks')
 const { getRandonCores } = require('./Utils/cores')
+const { obterUnicoItem } = require('./Utils/itensInventario')
 
 const embed = new EmbedBuilder()
 
@@ -129,7 +130,7 @@ async function controler(interaction) {
                 const alterarBanner = interaction.values[0]
 
                 try {
-                    await api.patch(`/${userId}`, {
+                    await api.patch(`/usuario/${userId}`, {
                         wallpaper: +alterarBanner
                     })
 
@@ -212,6 +213,53 @@ async function controler(interaction) {
                     await interaction.update({ content: 'Nenhum jogo encontrado.', flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral] })
                 }
             }
+
+            case 'equipar-item': {
+                const itemId = interaction.values
+                itemId.map(async id => {
+                    let itens = await obterUnicoItem(+id)
+
+                    switch (itens.tipo) {
+                        case 'ARMA':
+                            console.log(itens.id)
+                            apiTeste.patch(`heroes/${userId}`, {
+                                armaID: itens.id
+                            })
+
+                            const container = new ContainerBuilder({
+                                accent_color: 0x00ff2a,
+                                components:[
+                                    new TextDisplayBuilder({
+                                        content: 'Arma equipada com sucesso.'
+                                    })
+                                ]
+                            })
+
+                            apiTeste.patch(`heroes/${userId}/inventario/remover`, {
+                                itemID: itens.id,
+                                quantidade: 1
+                            })
+                            
+                            interaction.update({ components: [container] })
+                            break
+                        case 'ARMADURA':
+                            apiTeste.patch(`heroes/${userId}`, {
+                                armaduraID: itens.id
+                            })
+                            interaction.update({ content: 'Armadura equipada com sucesso.' })
+                            break
+                        case 'CALCA':
+                            apiTeste.patch(`heroes/${userId}`, {
+                                calcaID: itens.id
+                            })
+                            interaction.update({ content: 'Calca equipada com sucesso.' })
+                            break
+                        default:
+                            interaction.update({ content: 'Item não equipável.' })
+                            break
+                    }
+                })
+            }
         }
     } else return
 }
@@ -260,4 +308,8 @@ async function ranking() {
     return user
 }
 
-module.exports = { controler, ranking, Buscarjogo }
+function chance(percent) {
+    return Math.random() < percent / 100;
+}
+
+module.exports = { controler, ranking, Buscarjogo, chance }
