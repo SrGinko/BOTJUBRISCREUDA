@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require("discord.js")
-const api = require("../../Utils/axiosClient")
+const { api } = require("../../Utils/axiosClient")
 const { URL } = process.env
 
 const embed = new EmbedBuilder()
@@ -16,7 +16,7 @@ module.exports = {
         const { options } = interaction
         const userId = interaction.user.id
 
-        const response = await api.get(`${URL}/usuario/${userId}`)
+        const response = await api.get(`/usuario/${userId}`)
         const user = response.data
 
         const descricao = options.getString('descricao') || user.Descricao || 'Sem descrição'
@@ -24,17 +24,17 @@ module.exports = {
 
         try {
 
-            await api.patch(`${URL}/usuario/${userId}`, {
+            await api.patch(`/usuario/${userId}`, {
                 Descricao: descricao,
                 foto: gifImage
-                
+
             }).then(() => {
                 embed.setDescription('Perfil Atualizado com Sucesso')
                 embed.setColor('Green')
                 embed.setTimestamp()
             })
 
-            await interaction.reply({embeds: [embed], flags: [MessageFlags.Ephemeral]})
+            await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] })
 
         } catch (error) {
             console.log(error)

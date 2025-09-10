@@ -1,11 +1,10 @@
-const api = require('./axiosClient')
+const { api } = require('./axiosClient')
 
 /**
  * 
  * @param {Inteiro} userId - id do usuário
  * @param {Inteiro} add - Quantidade de xp que será adicionada
  */
-
 async function addXp(userId, add) {
 
     const date = new Date()
@@ -28,7 +27,6 @@ async function addXp(userId, add) {
 
 }
 
-
 /**
  * 
  * @param {Inteiro} level - Nivel atual do usuario
@@ -41,7 +39,6 @@ function calculateXpForNextLevel(level) {
 /**
  * 
  * @param {Inteiro} userId - id usuário
- * 
  */
 async function addLVL(userId) {
     const response = await api.get(`/usuario/${userId}`)

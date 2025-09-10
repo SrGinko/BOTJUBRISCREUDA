@@ -1,7 +1,6 @@
 const { Events, AttachmentBuilder } = require('discord.js')
-const { URL } = process.env
 const Canvas = require('@napi-rs/canvas');
-const api = require('../Utils/axiosClient');
+const { api } = require('../Utils/axiosClient');
 const banners = require('../data/banners');
 const { Hoje } = require('../Utils/date');
 
@@ -62,7 +61,7 @@ module.exports = {
 
             channel.send({ content: `Bem Vindo(a) ${member.user}`, files: [attachment] })
             try {
-                api.post(`${URL}/usuario`, {
+                api.post(`/usuario`, {
                     id: userId,
                     username: username,
                     xp: 0,

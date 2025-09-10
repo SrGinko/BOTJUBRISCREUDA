@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, MessageFlags, EmbedBuilder } = require('discord.js')
-const api = require('../../Utils/axiosClient')
+const { api } = require('../../Utils/axiosClient')
 const { addXp } = require('../../Utils/xp')
 
 const embed = new EmbedBuilder()
@@ -33,49 +33,51 @@ module.exports = {
         const { options } = interaction
         const userId = interaction.user.id
 
-        try {
-            await interaction.deferReply({ flags: [MessageFlags.Ephemeral] })
+        if (userId === '770818264691114016') {
 
-            const nomeItem = options.getString('nomeitem')
-            const descicaoItem = options.getString('descriçãoitem')
-            const raridade = options.getString('raridade')
-            const tipo = options.getString('tipo')
-            const valor = options.getInteger('valor')
-            const ataque = options.getInteger('ataque')
-            const defesa = options.getInteger('defesa')
-            const heal = options.getInteger('heal')
-            const imagem = options.getString('imagem')
+            try {
+                await interaction.deferReply({ flags: [MessageFlags.Ephemeral] })
+
+                const nomeItem = options.getString('nomeitem')
+                const descicaoItem = options.getString('descriçãoitem')
+                const raridade = options.getString('raridade')
+                const tipo = options.getString('tipo')
+                const valor = options.getInteger('valor')
+                const ataque = options.getInteger('ataque')
+                const defesa = options.getInteger('defesa')
+                const heal = options.getInteger('heal')
+                const imagem = options.getString('imagem')
 
 
-            await api.post(`/itens`, {
-                nome: nomeItem,
-                descricao: descicaoItem,
-                raridade,
-                tipo,
-                preco: valor,
-                imagem,
-                ataque,
-                defesa,
-                heal
-            })
+                await api.post(`/itens`, {
+                    nome: nomeItem,
+                    descricao: descicaoItem,
+                    raridade,
+                    tipo,
+                    preco: valor,
+                    imagem,
+                    ataque,
+                    defesa,
+                    heal
+                })
 
-            embed.setTitle("Item criando com sucesso! ✅")
-            embed.setColor('Green')
-            embed.setTimestamp()
+                embed.setTitle("Item criando com sucesso! ✅")
+                embed.setColor('Green')
+                embed.setTimestamp()
 
-        } catch (error) {
+            } catch (error) {
 
-            embed.setTitle(`Erro ao Criar o item! ${error.response.data.message} 🚫`)
-            embed.setColor('Red')
-            embed.setTimestamp()
+                embed.setTitle(`Erro ao Criar o item! ${error.response.data.message} 🚫`)
+                embed.setColor('Red')
+                embed.setTimestamp()
 
-            console.log(error.response.data.message)
-        } finally {
+                console.log(error.response.data.message)
+            } finally {
 
-            embed.setFooter({ text: 'By Jubriscreuda', iconURL: 'https://i.ytimg.com/vi/s6V4BjURhOs/maxresdefault.jpg' })
-            addXp(userId, 20)
-            await interaction.editReply({ embeds: [embed], flags: [MessageFlags.Ephemeral] })
+                embed.setFooter({ text: 'By Jubriscreuda', iconURL: 'https://i.ytimg.com/vi/s6V4BjURhOs/maxresdefault.jpg' })
+                addXp(userId, 20)
+                await interaction.editReply({ embeds: [embed], flags: [MessageFlags.Ephemeral] })
+            }
         }
-
     }
 } 

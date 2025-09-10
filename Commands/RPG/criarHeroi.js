@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, MessageFlags, EmbedBuilder } = require('discord.js')
-const api = require('../../Utils/axiosClient')
+const { api } = require('../../Utils/axiosClient')
 const { addXp } = require('../../Utils/xp')
 
 const embed = new EmbedBuilder()
@@ -13,6 +13,9 @@ module.exports = {
     async execute(interaction) {
         const { options } = interaction
         const userId = interaction.user.id
+        const member = interaction.member
+
+        const RPG = interaction.guild.roles.cache.find(r => r.name === 'RPG')
 
         const heroiName = options.getString('nome')
 
@@ -24,6 +27,8 @@ module.exports = {
             embed.setTitle("Heroi Criado com Sucesso! ✅")
             embed.setColor('Green')
             embed.setTimestamp()
+            
+            member.roles.add(RPG)
 
         }).catch((error) => {
             embed.setTitle(`Erro ao criar herói! ${error.response.data.message} 🚫`)

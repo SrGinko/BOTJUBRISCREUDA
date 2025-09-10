@@ -5,7 +5,7 @@ const { Hoje } = require("../../Utils/date");
 const { addLVL } = require("../../Utils/xp");
 const banners = require("../../data/banners");
 const { ranking } = require("../../Controller");
-const api = require("../../Utils/axiosClient");
+const { api } = require("../../Utils/axiosClient");
 
 function formatXp(xp) {
     const unidades = ['', 'K', 'M', 'B', 'T']
@@ -83,7 +83,7 @@ module.exports = {
             const porcentagemXP = user.xp / maxXp;
 
             maxXp = formatXp(maxXp)
-           let userXp = formatUserXp(user.xp)
+            let userXp = formatUserXp(user.xp)
 
             const larguraPreenchida = larguraBarra * porcentagemXP;
 

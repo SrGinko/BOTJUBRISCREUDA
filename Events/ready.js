@@ -1,5 +1,6 @@
 const { Events } = require('discord.js');
 const { addXp } = require('../Utils/xp');
+const { chance } = require('../Controller');
 
 
 module.exports = {
@@ -19,12 +20,10 @@ module.exports = {
 
 						const userId = member.user.id
 
-						let chance = Math.random()
-
-						if (chance > 0.4) {
-							addXp(userId, 10)
-						} else if (chance < 0.3) {
+						if (chance(30)) {
 							addXp(userId, 60)
+						} else {
+							addXp(userId, 20)
 						}
 					}
 				});

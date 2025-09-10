@@ -1,7 +1,6 @@
 
 /**
  * 
- * 
  * @returns dia, mes, ano, horas, minutos
  */
 function Hoje() {
@@ -17,7 +16,11 @@ function Hoje() {
     return { dia, mes, ano, horas, minutos }
 }
 
-
+/**
+ * 
+ * @param {Date} date 
+ * @returns Retorna a data formatada
+ */
 function formatDate(date) {
     const parter = date.split('-')
     return dataFormatada = `${parter[2]}/${parter[1]}/${parter[0]}`

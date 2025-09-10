@@ -15,8 +15,8 @@ module.exports = {
 		}
 		try {
 			await command.execute(interaction)
-		} catch {
-			await interaction.reply("Houve um erro ao executar o comando.")
+		} catch(error) {
+			console.log(error)
 		}
 	}
 }

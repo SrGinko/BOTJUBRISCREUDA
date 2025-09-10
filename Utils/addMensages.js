@@ -1,4 +1,4 @@
-const api = require('./axiosClient')
+const { api } = require('./axiosClient')
 
 /**
  * 

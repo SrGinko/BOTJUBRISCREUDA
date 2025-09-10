@@ -1,5 +1,5 @@
 const hydraLinks = [
-    { id: 'todos', name: 'Todos', link: '' },
+    { id: 'todos', name: 'Todos', link: ''},
     { id: 'rutracker', name: 'Rutracker', link: 'https://raw.githubusercontent.com/KekitU/rutracker-hydra-links/main/all_categories.json' },
     { id: 'onlinefix', name: 'Onlinefix', link: 'https://hydralinks.cloud/sources/onlinefix.json' },
     { id: 'gog', name: 'GOG', link: 'https://hydralinks.cloud/sources/gog.json' },
@@ -12,6 +12,7 @@ const hydraLinks = [
     { id: 'repack-games', name: 'Repack-Games', link: 'https://hydralinks.cloud/sources/repack-games.json' },
     { id: 'byxatab', name: 'ByXatab', link: 'https://hydralinks.pages.dev/sources/xatab.json' },
     { id: 'empress', name: 'Empress', link: 'https://hydralinks.pages.dev/sources/empress.json' },
+    { id: 'david-kazumi', name: 'David Kazumi', link: 'https://davidkazumi-github-io.pages.dev/fontekazumi.json' },
 ]
 
 module.exports = hydraLinks
