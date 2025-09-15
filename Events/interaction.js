@@ -22,9 +22,9 @@ module.exports = {
 
 			if (prefix === 'tv') {
 				switch (action) {
-					case 'canais':
+					case 'addcanal':
 
-						const nomeCanal = interaction.fields.getTextInputValue('canalnome')
+						const nomeCanal = interaction.fields.getTextInputValue('canalNome')
 						const canalUrl = interaction.fields.getTextInputValue('canalUrl')
 						const capaCanal = interaction.fields.getTextInputValue('capaUrl')
 
@@ -47,6 +47,52 @@ module.exports = {
 
 					default:
 						break;
+				}
+			} else if (prefix === 'agendar') {
+				switch (action) {
+					case 'lembrete':
+
+						const { google } = require('googleapis');
+						
+						const detalhesLembrete = interaction.fields.getTextInputValue('detalhesLembrete')
+						const dataHoraLembrete = interaction.fields.getTextInputValue('dataHoraLembrete')
+						const fimDataHoraLembrete = interaction.fields.getTextInputValue('fimDataHoraLembrete')
+
+						const jwt = new google.auth.JWT(
+							'pedeohenriquecardoso@gmail.com',
+							null,
+							'06072004ph@',
+							['https://www.googleapis.com/auth/calendar']
+						);
+
+						const calendar = google.calendar({ version: 'v3', auth: jwt })
+
+						const inicioIso = new Date(dataHoraLembrete.replace(" ", "T") + ":00-03:00");
+						const fimIso = new Date(fimDataHoraLembrete.replace(" ", "T") + ":00-03:00");
+
+						const evento = {
+							summary: detalhesLembrete,
+							start: {
+								dateTime: inicioIso,
+								timeZone: 'America/Sao_Paulo',
+							},
+							end: {
+								dateTime: fimIso,
+								timeZone: 'America/Sao_Paulo',
+							},
+						};
+
+						try {
+							const res = await calendar.events.insert({
+								calendarId: 'primary', 
+								resource: evento,
+							});
+
+							await interaction.editReply(`Evento criado!\nLink: ${res.data.htmlLink}`);
+						} catch (err) {
+							console.error(err);
+							await interaction.editReply("Deu ruim ao criar o evento.");
+						} 
 				}
 			}
 		}
