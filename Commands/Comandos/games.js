@@ -1,8 +1,6 @@
 const { SlashCommandBuilder, StringSelectMenuBuilder, ContainerBuilder, TextDisplayBuilder, ActionRowBuilder, MessageFlags, Message } = require("discord.js")
 const { Buscarjogo, BuscarjogoNome } = require("../../Controller")
 const { addXp } = require("../../Utils/xp")
-const { icone } = require("../../Utils/emojis")
-const emojisData = require("../../data/emojis")
 
 module.exports = {
     data: new SlashCommandBuilder()

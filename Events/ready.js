@@ -1,13 +1,18 @@
-const { Events } = require('discord.js');
+const { Events, Client, ActivityType } = require('discord.js');
 const { addXp } = require('../Utils/xp');
 const { chance } = require('../Controller');
-
 
 module.exports = {
 	name: Events.ClientReady,
 	once: true,
 	execute(client) {
 		console.log(`${client.user.tag} pronta pra uso!`);
+
+		client.user.setActivity({
+			name: 'Minecraft',
+			type: ActivityType.Playing
+		})
+		client.user.setStatus('online')
 
 		async function addXpToVoiceChannelUsers(guild) {
 			const voiceChannels = guild.channels.cache.filter(channel => channel.isVoiceBased());
