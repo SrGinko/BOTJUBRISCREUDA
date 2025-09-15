@@ -1,15 +1,15 @@
-# 🤖 Discord Bot – Administração & Diversão
+<h1>🤖 <b>Discord Bot – Administração & Diversão</b></h1>
 
 Bot em **JavaScript** para deixar seu servidor mais organizado e divertido.  
 Ele modera, engaja a galera e ainda busca infos de jogos em tempo real via API.
 
----
+<hr>
 
-## ✨ Principais Recursos
-- **Administração do servidor**  
+<h2>✨ Principais Recursos<h2>
+<li><b>Administração do servidor</b></li>
   Comandos para canais, cargos, banimentos e configs avançadas.
 
-- **Sistema de níveis**  
+<li><b>Sistema de níveis**</li></b>
   XP automático: ganhe experiência ao interagir e acompanhe sua evolução.
 
 - **Busca de jogos**  
@@ -18,7 +18,7 @@ Ele modera, engaja a galera e ainda busca infos de jogos em tempo real via API.
 - **Banco de dados**  
   Armazena níveis, configs e usuários em **SQLite** para alta performance.
 
----
+<hr>
 
 ## 🛠️ Tecnologias
 - [Node.js](https://nodejs.org) – Ambiente de execução JavaScript  
