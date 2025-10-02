@@ -29,22 +29,20 @@ client.commands = new Collection()
 
 const player = new Player(client);
 
-const foldersPath = path.join(__dirname, 'Commands')
-const commandfolders = fs.readdirSync(foldersPath)
+const foldersPath = path.join(__dirname, 'Commands');
+const commandFolders = fs.readdirSync(foldersPath);
 
-for (const folder of commandfolders) {
+for (const folder of commandFolders) {
 	const commandsPath = path.join(foldersPath, folder);
 	const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
 	for (const file of commandFiles) {
-		const filePath = path.join(commandsPath, file);
-		const command = require(filePath);
+		const command = require(path.join(commandsPath, file));
 		if ('data' in command && 'execute' in command) {
 			client.commands.set(command.data.name, command);
-		} else {
-			console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
 		}
 	}
 }
+
 const eventsPath = path.join(__dirname, 'Events');
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
 
@@ -64,7 +62,7 @@ client.on('ready', async () => {
 		type: ActivityType.Playing
 	})
 	client.user.setStatus('online')
-	
+
 	await player.extractors.loadMulti(DefaultExtractors)
 })
 

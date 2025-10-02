@@ -8,7 +8,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('criarheroi')
         .setDescription('Crie seu herói')
-        .addStringOption(option => option.setName('nome').setDescription('Nome do seu herói').setAutocomplete(true).setRequired(true)),
+        .addStringOption(option => option.setName('nome').setDescription('Nome do seu herói').setRequired(true)),
 
     async execute(interaction) {
         const { options } = interaction
@@ -21,7 +21,7 @@ module.exports = {
 
         const heroiName = options.getString('nome')
 
-        await api.post(`/heroes`, {
+        await api.post(`/heroi`, {
             nome: heroiName,
             userID: userId
 
