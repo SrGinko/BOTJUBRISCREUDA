@@ -1,3 +1,4 @@
+
 const Cores = [
     {
         nome: 'Azul',
@@ -69,6 +70,26 @@ const Cores = [
         corHEX: 0x03fc73,
         corHEX2: '#03fc73',
     },
+    {
+        nome: 'Warning',
+        corHEX: 0xffcc00,
+        corHEX2: '#ffcc00',
+    },
+    {
+        name: 'Danger',
+        corHEX: 0xff3300,
+        corHEX2: '#ff3300',
+    },
+    {
+        name: 'Sucess',
+        corHEX: 0x33ff33,
+        corHEX2: '#33ff33',
+    },
+    {
+        name: 'Info',
+        corHEX: 0x3399ff,
+        corHEX2: '#3399ff',
+    }
 
 ]
 

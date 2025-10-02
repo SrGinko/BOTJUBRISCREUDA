@@ -1,7 +1,9 @@
 const { SlashCommandBuilder, StringSelectMenuBuilder, ContainerBuilder, TextDisplayBuilder, ActionRowBuilder, MessageFlags, SectionBuilder, ThumbnailBuilder, hyperlink } = require("discord.js")
 const hydraLinks = require('../../data/hydraLinks')
 const { getRandonCores } = require("../../Utils/cores")
-const { addXp } = require("../../Utils/xp")
+const { addXp } = require("../../Utils/xp");
+const { icone } = require("../../Utils/emojis");
+const emojisData = require("../../data/emojis");
 
 hydraLinks.sort((a, b) => {
     if(a.name === 'Todos') return -1;
@@ -41,7 +43,7 @@ module.exports = {
             new SectionBuilder()
                 .addTextDisplayComponents(
                     new TextDisplayBuilder({
-                        content: `# HydraLauncher
+                        content: `# ${await icone(interaction.guild, emojisData.inteface.download, 'download')} HydraLauncher
 - Link de Download da HydraLauncher ${hyperlink('Clique aqui', 'https://github.com/hydralauncher/hydra/releases/')}
 - Tutorial de como Instalar ${hyperlink('Clique aqui', 'https://youtu.be/Yo9fka6A6RE?si=zSjO1txthuQsFcjU')}
 `
