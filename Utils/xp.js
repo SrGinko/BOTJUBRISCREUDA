@@ -5,6 +5,26 @@ const { api } = require('./axiosClient')
  * @param {Inteiro} userId - id do usuário
  * @param {Inteiro} add - Quantidade de xp que será adicionada
  */
+async function addXpHeroi(userId, add) {
+
+    const response = await api.get(`/heroi/${userId}`)
+
+    const heroi = response.data
+    const xp = heroi.xp + add
+
+    await api.patch(`/heroi/${userId}`, {
+        xp: xp
+    })
+
+    await addLVL(userId)
+
+}
+
+/**
+ * 
+ * @param {Inteiro} userId - id do usuário
+ * @param {Inteiro} add - Quantidade de xp que será adicionada
+ */
 async function addXp(userId, add) {
 
     const date = new Date()
@@ -62,4 +82,39 @@ async function addLVL(userId) {
     return Math.round(xpForNextLevel)
 }
 
-module.exports = { addLVL, addXp }
+
+/**
+ * 
+ * @param {Inteiro} userId - id usuário
+ */
+async function addLVLHeroi(userId) {
+    const response = await api.get(`/heroi/${userId}`)
+    const heroi = response.data
+
+    const nivel = heroi.nivel
+    const xp = heroi.xp
+    const moeda = heroi.moeda
+    const hp = heroi.hp
+    const ataque = heroi.attack
+    const defesa = heroi.defense
+
+    const xpForNextLevel = await calculateXpForNextLevel(nivel);
+
+    if (xp >= xpForNextLevel) {
+        let newXp = xp - xpForNextLevel
+        let newLvl = nivel + 1
+
+        await api.patch(`/heroi/${userId}`, {
+            xp: newXp,
+            level: newLvl,
+            hp: hp + 10,
+            attack: ataque + 10,
+            defense: defesa + 5,
+            
+        })
+    }
+
+    return Math.round(xpForNextLevel)
+}
+
+module.exports = { addLVL, addXp, calculateXpForNextLevel, addLVLHeroi, addXpHeroi}
