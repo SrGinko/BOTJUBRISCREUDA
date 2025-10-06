@@ -1,7 +1,5 @@
 const { SlashCommandBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ActionRowBuilder } = require("discord.js")
 
-
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('server')

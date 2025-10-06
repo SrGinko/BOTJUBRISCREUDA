@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js')
 const { useQueue } = require('discord-player')
-const { addXp } = require('../../Controller')
+const { addXp } = require('../../Utils/xp')
 
 const embed = new EmbedBuilder()
 

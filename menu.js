@@ -23,11 +23,11 @@ function exibirMenu() {
                 name: 'menu',
                 message: 'Selecione uma opção:',
                 choices: [
-                    { name: 'Registrar Comando', value: 'resgistrar' },
-                    { name: 'Iniciar o bot', value: 'iniciar' },
-                    { name: 'Instalar Dependências', value: 'instalar' },
-                    { name: 'Instalar Dependências Especificas', value: 'instalação-especifica' },
-                    { name: 'Sair', value: 'sair' }
+                    { name: '📦 - Registrar Comando', value: 'resgistrar' },
+                    { name: '🤖 - Iniciar o bot', value: 'iniciar' },
+                    { name: '📦 - Instalar Dependências', value: 'instalar' },
+                    { name: '📦 - Instalar Dependências Especificas', value: 'instalação-especifica' },
+                    { name: '🚪 - Sair', value: 'sair' }
                 ]
             }
         ]).then((resposta) => {
@@ -67,7 +67,7 @@ async function registrarComando() {
             return
         }
         console.log('')
-        console.log(success(`Comando registrado com sucesso!`))
+        console.log(success(`✅ - Comando registrado com sucesso!`))
         console.log('')
         await delay(2000)
         exibirMenu()
@@ -101,7 +101,7 @@ function instalarDependencias() {
             return
         }
         console.log('')
-        console.log(success(`Dependências instaladas com sucesso!`))
+        console.log(success(`✅ - Dependências instaladas com sucesso!`))
         console.log('')
         exibirMenu()
     })
@@ -133,7 +133,7 @@ async function instalarDependenciasEspecificas() {
                 setTimeout(() => {
                     console.clear()
                     console.log('')
-                    console.log(success(`Dependências instaladas com sucesso!`))
+                    console.log(success(`✅ - Dependências instaladas com sucesso!`))
                     console.log('')
                 }, 1000)
                 exibirMenu()
@@ -143,10 +143,10 @@ async function instalarDependenciasEspecificas() {
 
 process.on('SIGINT', async () => {
     console.clear()
-    console.log(info('Saindo...'))
+    console.log(info('🚪- Saindo...'))
     await delay(1000)
     console.clear()
-    console.log(info('Retornando ao menu principal...'))
+    console.log(info('🚪- Retornando ao menu principal...'))
     setTimeout(() => {
         exibirMenu()
     }, 1000)

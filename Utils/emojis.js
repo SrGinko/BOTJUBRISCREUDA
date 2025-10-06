@@ -1,49 +1,30 @@
-function getEmoji(name) {
-    const emojis = [
-        {
-            name: 'Burguês',
-            emoji: '<a:burgues:1397288292776415342>'
-        },
-        {
-            name: 'Lixeiro',
-            emoji: '<a:lixeiro:1396728699537199256>',
-        },
-        {
-            name: 'Minecraft',
-            emoji: '<:minecraft:1398106820358176810>'
-        },
-        {
-            name: 'Albion',
-            emoji: '<:albion:1271691887606239274>'
-        },
-        {
-            name:'Pokemon',
-            emoji: '<:pokemon:1398117301508636784>'
-        },
-        {
-            name: 'Falador Bronze',
-            emoji: '<:falabronze:1366816844455088188>'
-        },
-        {
-            name: 'Falador Prata',
-            emoji: '<:falaprata:1366816660438253578>'
-        },
-        {
-            name: 'Falador Ouro',
-            emoji: '<:falaouro:1366816759990059130>'
-        },
-        {
-            name: 'Falador Diamante',
-            emoji: '<:faladiamante:1366816901807997020>'
-        },
-        {
-            name:'Falador Platina',
-            emoji: '<:falaplatina:1366816959957827707>'
-        },
-    ]
+const axios = require('axios')
 
-    return emojis.find(emoji => emoji.name === name)?.emoji || '';
+/**
+ * Cria um emoji customizado temporário a partir de uma URL
+ * @param {Guild} guild - Servidor onde o emoji será criado
+ * @param {string} url - URL da imagem (png/jpg/gif até 256kb)
+ * @param {string} name - Nome do emoji
+ * @param {number} lifetime - Tempo de vida em ms (depois será deletado)
+ * @returns {Promise<GuildEmoji>}
+ */
+async function icone(guild, url, name, lifetime = 60000) {
+    const response = await axios.get(url, { responseType: 'arraybuffer' })
 
+    const emoji = await guild.emojis.create({
+        attachment: Buffer.from(response.data, 'utf-8'),
+        name: name
+    })
+
+    setTimeout( async () => {
+        try {
+            await emoji.delete('Emoji temporário expirado')
+        } catch (error) {
+            console.log(error)
+        }
+    }, lifetime)
+
+    return emoji
 }
 
-module.exports = { getEmoji }
+module.exports = { icone }

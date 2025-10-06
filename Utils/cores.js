@@ -1,3 +1,4 @@
+
 const Cores = [
     {
         nome: 'Azul',
@@ -11,18 +12,13 @@ const Cores = [
     },
     {
         nome: 'Verde',
-        corHEX: 0x00ff00,
-        corHEX2: '#00ff00',
+        corHEX: 0x00ff2a,
+        corHEX2: '#00ff2a',
     },
     {
         nome: 'Vermelho',
         corHEX: 0xff0000,
         corHEX2: '#ff0000',
-    },
-    {
-        nome: 'Roxo',
-        corHEX: 0x800080,
-        corHEX2: '#800080',
     },
     {
         nome: 'Laranja',
@@ -40,11 +36,6 @@ const Cores = [
         corHEX2: '#ff00ff',
     },
     {
-        nome: 'Rosa',
-        corHEX: 0xffc0cb,
-        corHEX2: '#ffc0cb',
-    },
-    {
         nome: 'Lilás',
         corHEX: 0x9932cc,
         corHEX2: '#9932cc',
@@ -55,27 +46,22 @@ const Cores = [
         corHEX2: '#8b4513',
     },
     {
-        nome: 'Cinza',
-        corHEX: 0x808080,
-        corHEX2: '#808080',
-    },
-    {
         nome: 'Branco',
         corHEX: 0xffffff,
         corHEX2: '#ffffff',
     },
     {
         nome: 'Preto',
-        corHEX: 0x000000,
-        corHEX2: '#000000',
+        corHEX: 0x292929ff,
+        corHEX2: '#292929ff',
     },
     {
-        nome: 'Marrom Claro',
-        corHEX: 0xd2b48c,
-        corHEX2: '#d2b48c',
+        nome: 'Marrom',
+        corHEX: 0x532618ff,
+        corHEX2: '#532618ff',
     },
     {
-        nome:'ouro',
+        nome:'Ouro',
         corHEX: 0xfc5203,
         corHEX2: '#fc5203',
     },
@@ -83,8 +69,27 @@ const Cores = [
         nome:'Verde Água',
         corHEX: 0x03fc73,
         corHEX2: '#03fc73',
+    },
+    {
+        nome: 'Warning',
+        corHEX: 0xffcc00,
+        corHEX2: '#ffcc00',
+    },
+    {
+        name: 'Danger',
+        corHEX: 0xff3300,
+        corHEX2: '#ff3300',
+    },
+    {
+        name: 'Sucess',
+        corHEX: 0x33ff33,
+        corHEX2: '#33ff33',
+    },
+    {
+        name: 'Info',
+        corHEX: 0x3399ff,
+        corHEX2: '#3399ff',
     }
-
 
 ]
 

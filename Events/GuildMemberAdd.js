@@ -1,10 +1,8 @@
 const { Events, AttachmentBuilder } = require('discord.js')
-const { Hoje, Banner } = require('../Controller')
-const axios = require('axios')
-const dotenv = require('dotenv')
-dotenv.config()
-const { URL_USUARIO } = process.env
 const Canvas = require('@napi-rs/canvas');
+const { api } = require('../Utils/axiosClient');
+const banners = require('../data/banners');
+const { Hoje } = require('../Utils/date');
 
 module.exports = {
     name: Events.GuildMemberAdd,
@@ -23,7 +21,6 @@ module.exports = {
 
             const agora = Hoje()
 
-            const banners = await Banner()
             const indice = Math.floor(Math.random() * banners.length);
 
             const canvas = Canvas.createCanvas(700, 250);
@@ -64,16 +61,15 @@ module.exports = {
 
             channel.send({ content: `Bem Vindo(a) ${member.user}`, files: [attachment] })
             try {
-                await axios.post(URL_USUARIO, {
+                api.post(`/usuario`, {
                     id: userId,
                     username: username,
                     xp: 0,
                     nivel: 1,
                     foto: member.user.displayAvatarURL({ extension: 'jpg' }),
                     wallpaper: indice,
-                    Descricao: "Sem Descição"
+                    Descricao: "Sem Descrição"
                 })
-
             } catch (error) {
                 console.error('Erro ao registrar usuário:', error);
             }

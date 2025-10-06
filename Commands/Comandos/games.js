@@ -1,5 +1,6 @@
-const { SlashCommandBuilder, StringSelectMenuBuilder, ContainerBuilder, TextDisplayBuilder, ActionRowBuilder, MessageFlags } = require("discord.js")
+const { SlashCommandBuilder, StringSelectMenuBuilder, ContainerBuilder, TextDisplayBuilder, ActionRowBuilder, MessageFlags, Message } = require("discord.js")
 const { Buscarjogo  } = require("../../Controller")
+const { addXp } = require("../../Utils/xp")
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -41,8 +42,8 @@ module.exports = {
                             .addComponents(row)
                     ]
                 })
-
-                await interaction.editReply({ flags: [MessageFlags.IsComponentsV2] , components: [container] })
+                addXp(userId, 10)
+                await interaction.editReply({ flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral] , components: [container] })
             }
 
         } catch (error) {

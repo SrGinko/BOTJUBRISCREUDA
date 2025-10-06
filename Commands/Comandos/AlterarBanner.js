@@ -1,12 +1,7 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, ContainerBuilder, TextDisplayBuilder, MessageFlags } = require('discord.js');
-const { Banner, controler } = require('../../Controller');
+const { SlashCommandBuilder, ActionRowBuilder, StringSelectMenuBuilder, ContainerBuilder, TextDisplayBuilder, MessageFlags } = require('discord.js');
 const { getRandonCores } = require('../../Utils/cores');
-
-const Coordenadas = new EmbedBuilder()
-    .setTitle('Alteração do Banner')
-    .setColor('Random')
-    .setDescription('Selecione o Banner')
-    .setTimestamp()
+const banners = require('../../data/banners');
+const { addXp } = require('../../Utils/xp');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -15,13 +10,13 @@ module.exports = {
 
     async execute(interaction) {
         try {
-            const banners = await Banner()
+            const banner = banners
 
             const select = new StringSelectMenuBuilder()
                 .setCustomId('alterbanner')
                 .setPlaceholder('Selecione')
                 .addOptions(
-                    banners.map(item => ({
+                    banner.map(item => ({
                         label: item.name,
                         value: item.id
                     }))
@@ -36,13 +31,14 @@ module.exports = {
                 timestamp: true,
                 components: [
                     new TextDisplayBuilder({
-                        content: '# Selecione o banner desejado!\n Você pode alterar o banner a qualquer momento!',
+                        content: '# Selecione o banner desejado!\n  - Você pode alterar o banner a qualquer momento!',
                         style: 'Short',
                     }),
                     Button
                 ]
             })
 
+            addXp(interaction.user.id, 10)
             await interaction.reply({ flags: [MessageFlags.IsComponentsV2], components: [conteiner] })
         } catch (error) {
             console.log(error)
