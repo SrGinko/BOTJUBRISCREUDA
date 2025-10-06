@@ -16,7 +16,7 @@ async function addXpHeroi(userId, add) {
         xp: xp
     })
 
-    await addLVL(userId)
+    await addLVLHeroi(userId)
 
 }
 
