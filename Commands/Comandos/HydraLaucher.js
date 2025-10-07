@@ -43,7 +43,7 @@ module.exports = {
             new SectionBuilder()
                 .addTextDisplayComponents(
                     new TextDisplayBuilder({
-                        content: `# ${await icone(interaction.guild, emojisData.inteface.download, 'download')} HydraLauncher
+                        content: `# HydraLauncher
 - Link de Download da HydraLauncher ${hyperlink('Clique aqui', 'https://github.com/hydralauncher/hydra/releases/')}
 - Tutorial de como Instalar ${hyperlink('Clique aqui', 'https://youtu.be/Yo9fka6A6RE?si=zSjO1txthuQsFcjU')}
 `

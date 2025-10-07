@@ -1,12 +1,16 @@
-const { EmbedBuilder, ContainerBuilder, TextDisplayBuilder, MessageFlags, MediaGalleryBuilder, SectionBuilder, ThumbnailBuilder, hyperlink } = require('discord.js')
+const { EmbedBuilder, ContainerBuilder, TextDisplayBuilder, MessageFlags, MediaGalleryBuilder, SectionBuilder, ThumbnailBuilder, hyperlink, ActionRowBuilder, ButtonBuilder, ButtonStyle, SeparatorBuilder, SeparatorSpacingSize, StringSelectMenuBuilder } = require('discord.js')
 const { RAWG_API } = process.env
 const { api } = require('./Utils/axiosClient')
 const { formatDate } = require('./Utils/date')
 const { addXp } = require('./Utils/xp')
 const { getRandonCores } = require('./Utils/cores')
-const { obterUnicoItem } = require('./Utils/itensInventario')
+const { obterUnicoItem, obterItensInventario } = require('./Utils/itensInventario')
 const axios = require('axios')
 const hydraLinks = require('./data/hydraLinks')
+const { icone } = require('./Utils/emojis')
+const { criarEmbed } = require('./Utils/embedFactory')
+const { enemyTurn, updateBattleMessage, rewardsAndEnd, getBattle } = require('./RPG/battleManager')
+const rpgEvents = require('./Events/rpgEvents')
 
 const embed = new EmbedBuilder()
 
@@ -45,43 +49,45 @@ async function controler(interaction) {
                 const response = await Buscarjogo(game)
                 const jogo = response[0]
 
-                try {
-                    const cor = getRandonCores()
+                const container = new ContainerBuilder()
 
-                    const container = new ContainerBuilder({
-                        accent_color: cor,
+                container.addMediaGalleryComponents(
+                    new MediaGalleryBuilder({
+                        items: [
+                            { media: { url: jogo.background_image } }
+                        ]
                     })
+                )
 
-                    container.addSectionComponents(
-                        new SectionBuilder()
-                            .addTextDisplayComponents(
-                                new TextDisplayBuilder({
-                                    content: `# ${jogo.name}
+                container.addSeparatorComponents(
+                    new SeparatorBuilder({
+                        spacing: SeparatorSpacingSize.Large,
+                        divider: false
+                    })
+                )
+
+                container.addTextDisplayComponents(
+                    new TextDisplayBuilder({
+                        content: `# ${jogo.name}
 **Metatric:** ${jogo.metacritic}
+**Avaliação:** ${jogo.rating} / ${jogo.rating_top}
 **Plataformas:** ${jogo.platforms.map(element => { return element.platform.name }).join(', ')}
 **Data de Lançamento:** ${formatDate(jogo.released)}
 **Gêneros:** ${jogo.genres.map(element => { return element.name }).join(', ')}
 `
-                                })
-                            )
-                            .setThumbnailAccessory(
-                                new ThumbnailBuilder({ media: { url: jogo.background_image } })
-                            )
-                    )
-
-                    container.addMediaGalleryComponents({
-                        items: jogo.short_screenshots.map(element => {
-                            return { media: { url: element.image } }
-                        })
                     })
+                )
 
-                    addXp(userId, 30)
-                    await interaction.update({ flags: [MessageFlags.IsComponentsV2], components: [container] })
+                const imagensIcon = await icone(interaction.guild, 'fotos')
 
-                } catch (error) {
-                    console.log(error)
-                }
+                container.addActionRowComponents(
+                    new ActionRowBuilder().addComponents(
+                        new ButtonBuilder().setEmoji(`${imagensIcon}`).setStyle(ButtonStyle.Secondary).setCustomId(`games:imagens:${game}`),
+                    )
+                )
 
+                addXp(userId, 30)
+                await interaction.update({ flags: [MessageFlags.IsComponentsV2], components: [container] })
 
             } break;
 
@@ -184,7 +190,7 @@ async function controler(interaction) {
                         new SectionBuilder()
                             .addTextDisplayComponents(
                                 new TextDisplayBuilder({
-                                    content: `# HydraLauncher
+                                    content: `# ${await icone(interaction.guild, 'download')}  HydraLauncher
 - Link de Download da HydraLauncher ${hyperlink('Clique aqui', 'https://github.com/hydralauncher/hydra/releases/')}
 - Tutorial de como Instalar ${hyperlink('Clique aqui', 'https://youtu.be/Yo9fka6A6RE?si=zSjO1txthuQsFcjU')}
 `
@@ -228,7 +234,7 @@ async function controler(interaction) {
 
                             const container = new ContainerBuilder({
                                 accent_color: 0x00ff2a,
-                                components:[
+                                components: [
                                     new TextDisplayBuilder({
                                         content: 'Arma equipada com sucesso.'
                                     })
@@ -239,7 +245,7 @@ async function controler(interaction) {
                                 itemID: itens.id,
                                 quantidade: 1
                             })
-                            
+
                             interaction.update({ components: [container] })
                             break
                         case 'ARMADURA':
@@ -312,4 +318,165 @@ function chance(percent) {
     return Math.random() < percent / 100;
 }
 
-module.exports = { controler, ranking, Buscarjogo, chance }
+async function handleAction(customId, user, interaction) {
+    const [prefix, action, userId] = customId.split(':')
+
+    if (prefix === 'rpg') {
+
+        const batalha = getBattle(userId)
+
+        if (!batalha) return { ok: false, message: 'Nenhuma batalha ativa' }
+        if (user.id !== userId) return { ok: false, message: 'Somente quem iniciou pode utilizar a ação' }
+
+        if (batalha.processing) return { ok: false, message: 'Ação em andamento aguarde' }
+
+        batalha.processing = true
+
+        try {
+            if (action === 'attack') {
+                const damage = Math.max(0, Math.floor(batalha.player.attack - batalha.inimmigo.defesa + Math.random() * 5))
+                batalha.inimmigo.hp = Math.max(0, batalha.inimmigo.hp - damage)
+
+                rpgEvents.emit('playerAttack', { batalha, damage })
+
+                await updateBattleMessage(batalha, `${batalha.player.nome} atacou e causou ${damage} de dano!`)
+
+                if (batalha.inimmigo.hp <= 0) {
+
+
+                    await rewardsAndEnd(batalha, 'vitoria')
+                    return { ok: true }
+                }
+
+                await enemyTurn(batalha)
+
+            } else if (action === 'run') {
+                let chance = 0.35 + (batalha.player.nivel - batalha.inimmigo.level) * 0.02
+                chance = Math.max(0.1, Math.min(0.9, chance))
+
+                const roll = Math.random()
+
+                if (roll < chance) {
+                    await updateBattleMessage(batalha, `${batalha.player.nome} conseguiu fugir!`)
+                    await rewardsAndEnd(batalha, 'fuga')
+                } else {
+                    await updateBattleMessage(batalha, `${batalha.player.nome} tentou fugir e falhou!`)
+                    await enemyTurn(batalha)
+                }
+            } else if (action === 'heal') {
+
+                const inventario = await obterItensInventario(batalha.player.id)
+                const itensCuraveis = inventario.filter(itens => {
+                    if (itens.tipo === 'CONSUMIVEL')
+                        return itens
+                })
+
+                if (itensCuraveis.length > 0) {
+                    const row = new ActionRowBuilder()
+                        .addComponents(
+                            new StringSelectMenuBuilder()
+                                .setCustomId(`rpg:userPotion:${batalha.player.id}`)
+                                .setPlaceholder('Ecolha a poção para curar')
+                                .addOptions(itensCuraveis.map(item => ({
+                                    label: `${item.nome} (+${item.heal})`,
+                                    value: String(item.id),
+                                })))
+                        )
+
+                    await batalha.channel.send({
+                        embeds: [criarEmbed({
+                            title: 'Poções',
+                            description: 'Selecione uma poção para poder se curar',
+                            color: 'Green',
+                            footer: 'Jubscreuda RPG'
+                        })], components: [row]
+                    })
+
+                    batalha.processing = false
+                    return { ok: true }
+                }
+                batalha.processing = false
+                return { ok: false, message: 'Você não tem consumiveis' }
+            }
+        } catch (erro) {
+            console.log(erro)
+        } finally {
+            batalha.processing = false
+        }
+    } else if (prefix === 'games') {
+        if (action === 'imagens') {
+            const response = await Buscarjogo(userId)
+            const game = response[0]
+
+            const container = new ContainerBuilder()
+
+            container.addMediaGalleryComponents(
+                new MediaGalleryBuilder({
+                    items: game.short_screenshots.map(screenshot => ({ media: { url: screenshot.image } }))
+                })
+            )
+
+            const controlerIcon = await icone(interaction.guild, 'controle')
+
+            container.addActionRowComponents(
+                new ActionRowBuilder().addComponents(
+                    new ButtonBuilder()
+                        .setEmoji(`${controlerIcon}`)
+                        .setStyle(ButtonStyle.Secondary)
+                        .setCustomId(`games:info:${userId}`),
+                )
+            )
+
+            await interaction.update({ components: [container], flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral] })
+            return { ok: true }
+
+        } else if (action === 'info') {
+            const response = await Buscarjogo(userId)
+            const jogo = response[0]
+
+            const container = new ContainerBuilder()
+
+            container.addMediaGalleryComponents(
+                new MediaGalleryBuilder({
+                    items: [
+                        { media: { url: jogo.background_image } }
+                    ]
+                })
+            )
+
+            container.addSeparatorComponents(
+                new SeparatorBuilder({
+                    spacing: SeparatorSpacingSize.Large,
+                    divider: false
+                })
+            )
+
+            container.addTextDisplayComponents(
+                new TextDisplayBuilder({
+                    content: `# ${jogo.name}
+**Metatric:** ${jogo.metacritic}
+**Avaliação:** ${jogo.rating} / ${jogo.rating_top}
+**Plataformas:** ${jogo.platforms.map(element => { return element.platform.name }).join(', ')}
+**Data de Lançamento:** ${formatDate(jogo.released)}
+**Gêneros:** ${jogo.genres.map(element => { return element.name }).join(', ')}
+`
+                })
+            )
+
+            const imagensIcon = await icone(interaction.guild, 'fotos')
+
+            container.addActionRowComponents(
+                new ActionRowBuilder().addComponents(
+                    new ButtonBuilder().setEmoji(`${imagensIcon}`).setStyle(ButtonStyle.Secondary).setCustomId(`games:imagens:${userId}`),
+                )
+            )
+
+            await interaction.update({ flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral], components: [container] })
+            return { ok: true }
+        }
+    }
+    return { ok: true }
+}
+
+
+module.exports = { controler, ranking, Buscarjogo, chance, handleAction }

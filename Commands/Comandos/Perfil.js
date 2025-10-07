@@ -1,13 +1,23 @@
 const { SlashCommandBuilder, AttachmentBuilder, MediaGalleryBuilder, ContainerBuilder, MessageFlags, ThumbnailBuilder, SectionBuilder, TextDisplayBuilder, SeparatorBuilder, SeparatorSpacingSize } = require("discord.js")
-const Canvas = require('@napi-rs/canvas');
 const banners = require("../../data/banners");
 const { Hoje } = require("../../Utils/date");
 const { addLVL } = require("../../Utils/xp");
 const { ranking } = require("../../Controller");
 const { api } = require("../../Utils/axiosClient");
 const { criarEmbed } = require("../../Utils/embedFactory");
-const { icone } = require("../../Utils/emojis");
+const { icone, emoji } = require("../../Utils/emojis");
 const emojisData = require("../../data/emojis");
+const Canvas = require('@napi-rs/canvas');
+
+function barraDeXp(cur, max, len = 10) {
+    const filled = Math.round((cur / max) * len)
+    const empty = len - filled
+
+    let maxXp = formatXp(max)
+    let userXp = formatUserXp(cur)
+
+    return '🟦'.repeat(filled) + '⬛'.repeat(empty) + ` ${userXp}/${maxXp}`
+}
 
 function formatXp(xp) {
     const unidades = ['', 'K', 'M', 'B', 'T']
@@ -52,26 +62,36 @@ module.exports = {
         let userId = userGlobal.id
 
         try {
+
             await interaction.deferReply();
 
             if (userGlobal.bot) {
-                await interaction.reply({
+                await interaction.editReply({
                     embeds: [criarEmbed({
                         description: 'Bots não tem perfil',
                         color: 'Red'
-                    })]
+                    })], flags: 64
                 })
+
+                return
             }
 
+
+            const agora = await Hoje()
             const member = interaction.guild.members.cache.get(userId)
-            const dataEntrada = member.joinedAt.toLocaleDateString('pt-BR', {
-                timeZone: 'America/Sao_Paulo'
+            const dataEntrada = agora.ano - member.joinedAt.getFullYear()
 
-            });
+            let ano = ' Ano'
+            if (dataEntrada > 1) ano = ' Anos'
 
-            const nomeCargos = member.roles.cache.filter(role => role.name !== '@everyone').map(role => {
-                return role
-            }).slice(0, 5).join(', ')
+            const cargos = member.roles.cache.filter(role => role.name !== '@everyone' && role.mentionable).map(role => role.toString()).join(' ')
+            const conquistas = member.roles.cache.filter(role => role.name !== '@everyone').map(role => { return emoji(role.name) }).join(' ')
+            const estatisitcas = await icone(interaction.guild, 'Estatistica')
+            const usuario = await icone(interaction.guild, 'Usuario')
+            const tag = await icone(interaction.guild, 'tags')
+            const data = await icone(interaction.guild, 'data')
+            const mensagens = await icone(interaction.guild, 'mensagens')
+            const conquistaIcon = await icone(interaction.guild, 'conquista')
 
             const response = await api.get(`/usuario/${userId}`)
 
@@ -85,75 +105,17 @@ module.exports = {
             const banner = banners
 
             var maxXp = await addLVL(userId)
-            const agora = await Hoje()
 
-            const larguraBarra = 200;
-            const alturaBarra = 15;
-            const canvas = Canvas.createCanvas(900, 300);
-            const context = canvas.getContext('2d');
+            const xpBar = barraDeXp(user.xp, maxXp)
 
-            var background = await Canvas.loadImage(banner[user.wallpaper].banner)
+            const canvas = Canvas.createCanvas(720, 300)
 
-            const porcentagemXP = user.xp / maxXp;
+            const ctx = canvas.getContext('2d')
+            const background = await Canvas.loadImage(`${banner[user.wallpaper].banner}`);
+            ctx.drawImage(background, 0, 0, canvas.width, canvas.height)
 
-            maxXp = formatXp(maxXp)
-            let userXp = formatUserXp(user.xp)
+            const attachment = new AttachmentBuilder(await canvas.encode('png'), { name: 'perfil.png' });
 
-            const larguraPreenchida = larguraBarra * porcentagemXP;
-
-            context.drawImage(background, 0, 0, canvas.width, canvas.height)
-            if (banner[user.wallpaper].banner === 'https://www.riotgames.com/darkroom/1440/056b96aab9c107bfb72c1cc818be712a:8e765b8b8b63d537b82096f248c2f169/tf-graves-pride-0.png') {
-                context.filter = 'blur(2px)'
-            }
-
-            context.drawImage(background, 0, 0, canvas.width, canvas.height)
-            context.filter = 'none'
-
-            const avatar = await Canvas.loadImage(userGlobal.displayAvatarURL({ extension: 'jpg' }));
-            context.save();
-            context.beginPath();
-            context.arc(125, 125, 100, 0, Math.PI * 2, true);
-            context.closePath();
-            context.clip();
-            context.drawImage(avatar, 20, 20, 200, 200);
-            context.restore();
-
-            context.font = '20px  "OpenSans"';
-            context.fillStyle = '#ffffff';
-            context.fillText(`Nível / `, canvas.width / 1.25, canvas.height / 3.8);
-            context.font = '28px "OpenSans"';
-            context.fillStyle = `${banner[user.wallpaper].cor}`;
-            context.fillText(`#${user.nivel}`, canvas.width / 1.1, canvas.height / 3.8);
-
-            context.font = '20px  "OpenSans"';
-            context.fillStyle = '#ffffff';
-            context.fillText(`TOP/ `, canvas.width / 1.25, canvas.height / 1.9);
-            context.font = '30px "OpenSans"';
-            context.fillStyle = `#43fef5`;
-            context.fillText(`#${Ranking}`, canvas.width / 1.1, canvas.height / 1.9);
-
-            context.font = '15px "OpenSans"';
-            context.fillStyle = '#ffffff';
-            context.fillText(`XP: `, canvas.width / 2.55, canvas.height / 1.5);
-            context.font = '20px "OpenSans"';
-            context.fillStyle = '#43fef5';
-            context.fillText(` #${userXp} / #${maxXp}`, canvas.width / 2.33, canvas.height / 1.5);
-
-            context.fillStyle = '#444241';
-            context.fillRect(canvas.width / 2.5, canvas.height / 1.3 - alturaBarra / 1.3, larguraBarra, alturaBarra);
-
-            context.fillStyle = `${banner[user.wallpaper].cor}`;
-            context.fillRect(canvas.width / 2.5, canvas.height / 1.3 - alturaBarra / 1.3, larguraPreenchida, alturaBarra);
-
-            context.font = '28px "OpenSans"';
-            context.fillStyle = '#ffffff';
-            context.fillText(`${user.username}`, canvas.width / 2.5, canvas.height / 3.8);
-
-            context.font = '12px "OpenSans"';
-            context.fillStyle = `#ffffff`;
-            context.fillText(`By Jubriscreuda  ${agora.ano}`, canvas.width / 1.3, canvas.height / 1.1);
-
-            const attachment = new AttachmentBuilder(canvas.toBuffer('image/png'), { name: 'profile-image.png' });
 
             const conteiner = new ContainerBuilder({
                 accent_color: banner[user.wallpaper].corHEX,
@@ -162,7 +124,8 @@ module.exports = {
                         items: [
                             {
                                 media: {
-                                    url: `attachment://profile-image.png`
+                                    url: `attachment://perfil.png`
+
                                 }
                             }
                         ]
@@ -176,17 +139,34 @@ module.exports = {
                 })
             )
 
-            conteiner.addTextDisplayComponents(
-                new TextDisplayBuilder({
-                    content: `
-# ${await icone(interaction.guild, emojisData.inteface.estatisticas, 'estatisticas')} Estatisticas \n
-${await icone(interaction.guild, emojisData.inteface.conquista, 'conquista')} **Cargos:** ${nomeCargos}  \n
-${await icone(interaction.guild, emojisData.inteface.data, 'data')} **Usuário desde:** \`\`${dataEntrada}\`\`  \n
-${await icone(interaction.guild, emojisData.inteface.mensagens, 'mensg')} **Mensagens enviadas:** \`\`${user.quantidadeMensagens}\`\``
+            conteiner.addSectionComponents(
+                new SectionBuilder()
+                    .addTextDisplayComponents(
+                        new TextDisplayBuilder({
+                            content: `# ${usuario} Perfil de ${user.username}    (Top/ #${Ranking}) \n **${tag} Cargos:** ${cargos} \n **${conquistaIcon} Nível:** ${user.nivel} \n **${conquistaIcon} XP:** ${xpBar} \n`,
+                        })
+                    )
+                    .setThumbnailAccessory(
+                        new ThumbnailBuilder({
+                            media: { url: userGlobal.displayAvatarURL({ extension: 'png', size: 1024 }) }
+                        })
+                    )
+            )
+
+            conteiner.addSeparatorComponents(
+                new SeparatorBuilder({
+                    spacing: SeparatorSpacingSize.Large,
+                    divider: false
                 })
             )
 
-            await interaction.editReply({ flags: [MessageFlags.IsComponentsV2], components: [conteiner], files: [attachment] })
+            conteiner.addTextDisplayComponents(
+                new TextDisplayBuilder({
+                    content: `## ${estatisitcas} Estatísticas \n\n\n > Informações adicionais deste Usuário \n  **${tag} Tags:** ${conquistas} \n **${data} Entrou há** \`\`${dataEntrada + ano}\`\` \n **${mensagens} Mensagens:** \`\`${user.quantidadeMensagens}\`\` \n`
+                })
+            )
+
+            await interaction.editReply({ components: [conteiner], files: [attachment], flags: [MessageFlags.IsComponentsV2] });
 
         } catch (error) {
             console.log(error)

@@ -16,7 +16,7 @@ async function addXpHeroi(userId, add) {
         xp: xp
     })
 
-    await addLVL(userId)
+    await addLVLHeroi(userId)
 
 }
 
@@ -91,7 +91,7 @@ async function addLVLHeroi(userId) {
     const response = await api.get(`/heroi/${userId}`)
     const heroi = response.data
 
-    const nivel = heroi.nivel
+    const nivel = heroi.level
     const xp = heroi.xp
     const moeda = heroi.moeda
     const hp = heroi.hp
@@ -107,9 +107,9 @@ async function addLVLHeroi(userId) {
         await api.patch(`/heroi/${userId}`, {
             xp: newXp,
             level: newLvl,
-            hp: hp + 10,
-            attack: ataque + 10,
-            defense: defesa + 5,
+            hp: hp + 5,
+            attack: ataque + 3,
+            defense: defesa + 2,
             
         })
     }

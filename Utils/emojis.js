@@ -1,4 +1,5 @@
 const axios = require('axios')
+const emojisData = require('../data/emojis')
 
 /**
  * Cria um emoji customizado temporário a partir de uma URL
@@ -8,12 +9,13 @@ const axios = require('axios')
  * @param {number} lifetime - Tempo de vida em ms (depois será deletado)
  * @returns {Promise<GuildEmoji>}
  */
-async function icone(guild, url, name, lifetime = 60000) {
-    const response = await axios.get(url, { responseType: 'arraybuffer' })
+async function icone(guild, name, lifetime = 20000) {
+    const icone = emojisData.interfaces.find(e => e.name === name)
+    const response = await axios.get(icone.url, { responseType: 'arraybuffer' })
 
     const emoji = await guild.emojis.create({
         attachment: Buffer.from(response.data, 'utf-8'),
-        name: name
+        name: icone.name
     })
 
     setTimeout( async () => {
@@ -27,4 +29,9 @@ async function icone(guild, url, name, lifetime = 60000) {
     return emoji
 }
 
-module.exports = { icone }
+function emoji(name) {
+    const emoji = emojisData.emojis.consquista.find(e => e.name === name)
+    return emoji ? emoji.icone : null
+}
+
+module.exports = { icone, emoji }
