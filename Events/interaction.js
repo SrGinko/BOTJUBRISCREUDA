@@ -1,9 +1,7 @@
 const { Events } = require('discord.js')
-const { controler } = require('../Controller')
+const { controler, handleAction } = require('../Controller')
 const { obterItens } = require('../Utils/itensInventario')
 const chalk = require("chalk")
-const { handleAction } = require('../RPG/battleManager')
-
 const erro = chalk.bold.red
 
 
@@ -14,7 +12,8 @@ module.exports = {
 		controler(interaction)
 
 		if (interaction.isButton()) {
-			const res = await handleAction(interaction.customId, interaction.user)
+			
+			const res = await handleAction(interaction.customId, interaction.user, interaction)
 
 			if (!res.ok) {
 				return interaction.reply({ content: res.message, ephemeral: true })

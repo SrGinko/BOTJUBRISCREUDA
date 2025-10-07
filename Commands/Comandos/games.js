@@ -1,6 +1,8 @@
 const { SlashCommandBuilder, StringSelectMenuBuilder, ContainerBuilder, TextDisplayBuilder, ActionRowBuilder, MessageFlags, Message } = require("discord.js")
 const { Buscarjogo  } = require("../../Controller")
 const { addXp } = require("../../Utils/xp")
+const { icone } = require("../../Utils/emojis")
+const emojisData = require("../../data/emojis")
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -23,18 +25,19 @@ module.exports = {
             if (response.length > 0) {
                 const row = new StringSelectMenuBuilder()
                     .setCustomId('game')
-                    .setPlaceholder('Selecione o jogo')
+                    .setPlaceholder(`Selecione o jogo`)
                     .addOptions(response.slice(0, 25).map(game => ({
                         label: game.name,
                         value: `${game.name}`,
                         description: game.plataform,
+                        emoji: '🎮'
                     })))
 
                 const container = new ContainerBuilder({
                     accent_color: 0x3c1099,
                     components: [
                         new TextDisplayBuilder({
-                            content: 'Selecione o jogo desejado',
+                            content: `## Selecione o jogo desejado`,
                             style: 'Short',
                         }),
 
