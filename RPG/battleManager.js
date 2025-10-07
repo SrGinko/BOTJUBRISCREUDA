@@ -1,5 +1,5 @@
-const { ActionRowBuilder, StringSelectMenuBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ContainerBuilder, SeparatorBuilder, MessageFlags, TextDisplayBuilder, SeparatorSpacingSize } = require('discord.js')
-const { obterUnicoItem, obterItensInventario } = require('../Utils/itensInventario')
+const { ActionRowBuilder, StringSelectMenuBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ContainerBuilder, SeparatorBuilder, MessageFlags, TextDisplayBuilder, SeparatorSpacingSize, MediaGalleryBuilder } = require('discord.js')
+const { obterUnicoItem } = require('../Utils/itensInventario')
 const { obterInimigos, obterUnicoInimigo, } = require('../Utils/getInimigo')
 const { criarEmbed } = require('../Utils/embedFactory')
 const rpgEvents = require('../Events/rpgEvents')
@@ -19,9 +19,9 @@ function criarInimigo(nivelPLayer, nome, hp, ataque, defesa, moeda, xp) {
     return {
         nome: nome,
         level: level,
-        maxHp: hp + level * 5,
-        hp: hp + level * 5,
-        ataque: ataque + level * 2,
+        maxHp: hp + level * 10,
+        hp: hp + level * 10,
+        ataque: ataque + level * 3,
         defesa: defesa + level,
         moeda: moeda + level * 3,
         xp: xp + level * 5
@@ -144,96 +144,6 @@ async function começarBatalha({ interaction, playerData, cliente, channel }) {
 
 }
 
-async function handleAction(customId, user) {
-    const [prefix, action, userId] = customId.split(':')
-
-    if (prefix !== 'rpg') return
-
-    const batalha = batalhaCache.get(userId)
-
-    if (!batalha) return { ok: false, message: 'Nenhuma batalha ativa' }
-    if (user.id !== userId) return { ok: false, message: 'Somente quem iniciou pode utilizar a ação' }
-
-    if (batalha.processing) return { ok: false, message: 'Ação em andamento aguarde' }
-
-    batalha.processing = true
-
-    try {
-        if (action === 'attack') {
-            const damage = Math.max(0, Math.floor(batalha.player.attack - batalha.inimmigo.defesa + Math.random() * 5))
-            batalha.inimmigo.hp = Math.max(0, batalha.inimmigo.hp - damage)
-
-            rpgEvents.emit('playerAttack', { batalha, damage })
-
-            await updateBattleMessage(batalha, `${batalha.player.nome} atacou e causou ${damage} de dano!`)
-
-            if (batalha.inimmigo.hp <= 0) {
-
-
-                await rewardsAndEnd(batalha, 'vitoria')
-                return { ok: true }
-            }
-
-            await enemyTurn(batalha)
-
-        } else if (action === 'run') {
-            let chance = 0.35 + (batalha.player.nivel - batalha.inimmigo.level) * 0.02
-            chance = Math.max(0.1, Math.min(0.9, chance))
-
-            const roll = Math.random()
-
-            if (roll < chance) {
-                await updateBattleMessage(batalha, `${batalha.player.nome} conseguiu fugir!`)
-                await rewardsAndEnd(batalha, 'fuga')
-            } else {
-                await updateBattleMessage(batalha, `${batalha.player.nome} tentou fugir e falhou!`)
-                await enemyTurn(batalha)
-            }
-        } else if (action === 'heal') {
-
-            const inventario = await obterItensInventario(batalha.player.id)
-            const itensCuraveis = inventario.filter(itens => {
-                if (itens.tipo === 'CONSUMIVEL')
-                    return itens
-            })
-
-            if (itensCuraveis.length > 0) {
-                const row = new ActionRowBuilder()
-                    .addComponents(
-                        new StringSelectMenuBuilder()
-                            .setCustomId(`rpg:userPotion:${batalha.player.id}`)
-                            .setPlaceholder('Ecolha a poção para curar')
-                            .addOptions(itensCuraveis.map(item => ({
-                                label: `${item.nome} (+${item.heal})`,
-                                value: String(item.id),
-                            })))
-                    )
-
-                await batalha.channel.send({
-                    embeds: [criarEmbed({
-                        title: 'Poções',
-                        description: 'Selecione uma poção para poder se curar',
-                        color: 'Green',
-                        footer: 'Jubscreuda RPG'
-                    })], components: [row]
-                })
-
-                batalha.processing = false
-                return { ok: true }
-            }
-            batalha.processing = false
-            return { ok: false, message: 'Você não tem consumiveis' }
-        }
-    } catch (erro) {
-        console.log(erro)
-    } finally {
-        batalha.processing = false
-    }
-
-
-    return { ok: true }
-}
-
 async function enemyTurn(batalha) {
     if (batalha.inimmigo.hp <= 0) return
 
@@ -322,4 +232,4 @@ async function rewardsAndEnd(batalha, result) {
     batalhaCache.delete(batalha.id)
 }
 
-module.exports = { começarBatalha, enemyTurn, handleAction, getBattle: (userId) => batalhaCache.get(userId) }
+module.exports = { começarBatalha,updateBattleMessage, enemyTurn,rewardsAndEnd, getBattle: (userId) => batalhaCache.get(userId) }

@@ -3,8 +3,6 @@ const { EventEmitter } = require('events')
 const { addXpHeroi, addXp } = require('../Utils/xp')
 const rpgEvents = new EventEmitter()
 
-const container = new ContainerBuilder()
-
 rpgEvents.on('battleEnd', ({ batalha, result }) => {
 
     let xpGanho = batalha.inimmigo.xp
@@ -12,102 +10,111 @@ rpgEvents.on('battleEnd', ({ batalha, result }) => {
 
     switch (result) {
         case 'vitoria':
+            const containerVitoria = new ContainerBuilder()
 
-            container.setAccentColor(0x11ff00)
-            container.addTextDisplayComponents(
+            containerVitoria.setAccentColor(0x11ff00)
+            containerVitoria.addTextDisplayComponents(
                 new TextDisplayBuilder({
                     content: '# 🏅 Vitória!'
                 })
             )
-            container.addSeparatorComponents(
+            containerVitoria.addSeparatorComponents(
                 new SeparatorBuilder({
                     spacing: SeparatorSpacingSize.Large
                 })
             )
-            container.addTextDisplayComponents(
+            containerVitoria.addTextDisplayComponents(
                 new TextDisplayBuilder({
                     content: `${batalha.user}, seu Heroi saiu Vitorioso! \n **XP Ganho:** ${xpGanho} \n **Moeda Ganha:** ${moedaGanha}`
                 })
             )
 
             addXpHeroi(batalha.user.id, xpGanho)
-            addXp(batalha.user.id,xpGanho)
-            batalha.message.edit({ components: [container], flags: [MessageFlags.IsComponentsV2] })
+            addXp(batalha.user.id, xpGanho)
+            batalha.message.edit({ components: [containerVitoria], flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral] })
 
             break;
 
         case 'derrota':
+
+            const containerDerrota = new ContainerBuilder()
+
+
             xpGanho = Math.round(xpGanho / 2)
 
-            container.setAccentColor(0xa30000)
-            container.addTextDisplayComponents(
+            containerDerrota.setAccentColor(0xa30000)
+            containerDerrota.addTextDisplayComponents(
                 new TextDisplayBuilder({
                     content: '# 💀 Derrota!'
                 })
             )
-            container.addSeparatorComponents(
+            containerDerrota.addSeparatorComponents(
                 new SeparatorBuilder({
                     spacing: SeparatorSpacingSize.Large
                 })
             )
-            container.addTextDisplayComponents(
+            containerDerrota.addTextDisplayComponents(
                 new TextDisplayBuilder({
                     content: `${batalha.user}, seu Heroi foi  derrotado! \n **XP Ganho:** ${xpGanho} \n Moeda Ganha: 0`
                 })
             )
 
             addXpHeroi(batalha.user.id, xpGanho)
-            addXp(batalha.user.id,xpGanho)
-            batalha.message.edit({ components: [container], flags: [MessageFlags.IsComponentsV2] })
+            addXp(batalha.user.id, xpGanho)
+            batalha.message.edit({ components: [containerDerrota], flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral] })
 
             break;
 
         case 'fuga':
 
+             const containerFuga = new ContainerBuilder()
+
             xpGanho = Math.round(xpGanho / 4)
 
-            container.setAccentColor(0x00c3ff)
-            container.addTextDisplayComponents(
+            containerFuga.setAccentColor(0x00c3ff)
+            containerFuga.addTextDisplayComponents(
                 new TextDisplayBuilder({
                     content: '# 💨 Você Fugiu!'
                 })
             )
-            container.addSeparatorComponents(
+            containerFuga.addSeparatorComponents(
                 new SeparatorBuilder({
                     spacing: SeparatorSpacingSize.Large
                 })
             )
-            container.addTextDisplayComponents(
+            containerFuga.addTextDisplayComponents(
                 new TextDisplayBuilder({
                     content: `${batalha.user}, seu Heroi Fugiu! \n **XP Ganho:** ${xpGanho} \n Moeda Ganha: 0`
                 })
             )
 
             addXpHeroi(batalha.user.id, xpGanho)
-            addXp(batalha.user.id,xpGanho)
-            batalha.message.edit({ components: [container], flags: [MessageFlags.IsComponentsV2] })
+            addXp(batalha.user.id, xpGanho)
+            batalha.message.edit({ components: [containerFuga], flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral] })
 
             break;
 
         case 'timeout':
 
-            container.setAccentColor(0xffbb00)
-            container.addTextDisplayComponents(
+             const containerTimeout = new ContainerBuilder()
+
+            containerTimeout.setAccentColor(0xffbb00)
+            containerTimeout.addTextDisplayComponents(
                 new TextDisplayBuilder({
                     content: '# ⏳ Timeout!'
                 })
             )
-            container.addSeparatorComponents(
+            containerTimeout.addSeparatorComponents(
                 new SeparatorBuilder({
                     spacing: SeparatorSpacingSize.Large
                 })
             )
-            container.addTextDisplayComponents(
+            containerTimeout.addTextDisplayComponents(
                 new TextDisplayBuilder({
                     content: `${batalha.user}, tempo de resposta acabou!`
                 })
             )
-            batalha.message.edit({ components: [container], flags: [MessageFlags.IsComponentsV2] })
+            batalha.message.edit({ components: [containerTimeout], flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral] })
 
         default:
             break;
