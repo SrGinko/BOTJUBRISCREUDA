@@ -13,6 +13,7 @@ const hydraLinks = [
     { id: 'byxatab', name: 'ByXatab', link: 'https://hydralinks.pages.dev/sources/xatab.json' },
     { id: 'empress', name: 'Empress', link: 'https://hydralinks.pages.dev/sources/empress.json' },
     { id: 'david-kazumi', name: 'David Kazumi', link: 'https://davidkazumi-github-io.pages.dev/fontekazumi.json' },
+    { id: 'irishub', name: 'IrisHub', link: 'https://raw.githubusercontent.com/irisihrz/json/refs/heads/main/irishub.json' },
 ]
 
 module.exports = hydraLinks
