@@ -1,4 +1,4 @@
-const { ActionRowBuilder, StringSelectMenuBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ContainerBuilder, SeparatorBuilder, MessageFlags, TextDisplayBuilder, SeparatorSpacingSize, MediaGalleryBuilder } = require('discord.js')
+const { ActionRowBuilder, StringSelectMenuBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ContainerBuilder, SeparatorBuilder, MessageFlags, TextDisplayBuilder, SeparatorSpacingSize, MediaGalleryBuilder, SectionBuilder, ThumbnailBuilder } = require('discord.js')
 const { obterUnicoItem } = require('../Utils/itensInventario')
 const { obterInimigos, obterUnicoInimigo, } = require('../Utils/getInimigo')
 const { criarEmbed } = require('../Utils/embedFactory')
@@ -12,19 +12,20 @@ function barraDeVida(cur, max, len = 10) {
     return '🟥'.repeat(filled) + '⬜'.repeat(empty) + ` ${cur}/${max}`
 }
 
-function criarInimigo(nivelPLayer, nome, hp, ataque, defesa, moeda, xp) {
+function criarInimigo(nivelPLayer, nome, hp, ataque, defesa, imagem, moeda, xp) {
     const scale = 0.8 + Math.random() * 0.6
     const level = Math.max(1, Math.round(nivelPLayer * scale))
 
     return {
         nome: nome,
         level: level,
-        maxHp: hp + level * 10,
-        hp: hp + level * 10,
-        ataque: ataque + level * 3,
+        maxHp: hp + level * 5,
+        hp: hp + level * 5,
+        ataque: ataque + level * 2,
         defesa: defesa + level,
         moeda: moeda + level * 3,
-        xp: xp + level * 5
+        xp: xp + level * 5,
+        imagem: imagem || 'Sem Imagem'
     }
 }
 
@@ -48,10 +49,10 @@ async function começarBatalha({ interaction, playerData, cliente, channel }) {
 
     const inimigos = obterInimigos()
 
-    const enemy = await obterUnicoInimigo(1)
+    const enemy = await obterUnicoInimigo(Math.floor(Math.random() * 3) + 1)
 
 
-    const inimmigo = criarInimigo(player.nivel, enemy.nome, enemy.vida, enemy.ataque, enemy.defesa, Math.round(Math.random() * 150), Math.round(Math.random() * 200))
+    const inimmigo = criarInimigo(player.nivel, enemy.nome, enemy.vida, enemy.ataque, enemy.defesa, enemy.imagem, Math.round(Math.random() * 150), Math.round(Math.random() * 200))
 
     if (batalhaCache.has(player.id)) {
         return channel.send({
@@ -185,11 +186,27 @@ async function updateBattleMessage(batalha, recentText = 'Nada aqui...') {
         })
     )
 
-    container.addTextDisplayComponents(
-        new TextDisplayBuilder({
-            content: `**${batalha.player.nome}** \n  **❤️ Vida:** \`${barraDeVida(batalha.player.hp, batalha.player.maxHp)}\` \n \n **${batalha.inimmigo.nome}**\n  **❤️ Vida:** \`${barraDeVida(batalha.inimmigo.hp, batalha.inimmigo.maxHp)}\``
-        })
-    )
+    if (batalha.inimmigo.imagem !== "Sem Imagem") {
+        container.addSectionComponents(
+            new SectionBuilder()
+                .addTextDisplayComponents(
+                    new TextDisplayBuilder({
+                        content: `**${batalha.player.nome}** \n  **❤️ Vida:** \`${barraDeVida(batalha.player.hp, batalha.player.maxHp)}\` \n \n **${batalha.inimmigo.nome}**\n  **❤️ Vida:** \`${barraDeVida(batalha.inimmigo.hp, batalha.inimmigo.maxHp)}\``
+                    })
+                )
+                .setThumbnailAccessory(
+                    new ThumbnailBuilder({
+                        media: { url: `${batalha.inimmigo.imagem}` }
+                    })
+                )
+        )
+    } else {
+        container.addTextDisplayComponents(
+            new TextDisplayBuilder({
+                content: `**${batalha.player.nome}** \n  **❤️ Vida:** \`${barraDeVida(batalha.player.hp, batalha.player.maxHp)}\` \n \n **${batalha.inimmigo.nome}**\n  **❤️ Vida:** \`${barraDeVida(batalha.inimmigo.hp, batalha.inimmigo.maxHp)}\``
+            })
+        )
+    }
 
     container.addSeparatorComponents(
         new SeparatorBuilder({
@@ -232,4 +249,4 @@ async function rewardsAndEnd(batalha, result) {
     batalhaCache.delete(batalha.id)
 }
 
-module.exports = { começarBatalha,updateBattleMessage, enemyTurn,rewardsAndEnd, getBattle: (userId) => batalhaCache.get(userId) }
+module.exports = { começarBatalha, updateBattleMessage, enemyTurn, rewardsAndEnd, getBattle: (userId) => batalhaCache.get(userId) }
