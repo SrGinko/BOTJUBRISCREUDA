@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, StringSelectMenuBuilder, ContainerBuilder, TextDisplayBuilder, ActionRowBuilder, MessageFlags, Message } = require("discord.js")
-const { Buscarjogo  } = require("../../Controller")
+const { Buscarjogo, BuscarjogoNome } = require("../../Controller")
 const { addXp } = require("../../Utils/xp")
 const { icone } = require("../../Utils/emojis")
 const emojisData = require("../../data/emojis")
@@ -20,7 +20,7 @@ module.exports = {
 
         try {
 
-            const response = await Buscarjogo(nameGame)
+            const response = await BuscarjogoNome(nameGame)
 
             if (response.length > 0) {
                 const row = new StringSelectMenuBuilder()
@@ -46,7 +46,7 @@ module.exports = {
                     ]
                 })
                 addXp(userId, 10)
-                await interaction.editReply({ flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral] , components: [container] })
+                await interaction.editReply({ flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral], components: [container] })
             }
 
         } catch (error) {

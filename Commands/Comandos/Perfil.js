@@ -85,7 +85,7 @@ module.exports = {
             if (dataEntrada > 1) ano = ' Anos'
 
             const cargos = member.roles.cache.filter(role => role.name !== '@everyone' && role.mentionable).map(role => role.toString()).join(' ')
-            const conquistas = member.roles.cache.filter(role => role.name !== '@everyone').map(role => { return emoji(role.name) }).join(' ')
+            const conquistas = member.roles.cache.filter(role => role.name !== '@everyone').map(role => emoji(role.name)).join(' ')
             const estatisitcas = await icone(interaction.guild, 'Estatistica')
             const usuario = await icone(interaction.guild, 'Usuario')
             const tag = await icone(interaction.guild, 'tags')

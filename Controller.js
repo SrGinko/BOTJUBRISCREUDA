@@ -45,8 +45,8 @@ async function controler(interaction) {
         switch (idMenu) {
             case 'game': {
 
-                const game = interaction.values[0]
-                const response = await Buscarjogo(game)
+                const gameName = interaction.values[0]
+                const response = await BuscarjogoNome(gameName)
                 const jogo = response[0]
 
                 const container = new ContainerBuilder()
@@ -82,7 +82,7 @@ async function controler(interaction) {
 
                 container.addActionRowComponents(
                     new ActionRowBuilder().addComponents(
-                        new ButtonBuilder().setEmoji(`${imagensIcon}`).setStyle(ButtonStyle.Secondary).setCustomId(`games:imagens:${game}`),
+                        new ButtonBuilder().setEmoji(`${imagensIcon}`).setStyle(ButtonStyle.Secondary).setCustomId(`games:imagens:${gameName}`),
                     )
                 )
 
@@ -170,6 +170,8 @@ async function controler(interaction) {
                 return await interaction.reply({ flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral], components: [conteiner] })
             }
 
+                break;
+
             case 'hydra': {
                 const id = interaction.values
                 let item
@@ -183,7 +185,7 @@ async function controler(interaction) {
 
                 if (item.length > 0) {
                     const container = new ContainerBuilder({
-                        accent_color: getRandonCores()
+                        accent_color: 0xffffff
                     })
 
                     container.addSectionComponents(
@@ -219,6 +221,7 @@ async function controler(interaction) {
                     await interaction.update({ content: 'Nenhum jogo encontrado.', flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral] })
                 }
             }
+                break;
 
             case 'equipar-item': {
                 const itemId = interaction.values
@@ -266,6 +269,8 @@ async function controler(interaction) {
                     }
                 })
             }
+
+                break;
         }
     } else return
 }
@@ -275,7 +280,7 @@ async function controler(interaction) {
  * @param {String} nameGame 
  * @returns {Objeto} Informações do jogo pesquisado na API
  */
-async function Buscarjogo(nameGame) {
+async function BuscarjogoNome(nameGame) {
     const url = `https://api.rawg.io/api/games`
 
     try {
@@ -405,8 +410,9 @@ async function handleAction(customId, user, interaction) {
         }
     } else if (prefix === 'games') {
         if (action === 'imagens') {
-            const response = await Buscarjogo(userId)
+            const response = await BuscarjogoNome(userId)
             const game = response[0]
+            
 
             const container = new ContainerBuilder()
 
@@ -431,7 +437,7 @@ async function handleAction(customId, user, interaction) {
             return { ok: true }
 
         } else if (action === 'info') {
-            const response = await Buscarjogo(userId)
+            const response = await BuscarjogoNome(userId)
             const jogo = response[0]
 
             const container = new ContainerBuilder()
@@ -439,7 +445,9 @@ async function handleAction(customId, user, interaction) {
             container.addMediaGalleryComponents(
                 new MediaGalleryBuilder({
                     items: [
-                        { media: { url: jogo.background_image } }
+                        { media: 
+                            { url: jogo.background_image },
+                        }
                     ]
                 })
             )
@@ -479,4 +487,4 @@ async function handleAction(customId, user, interaction) {
 }
 
 
-module.exports = { controler, ranking, Buscarjogo, chance, handleAction }
+module.exports = { controler, ranking, chance, handleAction, BuscarjogoNome }

@@ -33,10 +33,8 @@ module.exports = {
                 value: item.id,
             })))
 
-        const cor = getRandonCores()
-
         const container = new ContainerBuilder({
-            accent_color: cor,
+            accent_color: 0xffffff,
         })
 
         container.addSectionComponents(
