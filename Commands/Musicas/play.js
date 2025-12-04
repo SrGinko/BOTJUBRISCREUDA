@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, PermissionsBitField, EmbedBuilder, MessageFlags } = require('discord.js');
 const { useMainPlayer, useQueue } = require('discord-player');
+const playdl = require('play-dl')
 const { addXp } = require('../../Utils/xp');
 
 const embed = new EmbedBuilder()

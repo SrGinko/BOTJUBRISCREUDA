@@ -13,20 +13,20 @@ function barraDeVida(cur, max, len = 10) {
 }
 
 function criarInimigo(nivelPLayer, nome, hp, ataque, defesa, imagem, moeda, xp) {
-    const scale = 0.8 + Math.random() * 0.6
+    const scale = 5 + Math.random() * 2
     const level = Math.max(1, Math.round(nivelPLayer * scale))
 
-    return {
-        nome: nome,
-        level: level,
-        maxHp: hp + level * 5,
-        hp: hp + level * 5,
-        ataque: ataque + level * 2,
-        defesa: defesa + level,
-        moeda: moeda + level * 3,
-        xp: xp + level * 5,
-        imagem: imagem || 'Sem Imagem'
-    }
+    // return {
+    //     nome: nome,
+    //     level: level,
+    //     maxHp: hp + level * 5,
+    //     hp: hp + level * 5,
+    //     ataque: ataque + level * 2,
+    //     defesa: defesa + level,
+    //     moeda: moeda + level * 3,
+    //     xp: xp + level * 5,
+    //     imagem: imagem || 'Sem Imagem'
+    // }
 }
 
 async function começarBatalha({ interaction, playerData, cliente, channel }) {
@@ -47,9 +47,7 @@ async function começarBatalha({ interaction, playerData, cliente, channel }) {
         moeda: playerData.moeda ?? 0
     }
 
-    const inimigos = obterInimigos()
-
-    const enemy = await obterUnicoInimigo(Math.floor(Math.random() * 3) + 1)
+    const enemy = await obterUnicoInimigo(1)
 
 
     const inimmigo = criarInimigo(player.nivel, enemy.nome, enemy.vida, enemy.ataque, enemy.defesa, enemy.imagem, Math.round(Math.random() * 150), Math.round(Math.random() * 200))

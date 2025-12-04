@@ -1,12 +1,14 @@
 const { Client, Events, GatewayIntentBits, Collection, ActivityType, Partials } = require('discord.js');
 const { Player } = require('discord-player');
-const { DefaultExtractors } = require('@discord-player/extractor');
+const { SpotifyExtractor } = require('@discord-player/extractor');
+const { YoutubeiExtractor } = require('discord-player-youtubei');
+
 
 const dotenv = require('dotenv')
 dotenv.config()
 const { TOKEN } = process.env
 const fs = require('node:fs');
-const path = require('node:path')
+const path = require('node:path');
 
 const client = new Client({
 	intents:
@@ -56,14 +58,12 @@ for (const file of eventFiles) {
 	}
 }
 
-client.on('ready', async () => {
-	client.user.setActivity({
-		name: 'Minecraft',
-		type: ActivityType.Playing
-	})
-	client.user.setStatus('online')
+client.on('clientReady', async () => {
 
-	await player.extractors.loadMulti(DefaultExtractors)
+	await player.extractors.loadMulti([
+		SpotifyExtractor
+	])
+
 })
 
 client.login(TOKEN);

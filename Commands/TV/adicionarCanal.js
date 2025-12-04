@@ -1,5 +1,4 @@
-const { SlashCommandBuilder, ModalBuilder, TextInputBuilder, ActionRowBuilder, TextInputStyle } = require('discord.js')
-const { execute } = require('../Comandos/Perfil')
+const { SlashCommandBuilder, ModalBuilder, TextInputBuilder, ActionRowBuilder, TextInputStyle, LabelBuilder, ComponentType, TextDisplayBuilder } = require('discord.js')
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -8,44 +7,53 @@ module.exports = {
 
     async execute(interaction) {
 
-        const modal = new ModalBuilder()
-            .setCustomId('tv:canais')
-            .setTitle('Criando Canal')
+        try {
+            const modal = new ModalBuilder({
+                title: 'Adicionar Canal',
+                customId: 'tv:addcanal',
+            })
+                .addLabelComponents(
+                    new LabelBuilder({
+                        label: "Nome do Canal: ",
+                        description: "Insira o nome do canal que deseja adicionar",
+                        component: {
+                            type: ComponentType.TextInput,
+                            style: TextInputStyle.Short,
+                            required: true,
+                            custom_id: 'canalNome',
+                        }
+                    })
+                )
+            .addLabelComponents(
+                new LabelBuilder({
+                    label: 'URL: ',
+                    description: 'Insira a URL do canal que deseja adicionar',
+                    component: {
+                        type: ComponentType.TextInput,
+                        custom_id: 'canalUrl',
+                        style: TextInputStyle.Short,
+                        required: true
+                    }
+                })
+            )
+            .addLabelComponents(
+                new LabelBuilder({
+                    label: 'Capa URL: ',
+                    description: 'Insira a URL da capa do canal que deseja adicionar',
+                    component: {
+                        type: ComponentType.TextInput,
+                        custom_id: 'capaUrl',
+                        style: TextInputStyle.Short,
+                        required: true
+                    }
+                })
+            )
 
-        const nomeCanalInput = new TextInputBuilder()
-            .setCustomId('canalnome')
-            .setLabel('Nome do Canal')
-            .setStyle(TextInputStyle.Short)
-            .setPlaceholder('Insire aqui')
-            .setRequired(true)
+            await interaction.showModal(modal)
+        } catch (error) {
+            console.log(error)
+        }
 
-        modal.addComponents(
-            new ActionRowBuilder().addComponents(nomeCanalInput)
-        )
-
-        const canalUrlInput = new TextInputBuilder()
-            .setCustomId('canalUrl')
-            .setLabel('URL')
-            .setStyle(TextInputStyle.Short)
-            .setPlaceholder('Insire aqui')
-            .setRequired(true)
-
-        modal.addComponents(
-            new ActionRowBuilder().addComponents(canalUrlInput)
-        )
-
-        const canalCapaUrlInput = new TextInputBuilder()
-            .setCustomId('capaUrl')
-            .setLabel('Capa URL')
-            .setPlaceholder('Insire aqui')
-            .setStyle(TextInputStyle.Short)
-            .setRequired(true)
-
-        modal.addComponents(
-            new ActionRowBuilder().addComponents(canalCapaUrlInput)
-        )
-
-        await interaction.showModal(modal)
 
     }
 }

@@ -7,7 +7,7 @@ const { getRandonCores } = require('./Utils/cores')
 const { obterUnicoItem, obterItensInventario } = require('./Utils/itensInventario')
 const axios = require('axios')
 const hydraLinks = require('./data/hydraLinks')
-const { icone } = require('./Utils/emojis')
+const { icone, emoji } = require('./Utils/emojis')
 const { criarEmbed } = require('./Utils/embedFactory')
 const { enemyTurn, updateBattleMessage, rewardsAndEnd, getBattle } = require('./RPG/battleManager')
 const rpgEvents = require('./Events/rpgEvents')
@@ -83,6 +83,7 @@ async function controler(interaction) {
                 container.addActionRowComponents(
                     new ActionRowBuilder().addComponents(
                         new ButtonBuilder().setEmoji(`${imagensIcon}`).setStyle(ButtonStyle.Secondary).setCustomId(`games:imagens:${gameName}`),
+                        new ButtonBuilder().setEmoji('➕').setLabel('Adicionar Sugestão').setStyle(ButtonStyle.Secondary).setCustomId(`games:suggest:${gameName}`)
                     )
                 )
 
@@ -412,7 +413,7 @@ async function handleAction(customId, user, interaction) {
         if (action === 'imagens') {
             const response = await BuscarjogoNome(userId)
             const game = response[0]
-            
+
 
             const container = new ContainerBuilder()
 
@@ -445,8 +446,9 @@ async function handleAction(customId, user, interaction) {
             container.addMediaGalleryComponents(
                 new MediaGalleryBuilder({
                     items: [
-                        { media: 
-                            { url: jogo.background_image },
+                        {
+                            media:
+                                { url: jogo.background_image },
                         }
                     ]
                 })
@@ -476,11 +478,98 @@ async function handleAction(customId, user, interaction) {
             container.addActionRowComponents(
                 new ActionRowBuilder().addComponents(
                     new ButtonBuilder().setEmoji(`${imagensIcon}`).setStyle(ButtonStyle.Secondary).setCustomId(`games:imagens:${userId}`),
+                    new ButtonBuilder().setEmoji('➕').setLabel('Adicionar Sugestão').setStyle(ButtonStyle.Secondary).setCustomId(`games:suggest:${userId}`)
                 )
             )
 
             await interaction.update({ flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral], components: [container] })
             return { ok: true }
+        } else if (action === 'suggest') {
+
+            const forumChannel = await interaction.client.channels.fetch('1428656735505223720')
+            const response = await BuscarjogoNome(userId)
+            const jogo = response[0]
+
+            const container = new ContainerBuilder()
+
+            container.addMediaGalleryComponents(
+                new MediaGalleryBuilder({
+                    items: [
+                        {
+                            media:
+                                { url: jogo.background_image },
+                        }
+                    ]
+                })
+            )
+
+            container.addSeparatorComponents(
+                new SeparatorBuilder({
+                    spacing: SeparatorSpacingSize.Large,
+                    divider: false
+                })
+            )
+
+            container.addTextDisplayComponents(
+                new TextDisplayBuilder({
+                    content: `# ${jogo.name}
+**Metatric:** ${jogo.metacritic}
+**Avaliação:** ${jogo.rating} / ${jogo.rating_top}
+**Plataformas:** ${jogo.platforms.map(element => { return element.platform.name }).join(', ')}
+**Data de Lançamento:** ${formatDate(jogo.released)}
+**Gêneros:** ${jogo.genres.map(element => { return element.name }).join(', ')}
+`
+                })
+            )
+            
+            const listaTags = jogo.genres.map(g => g.name)
+
+            const  existentes = forumChannel.availableTags ?? []
+            const nomesExistentes = existentes.map(tag => tag.name.toLowerCase())
+
+            console.log(listaTags)
+
+            const tagsFinal = []
+
+            for (const t of existentes) {
+                tagsFinal.push({
+                    id: t.id,
+                    name: t.name,
+                    emoji: t.emoji ?? undefined
+                })
+            }
+
+            for(const tag of listaTags){
+                if(!nomesExistentes.includes(tag.toLowerCase())){
+                    tagsFinal.push({
+                        name: tag,
+                        emoji: undefined
+                    })
+                }
+            }
+
+            await forumChannel.setAvailableTags(tagsFinal)
+            const forumAtualizado = await interaction.client.channels.fetch(forumChannel.id)
+            const appliedTags = []
+
+            for(const desiredTag of listaTags){
+                const encontrado = forumAtualizado.availableTags.find(t => t.name.toLowerCase() === desiredTag.toLowerCase())
+                if(encontrado){
+                    appliedTags.push(encontrado.id)
+                }
+            }
+
+            const post = await forumAtualizado.threads.create({
+                name: jogo.name,
+                message: {
+                    flags: [MessageFlags.IsComponentsV2],
+                    components: [container],
+                },
+                appliedTags: appliedTags
+            })
+
+            addXp(user.id, 50)
+            await interaction.deferUpdate()
         }
     }
     return { ok: true }
