@@ -27,15 +27,6 @@ module.exports = {
             channel: channel
         })
 
-        await interaction.editReply({
-            embeds: [
-               criarEmbed({
-                    title: 'Batalha Iniciada! ⚔️',
-                    description: `Você iniciou uma batalha contra um inimigo! Vá para o canal ${channel} para lutar!`,
-                    color: 'Green',
-                    footer: 'Jubscreuda RPG'
-                })
-            ], flags: 64
-        })
+        await interaction.deferUpdate()
     }
 }

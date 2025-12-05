@@ -5,15 +5,20 @@ const { api } = require('./axiosClient')
  * @param {Inteiro} userId - id do usuário
  * @param {Inteiro} add - Quantidade de xp que será adicionada
  */
-async function addXpHeroi(userId, add) {
+async function addXpHeroi(userId, add, moedaAdd) {
 
     const response = await api.get(`/heroi/${userId}`)
 
     const heroi = response.data
     const xp = heroi.xp + add
+    const moeda = moedaAdd || 0 + heroi.moeda
+
+    console.log(moedaAdd)
+    console.log(moeda)
 
     await api.patch(`/heroi/${userId}`, {
-        xp: xp
+        xp: xp,
+        moeda: moeda
     })
 
     await addLVLHeroi(userId)

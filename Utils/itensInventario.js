@@ -6,7 +6,7 @@ const { api, apiTeste } = require("./axiosClient");
  * @returns  Um Array de objeto com os itens
  */
 async function obterItensInventario(userId) {
-    const heroi = await api.get(`/heroes/${userId}`)
+    const heroi = await api.get(`/heroi/${userId}`)
 
     const itens = heroi.data.inventario.itens.map(item => { return item.item })
 
@@ -40,7 +40,7 @@ async function obterUnicoItem(itemID) {
  */
 async function addItem(heroiID, itemID, quantidade) {
 
-    await api.patch(`heroes/${heroiID}/inventario/adicionar`, {
+    await api.patch(`heroi/${heroiID}/inventario/adicionar`, {
         itemID: itemID,
         quantidade: quantidade
     })
