@@ -6,6 +6,8 @@ const rpgEvents = require('../Events/rpgEvents')
 
 const batalhaCache = new Map
 
+const uid = Date.now()
+
 function barraDeVida(cur, max, len = 10) {
     const filled = Math.round((cur / max) * len)
     const empty = len - filled
@@ -13,20 +15,22 @@ function barraDeVida(cur, max, len = 10) {
 }
 
 function criarInimigo(nivelPLayer, nome, hp, ataque, defesa, imagem, moeda, xp) {
-    const scale = 5 + Math.random() * 2
+    const scale = 0.8 + Math.random() * 1.2
     const level = Math.max(1, Math.round(nivelPLayer * scale))
 
-    // return {
-    //     nome: nome,
-    //     level: level,
-    //     maxHp: hp + level * 5,
-    //     hp: hp + level * 5,
-    //     ataque: ataque + level * 2,
-    //     defesa: defesa + level,
-    //     moeda: moeda + level * 3,
-    //     xp: xp + level * 5,
-    //     imagem: imagem || 'Sem Imagem'
-    // }
+    console.log(level)
+
+    return {
+        nome: nome,
+        level: level,
+        maxHp: hp + level * 5,
+        hp: hp + level * 5,
+        ataque: ataque + level * 2,
+        defesa: defesa + level,
+        moeda: moeda + level * 3,
+        xp: xp + level * 5,
+        imagem: imagem || 'Sem Imagem'
+    }
 }
 
 async function começarBatalha({ interaction, playerData, cliente, channel }) {
@@ -47,10 +51,10 @@ async function começarBatalha({ interaction, playerData, cliente, channel }) {
         moeda: playerData.moeda ?? 0
     }
 
-    const enemy = await obterUnicoInimigo(1)
+    const enemy = await obterUnicoInimigo(Math.round(Math.random() * 3) + 1)
 
 
-    const inimmigo = criarInimigo(player.nivel, enemy.nome, enemy.vida, enemy.ataque, enemy.defesa, enemy.imagem, Math.round(Math.random() * 150), Math.round(Math.random() * 200))
+    const inimmigo = criarInimigo(player.nivel, enemy.nome, enemy.vida, enemy.ataque, enemy.defesa, enemy.imagem, Math.round(Math.random() * 150), Math.round(Math.random() * 400))
 
     if (batalhaCache.has(player.id)) {
         return channel.send({
@@ -65,9 +69,9 @@ async function começarBatalha({ interaction, playerData, cliente, channel }) {
     }
 
     const row = new ActionRowBuilder().addComponents(
-        new ButtonBuilder().setCustomId(`rpg:attack:${player.id}`).setLabel('Ataque').setStyle(ButtonStyle.Danger),
-        new ButtonBuilder().setCustomId(`rpg:heal:${player.id}`).setLabel('Curar').setStyle(ButtonStyle.Success).setDisabled(true),
-        new ButtonBuilder().setCustomId(`rpg:run:${player.id}`).setLabel('Fugir').setStyle(ButtonStyle.Secondary)
+        new ButtonBuilder().setCustomId(`rpg:attack:${player.id}:${uid}`).setLabel('Ataque').setStyle(ButtonStyle.Danger),
+        new ButtonBuilder().setCustomId(`rpg:heal:${player.id}:${uid}`).setLabel('Curar').setStyle(ButtonStyle.Success),
+        new ButtonBuilder().setCustomId(`rpg:run:${player.id}:${uid}`).setLabel('Fugir').setStyle(ButtonStyle.Secondary)
     )
 
     const container = new ContainerBuilder({
@@ -95,7 +99,20 @@ async function começarBatalha({ interaction, playerData, cliente, channel }) {
 
     container.addTextDisplayComponents(
         new TextDisplayBuilder({
-            content: `**${player.nome}** \n  **❤️ Vida:** \`${barraDeVida(player.hp, player.maxHp)}\` \n \n **${inimmigo.nome}**\n  **❤️ Vida:** \`${barraDeVida(inimmigo.hp, inimmigo.maxHp)}\``
+            content: `** ## ${inimmigo.nome}**\n  **❤️ Vida:** \`${barraDeVida(inimmigo.hp, inimmigo.maxHp)}\` \n\n **🆙 Nível: ** ${inimmigo.level} \n **⚔️ Ataque: ** \`${inimmigo.ataque}\` \n **🛡️ Defesa: ** \`${inimmigo.defesa}\` \n\n`
+        })
+    )
+
+    container.addSeparatorComponents(
+        new SeparatorBuilder({
+            spacing: SeparatorSpacingSize.Large,
+            divider: true
+        })
+    )
+
+    container.addTextDisplayComponents(
+        new TextDisplayBuilder({
+            content: `** ## ${player.nome}** \n  **❤️ Vida:** \`${barraDeVida(player.hp, player.maxHp)}\` \n \n`
         })
     )
 
@@ -189,7 +206,7 @@ async function updateBattleMessage(batalha, recentText = 'Nada aqui...') {
             new SectionBuilder()
                 .addTextDisplayComponents(
                     new TextDisplayBuilder({
-                        content: `**${batalha.player.nome}** \n  **❤️ Vida:** \`${barraDeVida(batalha.player.hp, batalha.player.maxHp)}\` \n \n **${batalha.inimmigo.nome}**\n  **❤️ Vida:** \`${barraDeVida(batalha.inimmigo.hp, batalha.inimmigo.maxHp)}\``
+                        content: `** ## ${batalha.inimmigo.nome}** \n  **❤️ Vida:** \`${barraDeVida(batalha.inimmigo.hp, batalha.inimmigo.maxHp)}\` \n\n **🆙 Nível: ** ${batalha.inimmigo.level} \n **⚔️ Ataque:** \`${batalha.inimmigo.ataque}\` \n **🛡️ Defesa** \`${batalha.inimmigo.defesa}\` \n\n`
                     })
                 )
                 .setThumbnailAccessory(
@@ -198,10 +215,37 @@ async function updateBattleMessage(batalha, recentText = 'Nada aqui...') {
                     })
                 )
         )
-    } else {
+
+        container.addSeparatorComponents(
+            new SeparatorBuilder({
+                spacing: SeparatorSpacingSize.Large,
+                divider: true
+            })
+        )
+
         container.addTextDisplayComponents(
             new TextDisplayBuilder({
-                content: `**${batalha.player.nome}** \n  **❤️ Vida:** \`${barraDeVida(batalha.player.hp, batalha.player.maxHp)}\` \n \n **${batalha.inimmigo.nome}**\n  **❤️ Vida:** \`${barraDeVida(batalha.inimmigo.hp, batalha.inimmigo.maxHp)}\``
+                content: `** ## ${batalha.player.nome}** \n  **❤️ Vida:** \`${barraDeVida(batalha.player.hp, batalha.player.maxHp)}\` \n \n`
+            })
+        )
+    } else {
+
+        container.addTextDisplayComponents(
+            new TextDisplayBuilder({
+                content: `** ## ${batalha.inimmigo.nome}**\n  **❤️ Vida:** \`${barraDeVida(batalha.inimmigo.hp, batalha.inimmigo.maxHp)}\` \n\n **🆙 Nível: ** ${batalha.inimmigo.level} \n **⚔️ Ataque:** \`${batalha.inimmigo.ataque}\` \n **🛡️ Defesa** \`${batalha.inimmigo.defesa}\` \n\n`
+            })
+        )
+
+        container.addSeparatorComponents(
+            new SeparatorBuilder({
+                spacing: SeparatorSpacingSize.Large,
+                divider: true
+            })
+        )
+
+        container.addTextDisplayComponents(
+            new TextDisplayBuilder({
+                content: `** ## ${batalha.player.nome}** \n  **❤️ Vida:** \`${barraDeVida(batalha.player.hp, batalha.player.maxHp)}\` \n \n`
             })
         )
     }
@@ -221,13 +265,12 @@ async function updateBattleMessage(batalha, recentText = 'Nada aqui...') {
     let components = [batalha.row]
     if (batalha.player.hp <= 0 || batalha.inimmigo.hp <= 0) {
 
-        components = []
     }
 
     container.addActionRowComponents(components)
 
-
     await batalha.message.edit({ components: [container], flags: [MessageFlags.IsComponentsV2] })
+
 }
 
 async function rewardsAndEnd(batalha, result) {

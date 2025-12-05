@@ -1,4 +1,4 @@
-const { EmbedBuilder, ContainerBuilder, TextDisplayBuilder, MessageFlags, MediaGalleryBuilder, SectionBuilder, ThumbnailBuilder, hyperlink, ActionRowBuilder, ButtonBuilder, ButtonStyle, SeparatorBuilder, SeparatorSpacingSize, StringSelectMenuBuilder } = require('discord.js')
+const { EmbedBuilder, ContainerBuilder, TextDisplayBuilder, MessageFlags, MediaGalleryBuilder, SectionBuilder, ThumbnailBuilder, hyperlink,LabelBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, SeparatorBuilder, SeparatorSpacingSize, StringSelectMenuBuilder, ModalBuilder, ComponentType } = require('discord.js')
 const { RAWG_API } = process.env
 const { api } = require('./Utils/axiosClient')
 const { formatDate } = require('./Utils/date')
@@ -372,31 +372,42 @@ async function handleAction(customId, user, interaction) {
             } else if (action === 'heal') {
 
                 const inventario = await obterItensInventario(batalha.player.id)
+                console.log(inventario)
                 const itensCuraveis = inventario.filter(itens => {
                     if (itens.tipo === 'CONSUMIVEL')
                         return itens
                 })
 
                 if (itensCuraveis.length > 0) {
-                    const row = new ActionRowBuilder()
-                        .addComponents(
-                            new StringSelectMenuBuilder()
-                                .setCustomId(`rpg:userPotion:${batalha.player.id}`)
-                                .setPlaceholder('Ecolha a poção para curar')
-                                .addOptions(itensCuraveis.map(item => ({
-                                    label: `${item.nome} (+${item.heal})`,
-                                    value: String(item.id),
-                                })))
+                    const modal = new ModalBuilder({
+                        title: 'Usar Consumível',
+                        customId: `rpg:useitem:${batalha.player.id}`,
+                    })
+                        .addTextDisplayComponents(
+                            new TextDisplayBuilder({
+                                content: 'Selecione o consumível que deseja usar:',
+                            })
+                        )
+                        .addLabelComponents(
+                            new LabelBuilder({
+                                label: 'Consumível:',
+                                description: 'Selecione o consumível que deseja usar',
+                                component: {
+                                    type: ComponentType.StringSelect,
+                                    custom_id: 'consumivelSelect',
+                                    required: true,
+                                    max_values: itensCuraveis.length,
+                                    min_values: 1,
+                                    options: itensCuraveis.map(item => ({
+                                        label: `${item.nome}`,
+                                        description: `Cura: +${item.heal}`,
+                                        value: String(item.id)
+                                    }))
+                                }
+                            })
                         )
 
-                    await batalha.channel.send({
-                        embeds: [criarEmbed({
-                            title: 'Poções',
-                            description: 'Selecione uma poção para poder se curar',
-                            color: 'Green',
-                            footer: 'Jubscreuda RPG'
-                        })], components: [row]
-                    })
+                    await interaction.showModal(modal)
 
                     batalha.processing = false
                     return { ok: true }
@@ -521,10 +532,10 @@ async function handleAction(customId, user, interaction) {
 `
                 })
             )
-            
+
             const listaTags = jogo.genres.map(g => g.name)
 
-            const  existentes = forumChannel.availableTags ?? []
+            const existentes = forumChannel.availableTags ?? []
             const nomesExistentes = existentes.map(tag => tag.name.toLowerCase())
 
             console.log(listaTags)
@@ -539,8 +550,8 @@ async function handleAction(customId, user, interaction) {
                 })
             }
 
-            for(const tag of listaTags){
-                if(!nomesExistentes.includes(tag.toLowerCase())){
+            for (const tag of listaTags) {
+                if (!nomesExistentes.includes(tag.toLowerCase())) {
                     tagsFinal.push({
                         name: tag,
                         emoji: undefined
@@ -552,9 +563,9 @@ async function handleAction(customId, user, interaction) {
             const forumAtualizado = await interaction.client.channels.fetch(forumChannel.id)
             const appliedTags = []
 
-            for(const desiredTag of listaTags){
+            for (const desiredTag of listaTags) {
                 const encontrado = forumAtualizado.availableTags.find(t => t.name.toLowerCase() === desiredTag.toLowerCase())
-                if(encontrado){
+                if (encontrado) {
                     appliedTags.push(encontrado.id)
                 }
             }

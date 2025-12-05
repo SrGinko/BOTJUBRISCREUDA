@@ -29,9 +29,13 @@ rpgEvents.on('battleEnd', ({ batalha, result }) => {
                 })
             )
 
-            addXpHeroi(batalha.user.id, xpGanho)
+            addXpHeroi(batalha.user.id, xpGanho, moedaGanha)
             addXp(batalha.user.id, xpGanho)
             batalha.message.edit({ components: [containerVitoria], flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral] })
+
+            setTimeout(() => {
+                batalha.message.delete()
+            }, 5000);
 
             break;
 
@@ -63,6 +67,10 @@ rpgEvents.on('battleEnd', ({ batalha, result }) => {
             addXp(batalha.user.id, xpGanho)
             batalha.message.edit({ components: [containerDerrota], flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral] })
 
+            setTimeout(() => {
+                batalha.message.delete()
+            }, 5000);
+
             break;
 
         case 'fuga':
@@ -92,6 +100,10 @@ rpgEvents.on('battleEnd', ({ batalha, result }) => {
             addXp(batalha.user.id, xpGanho)
             batalha.message.edit({ components: [containerFuga], flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral] })
 
+            setTimeout(() => {
+                batalha.message.delete()
+            }, 5000);
+
             break;
 
         case 'timeout':
@@ -115,6 +127,10 @@ rpgEvents.on('battleEnd', ({ batalha, result }) => {
                 })
             )
             batalha.message.edit({ components: [containerTimeout], flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral] })
+
+            setTimeout(() => {
+                batalha.message.delete()
+            }, 5000);
 
         default:
             break;
