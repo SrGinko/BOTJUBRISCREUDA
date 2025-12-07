@@ -18,7 +18,7 @@ async function obterItensInventario(userId) {
  * @returns Array de Objetos com os itens
  */
 async function obterItens() {
-    let itens = await api.get('/itens')
+    let itens = await api.get('/itens').then(res => res)
     return itens.data
 }
 

@@ -1,10 +1,11 @@
 const { Events } = require('discord.js')
 const { controler, handleAction } = require('../Controller')
-const { obterItens } = require('../Utils/itensInventario')
+const { obterItens, obterUnicoItem } = require('../Utils/itensInventario')
 const chalk = require("chalk")
 const { apiTeste, api } = require('../Utils/axiosClient')
 const guildEvent = require('./GuildEvent')
 const { criarEmbed } = require('../Utils/embedFactory')
+const { updateBattleMessage, enemyTurn, getBattle } = require('../RPG/battleManager')
 const erro = chalk.bold.red
 
 
@@ -18,7 +19,7 @@ module.exports = {
 
 			const channel = await interaction.guild.channels.fetch('1428656070552850483')
 
-			const [prefix, action] = interaction.customId.split(':')
+			const [prefix, action, id] = interaction.customId.split(':')
 
 			if (prefix === 'tv') {
 				switch (action) {
@@ -48,55 +49,30 @@ module.exports = {
 					default:
 						break;
 				}
-			} else if (prefix === 'agendar') {
+			}if (prefix === 'rpg') {
 				switch (action) {
-					case 'lembrete':
-
-						const { google } = require('googleapis');
+					case 'curar':{
+						const selecionados = interaction.fields.getStringSelectValues('consumivelSelect')
+						const itensUsados = await Promise.all(selecionados.map(async (itemId) => {
+							const res = await obterUnicoItem(Number(itemId))
+							return res
+						}))
 						
-						const detalhesLembrete = interaction.fields.getTextInputValue('detalhesLembrete')
-						const dataHoraLembrete = interaction.fields.getTextInputValue('dataHoraLembrete')
-						const fimDataHoraLembrete = interaction.fields.getTextInputValue('fimDataHoraLembrete')
+						const curarAmount = itensUsados.reduce((acc, item) => acc + (item.heal || 0), 0)
+						
+						const batalha = getBattle(id)
 
-						const jwt = new google.auth.JWT(
-							'pedeohenriquecardoso@gmail.com',
-							null,
-							'06072004ph@',
-							['https://www.googleapis.com/auth/calendar']
-						);
+						batalha.player.hp = Math.min(batalha.player.maxHp, batalha.player.hp + curarAmount)
 
-						const calendar = google.calendar({ version: 'v3', auth: jwt })
+						await interaction.deferUpdate();
 
-						const inicioIso = new Date(dataHoraLembrete.replace(" ", "T") + ":00-03:00");
-						const fimIso = new Date(fimDataHoraLembrete.replace(" ", "T") + ":00-03:00");
+						await updateBattleMessage(batalha, `Você usou itens e recuperou ${curarAmount} de vida!`)
+						await enemyTurn(batalha)
 
-						const evento = {
-							summary: detalhesLembrete,
-							start: {
-								dateTime: inicioIso,
-								timeZone: 'America/Sao_Paulo',
-							},
-							end: {
-								dateTime: fimIso,
-								timeZone: 'America/Sao_Paulo',
-							},
-						};
-
-						try {
-							const res = await calendar.events.insert({
-								calendarId: 'primary', 
-								resource: evento,
-							});
-
-							await interaction.editReply(`Evento criado!\nLink: ${res.data.htmlLink}`);
-						} catch (err) {
-							console.error(err);
-							await interaction.editReply("Deu ruim ao criar o evento.");
-						} 
+					}
 				}
 			}
 		}
-
 
 		if (interaction.isButton()) {
 

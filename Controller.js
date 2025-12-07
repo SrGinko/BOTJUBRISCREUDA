@@ -372,7 +372,6 @@ async function handleAction(customId, user, interaction) {
             } else if (action === 'heal') {
 
                 const inventario = await obterItensInventario(batalha.player.id)
-                console.log(inventario)
                 const itensCuraveis = inventario.filter(itens => {
                     if (itens.tipo === 'CONSUMIVEL')
                         return itens
@@ -381,7 +380,7 @@ async function handleAction(customId, user, interaction) {
                 if (itensCuraveis.length > 0) {
                     const modal = new ModalBuilder({
                         title: 'Usar Consumível',
-                        customId: `rpg:useitem:${batalha.player.id}`,
+                        customId: `rpg:curar:${batalha.player.id}`,
                     })
                         .addTextDisplayComponents(
                             new TextDisplayBuilder({
