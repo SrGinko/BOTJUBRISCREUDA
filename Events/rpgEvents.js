@@ -1,12 +1,13 @@
-const { ContainerBuilder, TextDisplayBuilder, SeparatorBuilder, SeparatorSpacingSize, MessageFlags } = require('discord.js')
+const { ContainerBuilder, TextDisplayBuilder, SeparatorBuilder, SeparatorSpacingSize, MessageFlags, calculateShardId } = require('discord.js')
 const { EventEmitter } = require('events')
 const { addXpHeroi, addXp } = require('../Utils/xp')
+const { api } = require('../Utils/axiosClient')
 const rpgEvents = new EventEmitter()
 
 rpgEvents.on('battleEnd', ({ batalha, result }) => {
 
-    let xpGanho = batalha.inimmigo.xp
-    let moedaGanha = batalha.inimmigo.moeda
+    let xpGanho = batalha.inimmigo.xp || 0
+    let moedaGanha = batalha.inimmigo.moeda || 0
 
     switch (result) {
         case 'vitoria':
@@ -25,7 +26,7 @@ rpgEvents.on('battleEnd', ({ batalha, result }) => {
             )
             containerVitoria.addTextDisplayComponents(
                 new TextDisplayBuilder({
-                    content: `${batalha.user}, seu Heroi saiu Vitorioso! \n **XP Ganho:** ${xpGanho} \n **Moeda Ganha:** ${moedaGanha}`
+                    content: `${batalha.user}, seu Heroi saiu Vitorioso! \n **XP Ganho:** ${xpGanho} \n **Moeda Ganha:** ${moedaGanha} \n > Essa mensagem será apagada em alguns segundos.`
                 })
             )
 
@@ -43,8 +44,8 @@ rpgEvents.on('battleEnd', ({ batalha, result }) => {
 
             const containerDerrota = new ContainerBuilder()
 
+            xpGanho = Math.round(xpGanho / 4)
 
-            xpGanho = Math.round(xpGanho / 2)
 
             containerDerrota.setAccentColor(0xa30000)
             containerDerrota.addTextDisplayComponents(
@@ -52,6 +53,20 @@ rpgEvents.on('battleEnd', ({ batalha, result }) => {
                     content: '# 💀 Derrota!'
                 })
             )
+            if (batalha.inimmigo.nome === 'Goblin' || batalha.inimmigo.nome === 'Ladrão') {
+                if (Math.random() < 0.2) {
+                    api.patch(`/heroi/${batalha.user.id}`, {
+                        armaID: null,
+                        armaduraID: null,
+                        calcaID: null,
+                    })
+                    containerDerrota.addTextDisplayComponents(
+                        new TextDisplayBuilder({
+                            content: `> O Ladrão te roubou quando estava inconciente e seu Herói perdeu todo o equipamento na batalha!`
+                        })
+                    )
+                }
+            }
             containerDerrota.addSeparatorComponents(
                 new SeparatorBuilder({
                     spacing: SeparatorSpacingSize.Large
@@ -59,7 +74,7 @@ rpgEvents.on('battleEnd', ({ batalha, result }) => {
             )
             containerDerrota.addTextDisplayComponents(
                 new TextDisplayBuilder({
-                    content: `${batalha.user}, seu Heroi foi  derrotado! \n **XP Ganho:** ${xpGanho} \n Moeda Ganha: 0`
+                    content: `${batalha.user}, seu Heroi foi  derrotado! \n **XP Ganho:** ${xpGanho} \n Moeda Ganha: 0 \n > Essa mensagem será apagada em alguns segundos.`
                 })
             )
 
@@ -75,7 +90,7 @@ rpgEvents.on('battleEnd', ({ batalha, result }) => {
 
         case 'fuga':
 
-             const containerFuga = new ContainerBuilder()
+            const containerFuga = new ContainerBuilder()
 
             xpGanho = Math.round(xpGanho / 4)
 
@@ -92,7 +107,7 @@ rpgEvents.on('battleEnd', ({ batalha, result }) => {
             )
             containerFuga.addTextDisplayComponents(
                 new TextDisplayBuilder({
-                    content: `${batalha.user}, seu Heroi Fugiu! \n **XP Ganho:** ${xpGanho} \n Moeda Ganha: 0`
+                    content: `${batalha.user}, seu Heroi Fugiu! \n **XP Ganho:** ${xpGanho} \n Moeda Ganha: 0 \n > Essa mensagem será apagada em alguns segundos.`
                 })
             )
 
@@ -108,7 +123,7 @@ rpgEvents.on('battleEnd', ({ batalha, result }) => {
 
         case 'timeout':
 
-             const containerTimeout = new ContainerBuilder()
+            const containerTimeout = new ContainerBuilder()
 
             containerTimeout.setAccentColor(0xffbb00)
             containerTimeout.addTextDisplayComponents(
@@ -123,7 +138,7 @@ rpgEvents.on('battleEnd', ({ batalha, result }) => {
             )
             containerTimeout.addTextDisplayComponents(
                 new TextDisplayBuilder({
-                    content: `${batalha.user}, tempo de resposta acabou!`
+                    content: `${batalha.user}, tempo de resposta acabou! \n > Essa mensagem será apagada em alguns segundos.`
                 })
             )
             batalha.message.edit({ components: [containerTimeout], flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral] })
