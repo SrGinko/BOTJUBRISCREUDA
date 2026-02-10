@@ -7,8 +7,12 @@ const { api, apiTeste } = require("./axiosClient");
  */
 async function obterItensInventario(userId) {
     const heroi = await api.get(`/heroi/${userId}`)
-
-    const itens = heroi.data.inventario.itens.map(item => { return item.item })
+    const itens = heroi.data.inventario.itens.map(item => {
+        return {
+            quantidade: item.quantidade,
+            item: item.item,
+        }
+    })
 
     return itens
 }
@@ -49,16 +53,52 @@ async function addItem(heroiID, itemID, quantidade) {
 
 /**
  * Remove um item do inventario do heroi
- * @param {*Number} heroiID - ID do Heroi 
+ * @param {*Number} userID - ID do Heroi 
  * @param {*Number} itemID - ID do Item 
  * @param {*Number} quantidade - Quantidade que será removida
  */
-async function removeItem(heroiID, itemID, quantidade) {
+async function removeItem(userID, itemID, quantidade) {
+    const res = await api.get(`/heroi/${userID}`)
+    const heroi = res.data
 
-    await api.patch(`heroes/${heroiID}/inventario/remover`, {
+    await api.patch(`heroi/${heroi.id}/inventario/remover`, {
         itemID: itemID,
         quantidade: quantidade
     })
 }
 
-module.exports = { obterItensInventario, obterItens, obterUnicoItem, addItem, removeItem }
+
+/** * Equipa os itens no heroi e remove os itens do inventário
+ * @param {*Number} userId - ID do Usuário
+ * @param {*Number} armaID - ID da Arma
+ * @param {*Number} armaduraID - ID da Armadura
+ * @param {*Number} calcaID - ID da Calça
+ *
+ */
+async function equiparItem(userId, itensID) {
+    
+    if (itensID.arma) {
+        await api.patch(`/heroi/${userId}`, {
+            armaID: itensID.arma
+        })
+
+        removeItem(userId, itensID.arma, 1)
+    }
+    if (itensID.armadura) {
+        await api.patch(`/heroi/${userId}`, {
+            armaduraID: itensID.armadura
+        })
+
+        removeItem(userId, itensID.armadura, 1)
+    }
+    if (itensID.calca) {
+        await api.patch(`/heroi/${userId}`, {
+            calcaID: itensID.calca
+        })
+
+        removeItem(userId, itensID.calca, 1)
+    }
+
+}
+
+module.exports = { obterItensInventario, obterItens, obterUnicoItem, addItem, removeItem, equiparItem }
