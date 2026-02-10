@@ -49,9 +49,23 @@ async function começarBatalha({ interaction, playerData, cliente, channel }) {
         moeda: playerData.moeda ?? 0
     }
 
-    const enemy = await obterUnicoInimigo(Math.round(Math.random() * 2) + 1)
+    let enemy
+    let inimigoId = Math.round(Math.random() * 2) + 1
 
-    const inimmigo = criarInimigo(player.nivel, enemy.nome, enemy.vida, enemy.ataque, enemy.defesa, enemy.imagem, Math.round(Math.random() * 150), Math.round(Math.random() * 400))
+    if (player.nivel >= 20) {
+        while (inimigoId < 2) {
+            inimigoId = Math.round(Math.random() * 2) + 1
+        }
+
+        enemy = await obterUnicoInimigo(inimigoId)
+    } else {
+        while (inimigoId >= 4) {
+            inimigoId = Math.round(Math.random() * 2) + 1
+        }
+        enemy = await obterUnicoInimigo(inimigoId)
+    }
+
+    const inimmigo = criarInimigo(player.nivel, enemy.nome, enemy.vida, enemy.ataque, enemy.defesa, enemy.imagem, Math.round(Math.random() * 60), Math.round(Math.random() * 400))
 
     if (batalhaCache.has(player.id)) {
         return channel.send({
