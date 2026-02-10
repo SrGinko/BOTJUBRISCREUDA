@@ -22,8 +22,14 @@ function Hoje() {
  * @returns Retorna a data formatada
  */
 function formatDate(date) {
-    const parter = date.split('-')
-    return dataFormatada = `${parter[2]}/${parter[1]}/${parter[0]}`
+    if(!date)return 'Sem data de Lançamento'
+    if (date.includes('/')) {
+        return date
+    } else if (date.includes('-')) {
+        let parter = date.split('-')
+        return dataFormatada = `${parter[2]}/${parter[1]}/${parter[0]}`
+
+    }
 }
 
 module.exports = { Hoje, formatDate }
