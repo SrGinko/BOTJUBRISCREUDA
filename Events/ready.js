@@ -25,7 +25,7 @@ module.exports = {
 
 						const userId = member.user.id
 
-						if (chance(30)) {
+						if (chance(10)) {
 							addXp(userId, 60)
 						} else {
 							addXp(userId, 20)
@@ -40,6 +40,6 @@ module.exports = {
 			if (guild) {
 				addXpToVoiceChannelUsers(guild);
 			}
-		}, 70000)
+		}, 80000)
 	}
 }
