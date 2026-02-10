@@ -1,6 +1,5 @@
-const { SlashCommandBuilder, MessageFlags, ContainerBuilder, StringSelectMenuBuilder, ActionRowBuilder, TextDisplayBuilder, ThumbnailBuilder, SectionBuilder } = require('discord.js')
+const { SlashCommandBuilder, TextDisplayBuilder, ModalBuilder, LabelBuilder, ComponentType } = require('discord.js')
 const { obterItensInventario } = require('../../Utils/itensInventario')
-const { getRandonCores } = require('../../Utils/cores')
 
 
 
@@ -12,54 +11,141 @@ module.exports = {
     async execute(interaction) {
         const userId = interaction.user.id
 
-        await interaction.deferReply({ flags: [MessageFlags.Ephemeral] })
-
         const inventario = await obterItensInventario(userId)
-        const itensEquipaveis = inventario.filter(itens => {
-            if (itens.tipo === 'ARMA')
-                return itens
+        const itensEquipaveis = inventario.map(itens => {
+            return {
+                itens: itens.item,
+                quantidade: itens.quantidade
+            }
+        }).filter(item => ['ARMA', 'ARMADURA', 'CALCA'].includes(item.itens.tipo))
+
+        const modal = new ModalBuilder({
+            title: 'Equipar Itens',
+            custom_id: `rpg:equipar:${userId}`,
         })
+            .addTextDisplayComponents(
+                new TextDisplayBuilder({
+                    content: 'Selecione os itens que deseja equipar no menu abaixo e clique em Enviar.',
+                })
+            )
+        if (itensEquipaveis.filter(item => item.itens.tipo === 'ARMA').length > 0) {
 
-        const row = new StringSelectMenuBuilder()
-            .setCustomId('equipar-item')
-            .setPlaceholder('Selecione o Item')
-            .setMinValues(1)
-            .setMaxValues(3)
-            .setMaxValues(itensEquipaveis.length)
-            .addOptions(itensEquipaveis.map(item => ({
-                label: item.nome,
-                value: item.id.toString(),
-                description: item.descricao
-            })))
+            modal.addLabelComponents(
+                new LabelBuilder({
+                    label: 'Armas:',
+                    description: 'Selecione a arma que deseja equipar.',
+                    component: {
+                        type: ComponentType.StringSelect,
+                        custom_id: 'arma',
+                        required: false,
+                        options: itensEquipaveis.filter(item => item.itens.tipo === 'ARMA').map(item => ({
+                            label: `${item.itens.nome}`,
+                            description: `Ataque: ${item.itens.ataque} | Quantidade: ${item.quantidade}`,
+                            value: String(item.itens.id)
+                        }))
+                    }
 
-        const cor = getRandonCores()
+                }))
+        } else {
+            modal.addLabelComponents(
+                new LabelBuilder({
+                    label: 'Armas:',
+                    description: 'Você não possui itens do tipo Arma equipavel no seu inventário.',
+                    component: {
+                        type: ComponentType.StringSelect,
+                        custom_id: 'arma',
+                        required: false,
+                        options: [
+                            {
+                                label: 'Nenhum item disponível',
+                                description: 'Você não possui itens do tipo Arma equipavel no seu inventário.',
+                                value: '0'
+                            }
+                        ]
+                    }
+                })
+            )
+        }
 
-        const container = new ContainerBuilder({
-            accent_color: cor,
-        })
+        if (itensEquipaveis.filter(item => item.itens.tipo === 'ARMADURA').length > 0) {
 
-        container.addSectionComponents(
-            new SectionBuilder()
-                .addTextDisplayComponents(
-                    new TextDisplayBuilder({
-                        content: `# Itens Equipavéis
+            modal.addLabelComponents(
+                new LabelBuilder({
+                    label: 'Armadura:',
+                    description: 'Selecione a armadura que deseja equipar.',
+                    component: {
+                        type: ComponentType.StringSelect,
+                        custom_id: 'armadura',
+                        required: false,
+                        options: itensEquipaveis.filter(item => item.itens.tipo === 'ARMADURA').map(item => ({
+                            label: `${item.itens.nome}`,
+                            description: `Defesa: ${item.itens.defesa} | Quantidade: ${item.quantidade}`,
+                            value: String(item.itens.id)
+                        }))
+                    }
 
-Itens do seu inventário que você consegue equipar.
-`
-                    })
-                )
-                .setThumbnailAccessory(
-                    new ThumbnailBuilder({
-                        media: { url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLfvPLuVKPLsnKo5ctuubhKKtCClyUfIytyA&s' }
-                    })
-                )
-        )
+                })
+            )
+        } else {
+            modal.addLabelComponents(
+                new LabelBuilder({
+                    label: 'Armadura:',
+                    description: 'Você não possui itens do tipo Armadura equipavel no seu inventário.',
+                    component: {
+                        type: ComponentType.StringSelect,
+                        custom_id: 'armadura',
+                        required: false,
+                        options: [
+                            {
+                                label: 'Nenhum item disponível',
+                                description: 'Você não possui itens do tipo Armadura equipavel no seu inventário.',
+                                value: '0'
+                            }
+                        ]
+                    }
+                })
+            )
+        }
 
-        container.addActionRowComponents(
-            new ActionRowBuilder()
-                .addComponents(row)
-        )
+        if (itensEquipaveis.filter(item => item.itens.tipo === 'CALCA').length > 0) {
 
-        await interaction.editReply({ flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral], components: [container] })
+            modal.addLabelComponents(
+                new LabelBuilder({
+                    label: 'Calça:',
+                    description: 'Selecione a calça que deseja equipar.',
+                    component: {
+                        type: ComponentType.StringSelect,
+                        custom_id: 'calca',
+                        required: false,
+                        options: itensEquipaveis.filter(item => item.itens.tipo === 'CALCA').map(item => ({
+                            label: `${item.itens.nome}`,
+                            description: `Defesa: ${item.itens.defesa} | Quantidade: ${item.quantidade}`,
+                            value: String(item.itens.id)
+                        }))
+                    }
+                })
+            )
+        } else {
+            modal.addLabelComponents(
+                new LabelBuilder({
+                    label: 'Calça:',
+                    description: 'Você não possui itens do tipo Calça equipavel no seu inventário.',
+                    component: {
+                        type: ComponentType.StringSelect,
+                        custom_id: 'calca',
+                        required: false,
+                        options: [
+                            {
+                                label: 'Nenhum item disponível',
+                                description: 'Você não possui itens do tipo Calça equipavel no seu inventário.',
+                                value: '0'
+                            }
+                        ]
+                    }
+                })
+            )
+        }
+
+        await interaction.showModal(modal)
     }
 }
