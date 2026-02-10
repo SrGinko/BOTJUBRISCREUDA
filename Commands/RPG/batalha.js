@@ -3,6 +3,7 @@ const { api } = require('../../Utils/axiosClient')
 const battleManager = require('../../RPG/battleManager')
 const { criarEmbed } = require('../../Utils/embedFactory')
 
+
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('batalha')
@@ -11,15 +12,19 @@ module.exports = {
     async execute(interaction) {
         const userId = interaction.user.id
 
-        await interaction.deferReply({ flags: [MessageFlags.Ephemeral] })
+        await interaction.deferReply({ flags: [MessageFlags.Ephemeral] });
 
         const player = await api.get(`/heroi/${userId}`)
         const channel = interaction.guild.channels.cache.get('1406878528859017248')
-
+        
+        const embed1 = await criarEmbed({ description: `A batalha irá começar no canal ${channel}`, color: '#0398fc' })
+        const embed2 = await criarEmbed({ description: `A batalha já vai começar`, color: '#0398fc' })
 
         if (!player) {
-            await interaction.reply({ content: 'Você tem que ter um aventureiro para começar' })
+            await interaction.editReply({ content: 'Você tem que ter um aventureiro para começar' })
         }
+
+
         await battleManager.começarBatalha({
             interaction: interaction,
             playerData: player.data,
@@ -27,6 +32,13 @@ module.exports = {
             channel: channel
         })
 
-        await interaction.deferUpdate()
+        if (interaction.channel.id !== '1406878528859017248') {
+
+
+
+            await interaction.editReply({ embeds: [embed1], flags: [MessageFlags.Ephemeral] })
+        } else {
+            await interaction.editReply({ embeds: [embed2], flags: [MessageFlags.Ephemeral] })
+        }
     }
 }

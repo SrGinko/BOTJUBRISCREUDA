@@ -1,14 +1,16 @@
 const { Client, Events, GatewayIntentBits, Collection, ActivityType, Partials } = require('discord.js');
-const { Player } = require('discord-player');
-const { SpotifyExtractor } = require('@discord-player/extractor');
-const { YoutubeiExtractor } = require('discord-player-youtubei');
-
-
+const chalk = require("chalk")
 const dotenv = require('dotenv')
 dotenv.config()
 const { TOKEN } = process.env
 const fs = require('node:fs');
 const path = require('node:path');
+
+const erro = chalk.bold.red
+const success = chalk.bold.green
+const info = chalk.bold.blue
+const title = chalk.yellow.bold
+
 
 const client = new Client({
 	intents:
@@ -16,6 +18,7 @@ const client = new Client({
 			GatewayIntentBits.Guilds,
 			GatewayIntentBits.GuildMembers,
 			GatewayIntentBits.GuildMessages,
+			GatewayIntentBits.MessageContent,
 			GatewayIntentBits.GuildMessageReactions,
 			GatewayIntentBits.GuildVoiceStates,
 			GatewayIntentBits.DirectMessages
@@ -29,7 +32,6 @@ const client = new Client({
 
 client.commands = new Collection()
 
-const player = new Player(client);
 
 const foldersPath = path.join(__dirname, 'Commands');
 const commandFolders = fs.readdirSync(foldersPath);
@@ -58,13 +60,23 @@ for (const file of eventFiles) {
 	}
 }
 
-client.on('clientReady', async () => {
+if (process.stdin.isTTY) {
+	process.stdin.setRawMode(true)
+	process.stdin.resume()
+	process.stdin.setEncoding('utf8')
 
-	await player.extractors.loadMulti([
-		SpotifyExtractor
-	])
+	process.stdin.on('data', (key) => {
+		if (key === '\u0003') {
+			console.log(erro('❌ Encerrando o BOT...'))
+			process.exit()
+		}
+		if (key.toLowerCase() === 'r') {
+			console.log(info('🔄 Reiniciando o BOT...'))
+			process.exitCode = 1
+		}
+	})
 
-})
+}
 
 client.login(TOKEN);
 

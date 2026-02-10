@@ -24,7 +24,7 @@ for (const folder of commandFolders) {
 		if ('data' in command && 'execute' in command) {
 			commands.push(command.data.toJSON());
 		} else {
-			console.log(title(`[⚠️ ] O Comando ${filePath} faltando a propriedade "data" ou "execute".`));
+			console.log(title(`[⚠️] O Comando ${filePath} faltando a propriedade "data" ou "execute".`));
 		}
 	}
 }
@@ -41,6 +41,7 @@ const rest = new REST().setToken(TOKEN);
 		);
 
 		console.log(success(`Comandos carregados com sucesso! ${data.length} comandos carregados (/) `));
+		console.clear()
 	} catch (error) {
 		
 		console.error(error);

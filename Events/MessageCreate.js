@@ -2,7 +2,20 @@ const { Events } = require('discord.js')
 const { addXp } = require('../Utils/xp')
 const { addMenssage } = require('../Utils/addMensages')
 const guildEvent = require('./GuildEvent')
+const WebSocket = require('ws')
 
+
+const ws = new WebSocket("wss://monteirojubi.discloud.app")
+
+ws.on("open", () => {
+    ws.send(JSON.stringify({
+        type: "auth",
+        origem: "discord",
+        serverId: "manicomio_server",
+        token: process.env.API_MONTEIR_KEY
+    })
+    )
+})
 
 module.exports = {
     name: Events.MessageCreate,
@@ -32,15 +45,26 @@ module.exports = {
             return
         }
 
-
-
-
         const faladorBronze = message.guild.roles.cache.find(r => r.name === 'Falador Bronze')
         const faladorPrata = message.guild.roles.cache.find(r => r.name === 'Falador Prata')
         const faladorOuro = message.guild.roles.cache.find(r => r.name === 'Falador Ouro')
         const faladorPlatina = message.guild.roles.cache.find(r => r.name === 'Falador Platina')
         const faladorDiamante = message.guild.roles.cache.find(r => r.name === 'Falador Diamante')
 
+        if (message.channel.isThread() || message.channel.id === '1031036295482454069') {
+            if (!message.content || !message.content.trim()) return;
+            if (message.channel.id === '1443140417385136240' || message.channel.id === "1031036295482454069") {
+
+                ws.send(JSON.stringify({
+                    type: 'message',
+                    origem: "discord",
+                    serveId: "manicomio_server",
+                    autor: message.author.globalName,
+                    conteudo: message.content
+                })
+                )
+            }
+        }
 
         const bot = message.guild.members.cache.get(message.author.id)
         const cargo = '1286201893516742696'
@@ -71,6 +95,7 @@ module.exports = {
                         message.member.roles.remove(faladorBronze)
                     }
                     message.member.roles.remove(faladorBronze).catch(console.error)
+                    break;
                 case 3000:
                     guildEvent.emit('conquista', { conquista: faladorOuro, xp: 3000, user: message.author, channel: message.channel })
                     addXp(message.author.id, 3000)
@@ -78,6 +103,7 @@ module.exports = {
                     if (message.member.roles.cache.has(faladorPrata)) {
                         message.member.roles.remove(faladorPrata)
                     }
+                    break;
                 case 5000:
                     guildEvent.emit('conquista', { conquista: faladorPlatina, xp: 5000, user: message.author, channel: message.channel })
                     addXp(message.author.id, 5000)
@@ -85,6 +111,7 @@ module.exports = {
                     if (message.member.roles.cache.has(faladorOuro)) {
                         message.member.roles.remove(faladorOuro)
                     }
+                    break;
                 case 10000:
                     guildEvent.emit('conquista', { conquista: faladorDiamante, xp: 10000, user: message.author, channel: message.channel })
                     addXp(message.author.id, 10000)

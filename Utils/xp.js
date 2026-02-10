@@ -11,10 +11,7 @@ async function addXpHeroi(userId, add, moedaAdd) {
 
     const heroi = response.data
     const xp = heroi.xp + add
-    const moeda = moedaAdd || 0 + heroi.moeda
-
-    console.log(moedaAdd)
-    console.log(moeda)
+    const moeda = heroi.moeda + moedaAdd
 
     await api.patch(`/heroi/${userId}`, {
         xp: xp,

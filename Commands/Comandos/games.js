@@ -1,5 +1,5 @@
-const { SlashCommandBuilder, StringSelectMenuBuilder, ContainerBuilder, TextDisplayBuilder, ActionRowBuilder, MessageFlags, Message } = require("discord.js")
-const { Buscarjogo, BuscarjogoNome } = require("../../Controller")
+const { SlashCommandBuilder, StringSelectMenuBuilder, ContainerBuilder, TextDisplayBuilder, ActionRowBuilder, MessageFlags } = require("discord.js")
+const { BuscarjogoNome } = require("../../Utils/buscarJogos")
 const { addXp } = require("../../Utils/xp")
 
 module.exports = {
@@ -28,14 +28,14 @@ module.exports = {
                         label: game.name,
                         value: `${game.name}`,
                         description: game.plataform,
-                        emoji: '🎮'
+                        emoji: '<:controle:1463846749285257260>'
                     })))
 
                 const container = new ContainerBuilder({
                     accent_color: 0x3c1099,
                     components: [
                         new TextDisplayBuilder({
-                            content: `## Selecione o jogo desejado`,
+                            content: `## <:controle:1463846749285257260> Selecione o jogo desejado`,
                             style: 'Short',
                         }),
 
@@ -44,7 +44,7 @@ module.exports = {
                     ]
                 })
                 addXp(userId, 10)
-                await interaction.editReply({ flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral], components: [container] })
+                await interaction.editReply({ flags: [MessageFlags.IsComponentsV2], components: [container] })
             }
 
         } catch (error) {

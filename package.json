@@ -11,7 +11,7 @@
     "canvas": "^3.1.0",
     "chalk": "^4.1.2",
     "discord-player": "^7.1.0",
-    "discord-player-youtubei": "^1.4.6",
+    "discord-player-youtubei": "^1.5.0",
     "discord.js": "^14.24.2",
     "dotenv": "^16.5.0",
     "ffmpeg-static": "^5.2.0",
@@ -20,15 +20,16 @@
     "mediaplex": "^1.0.0",
     "node-fetch": "^3.3.2",
     "npm": "^11.1.0",
-    "play-dl": "^1.9.7",
-    "ytdl-core": "^4.11.5"
+    "rcon-client": "^4.2.5",
+    "ws": "^8.18.3"
   },
   "name": "botjubriscreuda",
   "version": "1.7.5",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node deploy-commands.js & node index.js",
+    "dev": "nodemon --exec node deploy-commands.js & node index.js"
   },
   "repository": {
     "type": "git",
@@ -41,5 +42,8 @@
   "bugs": {
     "url": "https://github.com/SrGinko/BOTJUBRISCREUDA/issues"
   },
-  "homepage": "https://github.com/SrGinko/BOTJUBRISCREUDA#readme"
+  "homepage": "https://github.com/SrGinko/BOTJUBRISCREUDA#readme",
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
 }
