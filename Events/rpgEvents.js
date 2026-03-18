@@ -78,7 +78,7 @@ rpgEvents.on('battleEnd', ({ batalha, result }) => {
                 })
             )
 
-            addXpHeroi(batalha.user.id, xpGanho)
+            addXpHeroi(batalha.user.id, xpGanho, 0)
             addXp(batalha.user.id, xpGanho)
             batalha.message.edit({ components: [containerDerrota], flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral] })
 
@@ -111,7 +111,7 @@ rpgEvents.on('battleEnd', ({ batalha, result }) => {
                 })
             )
 
-            addXpHeroi(batalha.user.id, xpGanho)
+            addXpHeroi(batalha.user.id, xpGanho, 0)
             addXp(batalha.user.id, xpGanho)
             batalha.message.edit({ components: [containerFuga], flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral] })
 
