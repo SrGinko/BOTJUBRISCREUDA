@@ -6,6 +6,7 @@ const { enemyTurn, updateBattleMessage, rewardsAndEnd, getBattle } = require('..
 const rpgEvents = require('../Events/rpgEvents')
 const banners = require('../data/banners')
 const { BuscarjogoNome } = require('../Utils/buscarJogos')
+const { api } = require('../Utils/axiosClient')
 
 async function handleActionButton(customId, user, interaction) {
     const [prefix, action, userId] = customId.split(':')
@@ -23,6 +24,9 @@ async function handleActionButton(customId, user, interaction) {
 
         try {
             if (action === 'attack') {
+
+                await interaction.deferUpdate()
+
                 const damage = Math.max(0, Math.floor(batalha.player.attack - batalha.inimmigo.defesa + Math.random() * 5))
                 batalha.inimmigo.hp = Math.max(0, batalha.inimmigo.hp - damage)
 
@@ -301,23 +305,64 @@ async function handleActionButton(customId, user, interaction) {
                 title: 'Alterar Banner',
                 customId: `system:alterarBanner:${userId}`,
             })
-            .addLabelComponents(
-                new LabelBuilder({
-                    label: 'Banner:',
-                    description: 'Selecione o banner que deseja usar',
-                    component: {
-                        type: ComponentType.StringSelect,
-                        custom_id: "banner",
-                        options: banners.map(banner =>({
-                            label: banner.name,
-                            value: banner.id
-                        }))
-                    }
-                })
-            )
+                .addLabelComponents(
+                    new LabelBuilder({
+                        label: 'Banner:',
+                        description: 'Selecione o banner que deseja usar',
+                        component: {
+                            type: ComponentType.StringSelect,
+                            custom_id: "banner",
+                            options: banners.map(banner => ({
+                                label: banner.name,
+                                value: banner.id
+                            }))
+                        }
+                    })
+                )
 
-           await interaction.showModal(modal)
-        
+            await interaction.showModal(modal)
+
+        } if (action === 'verheroi') {
+
+            await interaction.deferUpdate()
+
+            const wallpaperIndex =
+                await api.get(`/usuario/${userId}`)
+                    .then(res => res.data.wallpaper)
+                    .catch(err => {
+                        console.error(err)
+                        return 0
+                    })
+
+            const { conteiner, attachment } =
+                await require('../Utils/utilsPerfil')
+                    .creatPerfil(userId, wallpaperIndex, interaction, 'heroi')
+
+            await interaction.editReply({
+                files: [attachment],
+                components: [conteiner],
+                flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral]
+            })
+        } if (action === 'verusuario') {
+            await interaction.deferUpdate()
+
+            const wallpaperIndex =
+                await api.get(`/usuario/${userId}`)
+                    .then(res => res.data.wallpaper)
+                    .catch(err => {
+                        console.error(err)
+                        return 0
+                    })
+
+            const { conteiner, attachment } =
+                await require('../Utils/utilsPerfil')
+                    .creatPerfil(userId, wallpaperIndex, interaction, 'usuario')
+
+            await interaction.editReply({
+                files: [attachment],
+                components: [conteiner],
+                flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral]
+            })
         }
     }
     return { ok: true }
