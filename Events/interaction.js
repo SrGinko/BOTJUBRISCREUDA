@@ -4,6 +4,7 @@ const { obterItens } = require('../Utils/itensInventario')
 const chalk = require("chalk")
 const { ModalHandleAction } = require('../handlers/modalHandler')
 const { SelectMenusHandleAction } = require('../handlers/selectmenusHandler')
+const { criarEmbed } = require('../Utils/embedFactory')
 const erro = chalk.bold.red
 
 
@@ -15,7 +16,7 @@ module.exports = {
 			ModalHandleAction(interaction)
 		}
 
-		if(interaction.isStringSelectMenu()) {
+		if (interaction.isStringSelectMenu()) {
 			SelectMenusHandleAction(interaction)
 		}
 
@@ -24,7 +25,14 @@ module.exports = {
 			const res = await handleActionButton(interaction.customId, interaction.user, interaction)
 
 			if (!res.ok) {
-				return interaction.reply({ content: res.message, ephemeral: true })
+				return interaction.reply({
+					embeds: [
+						criarEmbed({
+							description: res.message,
+							color: 'Orange'
+						})
+					], flags: 64
+				})
 			}
 
 			if (!interaction.replied && !interaction.deferred) {
@@ -62,7 +70,6 @@ module.exports = {
 		}
 		try {
 			await command.execute(interaction)
-			console.log(interaction)
 		} catch (error) {
 			console.log(error)
 		}
