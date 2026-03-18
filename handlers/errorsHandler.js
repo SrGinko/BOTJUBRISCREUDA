@@ -1,11 +1,11 @@
 const { ContainerBuilder, MessageFlags } = require("discord.js");
 
-async function handleError(interaction, mensagem){
+async function handleError(interaction, mensagem, erro){
     const container = new ContainerBuilder({
         accent_color: 0xff0000,
         components: [
             new TextDisplayBuilder({
-                content: mensagem
+                content: `# ${erro} \n ${mensagem}`
             })
         ]
     })

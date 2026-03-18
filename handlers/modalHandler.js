@@ -2,7 +2,7 @@ const { ContainerBuilder, TextDisplayBuilder, MessageFlags, SeparatorBuilder, Se
 const { criarEmbed } = require('../Utils/embedFactory')
 const { api } = require('../Utils/axiosClient')
 const { addItem, removeItem } = require('../Utils/itensInventario')
-const { obterUnicoItem } = require('../Utils/itensInventario')
+const { obterUnicoItem, equiparItem } = require('../Utils/itensInventario')
 const { enemyTurn, updateBattleMessage, getBattle } = require('../RPG/battleManager')
 
 async function ModalHandleAction(interaction) {

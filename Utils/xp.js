@@ -90,8 +90,7 @@ async function addLVL(userId) {
  * @param {Inteiro} userId - id usuário
  */
 async function addLVLHeroi(userId) {
-    const response = await api.get(`/heroi/${userId}`)
-    const heroi = response.data
+    const heroi = await api.get(`/heroi/${userId}`).then(res => res.data).catch(err => console.error(err.data.message))    
 
     const nivel = heroi.level
     const xp = heroi.xp
@@ -113,7 +112,7 @@ async function addLVLHeroi(userId) {
             attack: ataque + 3,
             defense: defesa + 2,
             
-        })
+        }).catch(err => console.error(err.data.message))
     }
 
     return Math.round(xpForNextLevel)

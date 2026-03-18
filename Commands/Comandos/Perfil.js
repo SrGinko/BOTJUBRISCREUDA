@@ -33,7 +33,7 @@ module.exports = {
         const user = response.data
         const bannerIndex = user.wallpaper || 0
         
-        const { conteiner, attachment } = await require('../../Utils/utilsPerfil').creatPerfil(userGlobal, bannerIndex, interaction)
+        const { conteiner, attachment } = await require('../../Utils/utilsPerfil').creatPerfil(userId, bannerIndex, interaction, 'usuario')
 
         await interaction.editReply({
             components: [conteiner],
