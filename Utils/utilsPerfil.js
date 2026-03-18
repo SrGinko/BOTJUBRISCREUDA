@@ -1,7 +1,7 @@
 const { AttachmentBuilder, MediaGalleryBuilder, ContainerBuilder, ThumbnailBuilder, SectionBuilder, TextDisplayBuilder, SeparatorBuilder, SeparatorSpacingSize, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js")
 const Canvas = require('@napi-rs/canvas');
 const { emoji } = require("./emojis")
-const { addLVL } = require("../Utils/xp");
+const { addLVL, addLVLHeroi } = require("../Utils/xp");
 const { ranking } = require("../Controller");
 const { api } = require("../Utils/axiosClient");
 const banners = require("../data/banners");
@@ -46,13 +46,14 @@ function formatUserXp(xp) {
 
 /** 
 * Cria o perfil do usuário
-* @param {User} user - O usuário para o qual criar o perfil
+* @param {number} userId - O ID do usuário para o qual criar o perfil
 * @param {number} bannerIndex - O índice do banner selecionado pelo usuário
 * @param {Interaction} interaction - A interação do Discord para responder
+*@param {string} type - O tipo de perfil a ser criado ('usuario' ou 'heroi')
 * @returns {Object} Um objeto contendo o container do perfil e o attachment da imagem gerada
+*
 */
-async function creatPerfil(user, bannerIndex, interaction) {
-    const userId = user.id
+async function creatPerfil(userId, bannerIndex, interaction, type) {
 
     const agora = new Date()
     const member = interaction.guild.members.cache.get(userId)
@@ -86,8 +87,13 @@ async function creatPerfil(user, bannerIndex, interaction) {
     const conquistas = member.roles.cache.filter(role => role.name !== '@everyone').map(role => emoji(role.name)).join(' ')
 
     const response = await api.get(`/usuario/${userId}`)
+    const heroiData = await api.get(`/heroi/${userId}`).then(res => res.data).catch(err => {
+        return null
+    })
 
     const userData = response.data
+
+
 
     allUsers = await ranking()
 
@@ -98,7 +104,7 @@ async function creatPerfil(user, bannerIndex, interaction) {
 
     var maxXp = await addLVL(userId)
 
-    const xpBar = barraDeXp(userData.xp, maxXp)
+    let xpBar
 
     const canvas = Canvas.createCanvas(720, 300)
 
@@ -131,46 +137,99 @@ async function creatPerfil(user, bannerIndex, interaction) {
         })
     )
 
-    conteiner.addSectionComponents(
-        new SectionBuilder()
-            .addTextDisplayComponents(
-                new TextDisplayBuilder({
-                    content: `# <:usuario:1463846764720422953> Perfil de ${userData.username}    (Top/ #${Ranking}) \n **<:tag:1463846763332108362> Cargos:** ${cargos} \n **<:conquista:1463846748052262988> Nível:** ${userData.nivel} \n **<:conquista:1463846748052262988> XP:** ${xpBar} \n`,
-                })
-            )
-            .setThumbnailAccessory(
-                new ThumbnailBuilder({
-                    media: { url: user.displayAvatarURL({ extension: 'png', size: 1024 }) }
-                })
-            )
-    )
+    if (type === 'heroi') {
 
-    conteiner.addSeparatorComponents(
-        new SeparatorBuilder({
-            spacing: SeparatorSpacingSize.Large,
-            divider: false
-        })
-    )
+        let maxHeroiXp = await addLVLHeroi(userId)
+        xpBar = barraDeXp(heroiData.xp, maxHeroiXp)
 
-    conteiner.addTextDisplayComponents(
-        new TextDisplayBuilder({
-            content: `## <:estatisitcas:1463846753110331537> Estatísticas \n\n\n > Informações adicionais deste Usuário \n  **<:tag:1463846763332108362> Tags:** ${conquistas} \n **<:data:1463846750665179136> Entrou:** \`\`${tempoEntrada}\`\` \n **<:mensagem2:1463846755538964490> Mensagens:** \`\`${userData.quantidadeMensagens}\`\` \n`
-        })
-    )
+        conteiner.addSectionComponents(
+            new SectionBuilder()
+                .addTextDisplayComponents(
+                    new TextDisplayBuilder({
+                        content: `# <:usuario:1463846764720422953> Perfil do Heroi ${heroiData.nome} \n **<:conquista:1463846748052262988> Nível:** ${heroiData.level} \n **<:conquista:1463846748052262988> XP:** ${xpBar} \n`,
+                    })
+                )
+                .setThumbnailAccessory(
+                    new ThumbnailBuilder({
+                        media: { url: member.displayAvatarURL({ extension: 'png', size: 1024 }) }
+                    })
+                )
+        )
 
-    conteiner.addSeparatorComponents(
-        new SeparatorBuilder({
-            spacing: SeparatorSpacingSize.Large,
-            divider: false
-        })
-    )
-    conteiner.addActionRowComponents(
-        new ActionRowBuilder({
-            components: [
-                new ButtonBuilder().setLabel('Alterar Banner').setCustomId(`system:alterar_banner:${userId}`).setEmoji('<:foto:1463846754322747497>').setStyle(ButtonStyle.Primary).setDisabled(userId === interaction.user.id ? false : true),
-            ]
-        })
-    )
+        conteiner.addSeparatorComponents(
+            new SeparatorBuilder({
+                spacing: SeparatorSpacingSize.Large,
+                divider: false
+            })
+        )
+
+        conteiner.addTextDisplayComponents(
+            new TextDisplayBuilder({
+                content: `## <:estatisitcas:1463846753110331537> Estatísticas \n\n\n > Informações adicionais deste Heroi \n  **❤️ Vida:** ${heroiData.hp} \n **⚔️ Ataque:** ${heroiData.attack} \n **🛡️ Defesa:** ${heroiData.defense} \n **💰 Moedas:** ${heroiData.moeda} \n`
+            })
+        )
+
+        conteiner.addSeparatorComponents(
+            new SeparatorBuilder({
+                spacing: SeparatorSpacingSize.Large,
+                divider: false
+            })
+        )
+        conteiner.addActionRowComponents(
+            new ActionRowBuilder({
+                components: [
+                    new ButtonBuilder().setLabel('Voltar').setCustomId(`system:verusuario:${userId}`).setEmoji('<:usuario:1463846764720422953>').setStyle(ButtonStyle.Secondary),
+                    new ButtonBuilder().setLabel('Alterar Banner').setCustomId(`system:alterar_banner:${userId}`).setEmoji('<:foto:1463846754322747497>').setStyle(ButtonStyle.Primary).setDisabled(userId === interaction.user.id ? false : true),
+                ]
+            })
+        )
+
+    } else if (type === 'usuario') {
+
+        xpBar = barraDeXp(userData.xp, maxXp)
+
+        conteiner.addSectionComponents(
+            new SectionBuilder()
+                .addTextDisplayComponents(
+                    new TextDisplayBuilder({
+                        content: `# <:usuario:1463846764720422953> Perfil de ${userData.username}    (Top/ #${Ranking}) \n **<:tag:1463846763332108362> Cargos:** ${cargos} \n **<:conquista:1463846748052262988> Nível:** ${userData.nivel} \n **<:conquista:1463846748052262988> XP:** ${xpBar} \n`,
+                    })
+                )
+                .setThumbnailAccessory(
+                    new ThumbnailBuilder({
+                        media: { url: member.displayAvatarURL({ extension: 'png', size: 1024 }) }
+                    })
+                )
+        )
+
+        conteiner.addSeparatorComponents(
+            new SeparatorBuilder({
+                spacing: SeparatorSpacingSize.Large,
+                divider: false
+            })
+        )
+
+        conteiner.addTextDisplayComponents(
+            new TextDisplayBuilder({
+                content: `## <:estatisitcas:1463846753110331537> Estatísticas \n\n\n > Informações adicionais deste Usuário \n  **<:tag:1463846763332108362> Tags:** ${conquistas} \n **<:data:1463846750665179136> Entrou:** \`\`${tempoEntrada}\`\` \n **<:mensagem2:1463846755538964490> Mensagens:** \`\`${userData.quantidadeMensagens}\`\` \n`
+            })
+        )
+
+        conteiner.addSeparatorComponents(
+            new SeparatorBuilder({
+                spacing: SeparatorSpacingSize.Large,
+                divider: false
+            })
+        )
+        conteiner.addActionRowComponents(
+            new ActionRowBuilder({
+                components: [
+                    new ButtonBuilder().setLabel('Alterar Banner').setCustomId(`system:alterar_banner:${userId}`).setEmoji('<:foto:1463846754322747497>').setStyle(ButtonStyle.Primary).setDisabled(userId === interaction.user.id ? false : true),
+                    heroiData === null ? new ButtonBuilder().setLabel('Criar Heroi').setCustomId(`system:criarheroi:${userId}`).setEmoji('<:usuario:1463846764720422953>').setStyle(ButtonStyle.Success).setDisabled(userId === interaction.user.id ? false : true) : new ButtonBuilder().setLabel('Ver Herói').setCustomId(`system:verheroi:${userId}`).setEmoji('<:usuario:1463846764720422953>').setStyle(ButtonStyle.Secondary),
+                ]
+            })
+        )
+    }
 
 
     return { conteiner, attachment }
