@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, MessageFlags, EmbedBuilder } = require('discord.js')
 const { api } = require('../../Utils/axiosClient')
 const { addXp } = require('../../Utils/xp')
+const { handleError } = require('../../handlers/errorsHandler')
 
 const embed = new EmbedBuilder()
 
@@ -67,9 +68,7 @@ module.exports = {
 
             } catch (error) {
 
-                embed.setTitle(`Erro ao Criar o item! ${error.response.data.message} 🚫`)
-                embed.setColor('Red')
-                embed.setTimestamp()
+                handleError(interaction, 'Ocorreu um erro ao criar o item. Por favor, tente novamente mais tarde.', '❌ Erro ao Criar Item')
 
                 console.log(error.response.data.message)
             } finally {
@@ -78,6 +77,8 @@ module.exports = {
                 addXp(userId, 20)
                 await interaction.editReply({ embeds: [embed], flags: [MessageFlags.Ephemeral] })
             }
+        } else {
+            handleError(interaction, 'Você não tem permissão para usar este comando.', '❌ Permissão Negada')
         }
     }
 } 
