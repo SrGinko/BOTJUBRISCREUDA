@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, MessageFlags, EmbedBuilder } = require('discord.js')
 const { api } = require('../../Utils/axiosClient')
 const { addXp } = require('../../Utils/xp')
+const { handleError } = require('../../handlers/errorsHandler')
 
 const embed = new EmbedBuilder()
 
@@ -29,13 +30,12 @@ module.exports = {
             embed.setTitle("Heroi Criado com Sucesso! ✅")
             embed.setColor('Green')
             embed.setTimestamp()
-            
+
             member.roles.add(RPG)
 
         }).catch((error) => {
-            embed.setTitle(`Erro ao criar herói! ${error.response.data.message} 🚫`)
-            embed.setColor('Red')
-            embed.setTimestamp()
+
+            handleError(interaction, 'Ocorreu um erro ao criar o herói. Por favor, tente novamente mais tarde.', '❌ Erro ao Criar Herói')
 
             console.log(error.response.data.message)
         })
