@@ -3,10 +3,10 @@ const { criarEmbed } = require('../Utils/embedFactory')
 const { api } = require('../Utils/axiosClient')
 const { addItem, removeItem } = require('../Utils/itensInventario')
 const { obterUnicoItem, equiparItem } = require('../Utils/itensInventario')
-const { enemyTurn, updateBattleMessage, getBattle } = require('../RPG/battleManager')
+const { enemyTurn, updateBattleMessage, getBattle, getBattleById, getCurrentTurn, nextTurn, processTurn } = require('../RPG/battleManager')
 
 async function ModalHandleAction(interaction) {
-    const [prefix, action, id] = interaction.customId.split(':')
+    const [prefix, action, id, battleId] = interaction.customId.split(':')
 
     if (prefix === 'tv') {
         switch (action) {
@@ -42,37 +42,59 @@ async function ModalHandleAction(interaction) {
             case 'curar': {
                 const selecionados = interaction.fields.getStringSelectValues('consumivelSelect')
 
+
                 const itensUsados = await Promise.all(
                     selecionados.map(async (itemId) => {
                         return obterUnicoItem(Number(itemId))
                     })
                 )
 
-                const batalha = getBattle(id)
+                const batalha = getBattleById(battleId)
+
+                if (!batalha) return
+                const current = getCurrentTurn(batalha)
+
+                if (current.id !== interaction.user.id) {
+                    return interaction.reply({
+                        content: 'Não é seu turno!',
+                        ephemeral: true
+                    })
+                }
+
 
                 const curaTotal = itensUsados.reduce((total, item) => {
                     const porcentagem = item.heal || 0
-                    const cura = Math.floor((batalha.player.maxHp * porcentagem) / 100)
+                    const cura = Math.floor((current.maxHp * porcentagem) / 100)
                     return total + cura
                 }, 0)
 
-                batalha.player.hp = Math.min(
-                    batalha.player.maxHp,
-                    batalha.player.hp + curaTotal
+                current.hp = Math.min(
+                    current.maxHp,
+                    current.hp + curaTotal
                 )
 
                 await interaction.deferUpdate()
 
                 await updateBattleMessage(
                     batalha,
-                    `💚 Você usou itens e recuperou ${curaTotal} de vida!`
+                    `💚 ${current.nome} recuperou ${curaTotal} de vida!`
                 )
 
                 for (const item of itensUsados) {
-                    await removeItem(id, item.id, 1)
+                    await removeItem(current.id, item.id, 1)
                 }
 
-                await enemyTurn(batalha)
+                const result = require('../RPG/battleManager').checkBattleEnd?.(batalha)
+
+                if (result) {
+                    await rewardsAndEnd(batalha, result)
+                    return
+                }
+
+                nextTurn(batalha)
+
+                await processTurn(batalha)
+                
 
             }
                 break;
@@ -173,7 +195,7 @@ async function ModalHandleAction(interaction) {
                     wallpaper: bannerId
                 })
 
-                const { conteiner, attachment } = await require('../Utils/utilsPerfil').creatPerfil(interaction.user, bannerId, interaction)
+                const { conteiner, attachment } = await require('../Utils/utilsPerfil').creatPerfil(interaction.user.id, bannerId, interaction, 'usuario')
 
 
                 await interaction.editReply({
