@@ -2,21 +2,30 @@ const { ContainerBuilder, TextDisplayBuilder, MessageFlags, MediaGalleryBuilder,
 const { formatDate } = require('../Utils/date')
 const { addXp } = require('../Utils/xp')
 const { obterUnicoItem, obterItensInventario } = require('../Utils/itensInventario')
-const { enemyTurn, updateBattleMessage, rewardsAndEnd, getBattle } = require('../RPG/battleManager')
+const { updateBattleMessage, rewardsAndEnd, getBattleById, getCurrentTurn, nextTurn, processTurn, performAttack } = require('../RPG/battleManager')
 const rpgEvents = require('../Events/rpgEvents')
 const banners = require('../data/banners')
 const { BuscarjogoNome } = require('../Utils/buscarJogos')
 const { api } = require('../Utils/axiosClient')
 
 async function handleActionButton(customId, user, interaction) {
-    const [prefix, action, userId] = customId.split(':')
+    const [prefix, action, userId, battleId] = customId.split(':')
 
     if (prefix === 'rpg') {
 
-        const batalha = getBattle(userId)
+        const batalha = getBattleById(battleId)
 
         if (!batalha) return { ok: false, message: 'Nenhuma batalha ativa' }
-        if (user.id !== userId) return { ok: false, message: 'Somente quem iniciou pode utilizar a ação' }
+
+        const IsPlayer = batalha.players.some(p => p.id === user.id)
+
+        if (!IsPlayer) {
+            return { ok: false, message: 'Você não faz parte dessa batalha' }
+        }
+
+        const current = getCurrentTurn(batalha)
+
+        if (current.id !== user.id) return { ok: false, message: 'Não é seu turno !' }
 
         if (batalha.processing) return { ok: false, message: 'Ação em andamento aguarde' }
 
@@ -27,38 +36,42 @@ async function handleActionButton(customId, user, interaction) {
 
                 await interaction.deferUpdate()
 
-                const damage = Math.max(0, Math.floor(batalha.player.attack - batalha.inimmigo.defesa + Math.random() * 5))
-                batalha.inimmigo.hp = Math.max(0, batalha.inimmigo.hp - damage)
+                const attacker = current
 
-                rpgEvents.emit('playerAttack', { batalha, damage })
+                const attackerResult = await performAttack(batalha, attacker)
 
-                await updateBattleMessage(batalha, `${batalha.player.nome} atacou e causou ${damage} de dano!`)
+                await updateBattleMessage(batalha, attackerResult.text)
 
-                if (batalha.inimmigo.hp <= 0) {
+                const result = require('../RPG/battleManager').checkBattleEnd?.(batalha)
 
-
-                    await rewardsAndEnd(batalha, 'vitoria')
+                if (result) {
+                    await rewardsAndEnd(batalha, result)
                     return { ok: true }
                 }
 
-                await enemyTurn(batalha)
+                nextTurn(batalha)
+                await processTurn(batalha)
+
 
             } else if (action === 'run') {
-                let chance = 0.35 + (batalha.player.nivel - batalha.inimmigo.level) * 0.02
-                chance = Math.max(0.1, Math.min(0.9, chance))
+                const player = current
+
+                let chance = 0.35
 
                 const roll = Math.random()
 
                 if (roll < chance) {
-                    await updateBattleMessage(batalha, `${batalha.player.nome} conseguiu fugir!`)
+                    await updateBattleMessage(batalha, `${player.nome} fugiu!`)
                     await rewardsAndEnd(batalha, 'fuga')
                 } else {
-                    await updateBattleMessage(batalha, `${batalha.player.nome} tentou fugir e falhou!`)
-                    await enemyTurn(batalha)
+                    await updateBattleMessage(batalha, `${player.nome} tentou fugir e falhou!`)
+
+                    nextTurn(batalha)
+                    await processTurn(batalha)
                 }
             } else if (action === 'heal') {
 
-                const inventario = await obterItensInventario(batalha.player.id)
+                const inventario = await obterItensInventario(current.id)
                 const itensCuraveis = inventario.map(itens => {
                     return {
                         itens: itens.item,
@@ -69,7 +82,7 @@ async function handleActionButton(customId, user, interaction) {
                 if (itensCuraveis.length > 0) {
                     const modal = new ModalBuilder({
                         title: 'Usar Consumível',
-                        customId: `rpg:curar:${batalha.player.id}`,
+                        customId: `rpg:curar:${current.id}:${battleId}`,
                     })
                         .addTextDisplayComponents(
                             new TextDisplayBuilder({
