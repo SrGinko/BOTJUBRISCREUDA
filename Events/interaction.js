@@ -5,6 +5,7 @@ const chalk = require("chalk")
 const { ModalHandleAction } = require('../handlers/modalHandler')
 const { SelectMenusHandleAction } = require('../handlers/selectmenusHandler')
 const { criarEmbed } = require('../Utils/embedFactory')
+const { handleError } = require('../handlers/errorsHandler')
 const erro = chalk.bold.red
 
 
@@ -71,6 +72,7 @@ module.exports = {
 		try {
 			await command.execute(interaction)
 		} catch (error) {
+			handleError(interaction, 'Ocorreu um erro ao executar esse comando', 'Erro de execução')
 			console.log(error)
 		}
 	}
