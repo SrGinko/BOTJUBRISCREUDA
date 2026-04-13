@@ -5,6 +5,7 @@ const { addLVL, addLVLHeroi } = require("../Utils/xp");
 const { ranking } = require("../Controller");
 const { api } = require("../Utils/axiosClient");
 const banners = require("../data/banners");
+const { handleError } = require("../handlers/errorsHandler");
 
 function barraDeXp(cur, max, len = 10) {
     const filled = Math.round((cur / max) * len)
@@ -56,9 +57,9 @@ function formatUserXp(xp) {
 async function creatPerfil(userId, bannerIndex, interaction, type) {
 
     const agora = new Date()
-    const member = interaction.guild.members.cache.get(userId)
+    const member = await interaction.guild.members.fetch(userId)
 
-    const diffMs = agora - member.joinedAt
+    const diffMs = agora - member.joinedTimestamp
     const diffSec = Math.floor(diffMs / 1000)
     const diffMin = Math.floor(diffSec / 60)
     const diffHours = Math.floor(diffMin / 60)
@@ -86,14 +87,13 @@ async function creatPerfil(userId, bannerIndex, interaction, type) {
     const cargos = member.roles.cache.filter(role => role.name !== '@everyone' && role.mentionable).map(role => role.toString()).join(' ')
     const conquistas = member.roles.cache.filter(role => role.name !== '@everyone').map(role => emoji(role.name)).join(' ')
 
-    const response = await api.get(`/usuario/${userId}`)
+    const userData = await api.get(`/usuario/${userId}`).then(res => res.data).catch(err => {
+        handleError(interaction, 'Ocorreu um erro ao buscar os dados do usuário', 'Erro de Perfil')
+        return null     
+    })
     const heroiData = await api.get(`/heroi/${userId}`).then(res => res.data).catch(err => {
         return null
     })
-
-    const userData = response.data
-
-
 
     allUsers = await ranking()
 
