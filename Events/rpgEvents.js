@@ -4,10 +4,7 @@ const { addXpHeroi, addXp } = require('../Utils/xp')
 const { api } = require('../Utils/axiosClient')
 const rpgEvents = new EventEmitter()
 
-rpgEvents.on('battleEnd', ({ batalha, result }) => {
-
-    let xpGanho = batalha.inimmigo.xp || 0
-    let moedaGanha = batalha.inimmigo.moeda || 0
+rpgEvents.on('battleEnd', ({ batalha, result, rewards }) => {
 
     switch (result) {
         case 'vitoria':
@@ -26,12 +23,16 @@ rpgEvents.on('battleEnd', ({ batalha, result }) => {
             )
             containerVitoria.addTextDisplayComponents(
                 new TextDisplayBuilder({
-                    content: `${batalha.user}, seu Heroi saiu Vitorioso! \n **XP Ganho:** ${xpGanho} \n **Moeda Ganha:** ${moedaGanha} \n > Essa mensagem será apagada em alguns segundos.`
+                    content: `${batalha.user}, seu Heroi saiu Vitorioso! \n **XP Ganho:** ${rewards.xp} \n **Moeda Ganha:** ${rewards.moeda} \n > Essa mensagem será apagada em alguns segundos.`
                 })
             )
 
-            addXpHeroi(batalha.user.id, xpGanho, moedaGanha)
-            addXp(batalha.user.id, xpGanho)
+            for (const player of batalha.players) {
+
+                addXpHeroi(player.id, rewards.xp, rewards.moeda)
+                addXp(player.id, rewards.xp * 5)
+
+            }
             batalha.message.edit({ components: [containerVitoria], flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral] })
 
             setTimeout(() => {
@@ -43,30 +44,12 @@ rpgEvents.on('battleEnd', ({ batalha, result }) => {
         case 'derrota':
 
             const containerDerrota = new ContainerBuilder()
-
-            xpGanho = Math.round(xpGanho / 4)
-
-
             containerDerrota.setAccentColor(0xa30000)
             containerDerrota.addTextDisplayComponents(
                 new TextDisplayBuilder({
                     content: '# 💀 Derrota!'
                 })
             )
-            if (batalha.inimmigo.nome === 'Goblin' || batalha.inimmigo.nome === 'Ladrão') {
-                if (Math.random() < 0.2) {
-                    api.patch(`/heroi/${batalha.user.id}`, {
-                        armaID: null,
-                        armaduraID: null,
-                        calcaID: null,
-                    })
-                    containerDerrota.addTextDisplayComponents(
-                        new TextDisplayBuilder({
-                            content: `> O Ladrão te roubou quando estava inconciente e seu Herói perdeu todo o equipamento na batalha!`
-                        })
-                    )
-                }
-            }
             containerDerrota.addSeparatorComponents(
                 new SeparatorBuilder({
                     spacing: SeparatorSpacingSize.Large
@@ -74,12 +57,16 @@ rpgEvents.on('battleEnd', ({ batalha, result }) => {
             )
             containerDerrota.addTextDisplayComponents(
                 new TextDisplayBuilder({
-                    content: `${batalha.user}, seu Heroi foi  derrotado! \n **XP Ganho:** ${xpGanho} \n Moeda Ganha: 0 \n > Essa mensagem será apagada em alguns segundos.`
+                    content: `${batalha.user}, seu Heroi foi  derrotado! \n **XP Ganho:** ${rewards.xp} \n Moeda Ganha: 0 \n > Essa mensagem será apagada em alguns segundos.`
                 })
             )
 
-            addXpHeroi(batalha.user.id, xpGanho, 0)
-            addXp(batalha.user.id, xpGanho)
+            for (const player of batalha.players) {
+
+                addXpHeroi(player.id, rewards.xp, rewards.moeda)
+                addXp(player.id, rewards.xp * 5)
+
+            }
             batalha.message.edit({ components: [containerDerrota], flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral] })
 
             setTimeout(() => {
@@ -91,8 +78,6 @@ rpgEvents.on('battleEnd', ({ batalha, result }) => {
         case 'fuga':
 
             const containerFuga = new ContainerBuilder()
-
-            xpGanho = Math.round(xpGanho / 4)
 
             containerFuga.setAccentColor(0x00c3ff)
             containerFuga.addTextDisplayComponents(
@@ -107,12 +92,15 @@ rpgEvents.on('battleEnd', ({ batalha, result }) => {
             )
             containerFuga.addTextDisplayComponents(
                 new TextDisplayBuilder({
-                    content: `${batalha.user}, seu Heroi Fugiu! \n **XP Ganho:** ${xpGanho} \n Moeda Ganha: 0 \n > Essa mensagem será apagada em alguns segundos.`
+                    content: `${batalha.user}, seu Heroi Fugiu! \n **XP Ganho:** ${rewards.xp} \n Moeda Ganha: 0 \n > Essa mensagem será apagada em alguns segundos.`
                 })
             )
+            for (const player of batalha.players) {
 
-            addXpHeroi(batalha.user.id, xpGanho, 0)
-            addXp(batalha.user.id, xpGanho)
+                addXpHeroi(player.id, rewards.xp, rewards.moeda)
+                addXp(player.id, rewards.xp * 5)
+
+            }
             batalha.message.edit({ components: [containerFuga], flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral] })
 
             setTimeout(() => {
