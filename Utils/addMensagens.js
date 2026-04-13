@@ -12,7 +12,7 @@ async function addMenssage(discUser, quantidade, message) {
         const mensagens = user.quantidadeMensagens
         const novaQuantidade = mensagens + quantidade
 
-        switch (mensagemTotal) {
+        switch (novaQuantidade) {
             case 500:
                 guildEvent.emit('conquista', { conquista: faladorBronze, xp: 500, user: message.author, channel: message.channel })
                 addXp(message.author.id, 500)
