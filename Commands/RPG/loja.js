@@ -25,7 +25,7 @@ module.exports = {
             cor = 0x0095ff
         } else if (item.raridade === 'EPICA') {
             cor = 0x8400ff
-        } else if (item.raridade === 'LEGENDARIA') {
+        } else if (item.raridade === 'LENDARIA') {
             cor = 0xFF4500
         }
         const container = new ContainerBuilder(
@@ -38,19 +38,27 @@ module.exports = {
             new ButtonBuilder().setCustomId(`loja:comprar:${itemID}`).setLabel('Comprar').setStyle(ButtonStyle.Success),
         )
 
+        if (item.imagem) {
 
-        container.addSectionComponents(
-            new SectionBuilder()
-                .addTextDisplayComponents(
-                    new TextDisplayBuilder({
-                        content: `# ${item.nome} \n\n  >>> ${item.descricao}`
-                    }))
-                .setThumbnailAccessory(
-                    new ThumbnailBuilder({
-                        media: { url: item.imagem }
-                    })
-                )
-        )
+            container.addSectionComponents(
+                new SectionBuilder()
+                    .addTextDisplayComponents(
+                        new TextDisplayBuilder({
+                            content: `# ${item.nome} \n\n  >>> ${item.descricao}`
+                        }))
+                    .setThumbnailAccessory(
+                        new ThumbnailBuilder({
+                            media: { url: item.imagem }
+                        })
+                    )
+            )
+        } else {
+            container.addTextDisplayComponents(
+                new TextDisplayBuilder({
+                    content: `# ${item.nome} \n\n  >>> ${item.descricao}`
+                }))
+        }
+        
         container.addSeparatorComponents(
             new SeparatorBuilder({
                 spacing: SeparatorSpacingSize.Small,
@@ -63,7 +71,7 @@ module.exports = {
                 content: `### Informações do Item: \n **Raridade:** ${item.raridade} \n **Tipo:** ${item.tipo} \n **Valor:** ${item.preco} moedas`
             })
         )
-        
+
         container.addTextDisplayComponents(
             new TextDisplayBuilder({
                 content: `### Atributos: \n ${item.heal ? `**❤️ Vida:** ${item.heal} \n` : ''} ${item.ataque ? `**⚔️ Ataque:** ${item.ataque} \n` : ''} ${item.defesa ? `**🛡️ Defesa:** ${item.defesa} \n` : ''}`
