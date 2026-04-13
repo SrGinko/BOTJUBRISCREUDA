@@ -1,15 +1,15 @@
 const { Client, Events, GatewayIntentBits, Collection, ActivityType, Partials } = require('discord.js');
+const { Player } = require('discord-player');
 const chalk = require("chalk")
 const dotenv = require('dotenv')
 dotenv.config()
 const { TOKEN } = process.env
 const fs = require('node:fs');
 const path = require('node:path');
+const { DefaultExtractors } = require('@discord-player/extractor');
 
 const erro = chalk.bold.red
-const success = chalk.bold.green
 const info = chalk.bold.blue
-const title = chalk.yellow.bold
 
 
 const client = new Client({
@@ -31,7 +31,8 @@ const client = new Client({
 });
 
 client.commands = new Collection()
-
+const player = new Player(client)
+client.player = player
 
 const foldersPath = path.join(__dirname, 'Commands');
 const commandFolders = fs.readdirSync(foldersPath);
@@ -78,6 +79,9 @@ if (process.stdin.isTTY) {
 
 }
 
+client.once(Events.ClientReady, async () => {
+	await player.extractors.loadMulti(DefaultExtractors)
+})
 client.login(TOKEN);
 
 module.exports = client 
