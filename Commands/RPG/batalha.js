@@ -16,20 +16,28 @@ module.exports = {
 
         const player = await api.get(`/heroi/${userId}`)
         const channel = interaction.guild.channels.cache.get('1406878528859017248')
-        
+
         const embed1 = await criarEmbed({ description: `A batalha irá começar no canal ${channel}`, color: '#0398fc' })
         const embed2 = await criarEmbed({ description: `A batalha já vai começar`, color: '#0398fc' })
 
-        if (!player) {
+        if (!player.data) {
             await interaction.editReply({ content: 'Você tem que ter um aventureiro para começar' })
+        }
+
+        const batalhaAtiva = battleManager.getBattleByUser(userId)
+
+        if (batalhaAtiva) {
+            return interaction.editReply({
+                content: 'Você já está em uma batalha!',
+                flags: [MessageFlags.Ephemeral]
+            })
         }
 
 
         await battleManager.começarBatalha({
-            interaction: interaction,
+            interaction,
             playerData: player.data,
-            cliente: interaction.client,
-            channel: channel
+            channel
         })
 
         if (interaction.channel.id !== '1406878528859017248') {
