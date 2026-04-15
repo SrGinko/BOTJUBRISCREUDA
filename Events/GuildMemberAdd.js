@@ -14,6 +14,9 @@ module.exports = {
 
         if (member.user.bot) return
         try {
+            const usuarioExistente = await api.get(`/usuario/${userId}`)
+                .then(res => res.data)
+                .catch(() => null)
 
             const player = member.guild.roles.cache.find(r => r.name === 'Players')
             const jogoGratis = member.guild.roles.cache.find(r => r.name === 'JogosGratis')
@@ -59,9 +62,12 @@ module.exports = {
             await member.roles.add(jogoGratis)
             await member.roles.add(player)
 
-            channel.send({ content: `Bem Vindo(a) ${member.user}`, files: [attachment] })
+            await channel.send({ content: `Bem Vindo(a) ${member.user}`, files: [attachment] })
+
+            if (usuarioExistente) return
+
             try {
-                api.post(`/usuario`, {
+                await api.post(`/usuario`, {
                     id: userId,
                     username: username,
                     xp: 0,
