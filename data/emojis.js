@@ -11,6 +11,9 @@ const emojisData = {
             { name: 'Falador Ouro', icone: '<:falaouro:1366816759990059130>' },
             { name: 'Falador Platina', icone: '<:falaplatina:1366816959957827707>' },
             { name: 'Falador Diamante', icone: '<:faladiamante:1366816901807997020>' },
+            { name: 'Maníaco de Bronze', icone: '<:badge_bronze:1493945272651354133>' },
+            { name: 'Maníaco de Ouro', icone: '<a:badge_ouro:1493945274014629988>' },
+            { name: 'Maníaco de Platina', icone: '<a:badge_platina:1493945275373453362>' },
         ]
     },
 }
