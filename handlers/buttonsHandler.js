@@ -2,8 +2,20 @@ const { ContainerBuilder, TextDisplayBuilder, MessageFlags, MediaGalleryBuilder,
 const { formatDate } = require('../Utils/date')
 const { addXp } = require('../Utils/xp')
 const { obterUnicoItem, obterItensInventario } = require('../Utils/itensInventario')
-const { updateBattleMessage, rewardsAndEnd, getBattleById, getCurrentTurn, nextTurn, processTurn, performAttack } = require('../RPG/battleManager')
-const rpgEvents = require('../Events/rpgEvents')
+const {
+    updateBattleMessage,
+    rewardsAndEnd,
+    getBattleById,
+    getBattleByUser,
+    getCurrentTurn,
+    nextTurn,
+    processTurn,
+    performAttack,
+    getChallengeById,
+    removeChallenge,
+    finalizeChallengeMessage,
+    comecarBatalha
+} = require('../RPG/battleManager')
 const banners = require('../data/banners')
 const { BuscarjogoNome } = require('../Utils/buscarJogos')
 const { api } = require('../Utils/axiosClient')
@@ -11,13 +23,87 @@ const { api } = require('../Utils/axiosClient')
 async function handleActionButton(customId, user, interaction) {
     const [prefix, action, userId, battleId] = customId.split(':')
 
+    if (prefix === 'rpgduel') {
+        const challengeId = userId
+        const targetUserId = battleId
+        const challenge = getChallengeById(challengeId)
+
+        if (!challenge) {
+            return { ok: false, message: 'Esse desafio nao esta mais disponivel.' }
+        }
+
+        if (user.id !== targetUserId) {
+            return { ok: false, message: 'Somente o jogador desafiado pode responder esse convite.' }
+        }
+
+        if (action === 'decline') {
+            await interaction.deferUpdate()
+            await finalizeChallengeMessage(
+                challenge,
+                `${challenge.targetUser} recusou o desafio de ${challenge.challengerUser}.`
+            )
+            removeChallenge(challenge)
+            return { ok: true }
+        }
+
+        if (action === 'accept') {
+            await interaction.deferUpdate()
+
+            if (challenge.challengerUser.id === challenge.targetUser.id) {
+                removeChallenge(challenge)
+                return { ok: false, message: 'Desafio invalido.' }
+            }
+
+            if (getBattleByUser(challenge.challengerUser.id) || getBattleByUser(challenge.targetUser.id)) {
+                await finalizeChallengeMessage(
+                    challenge,
+                    'O desafio foi cancelado porque um dos jogadores entrou em outra batalha.'
+                )
+                removeChallenge(challenge)
+                return { ok: true }
+            }
+
+            const [challengerResponse, targetResponse] = await Promise.all([
+                api.get(`/heroi/${challenge.challengerUser.id}`),
+                api.get(`/heroi/${challenge.targetUser.id}`)
+            ])
+
+            if (!challengerResponse.data || !targetResponse.data) {
+                await finalizeChallengeMessage(
+                    challenge,
+                    'O desafio foi cancelado porque um dos jogadores nao possui mais um heroi valido.'
+                )
+                removeChallenge(challenge)
+                return { ok: true }
+            }
+
+            await finalizeChallengeMessage(
+                challenge,
+                `${challenge.targetUser} aceitou o desafio de ${challenge.challengerUser}! A batalha vai comecar.`
+            )
+            removeChallenge(challenge)
+
+            await comecarBatalha({
+                interaction,
+                playerData: challengerResponse.data,
+                channel: challenge.channel,
+                targetUser: challenge.targetUser,
+                targetPlayerData: targetResponse.data,
+                initiatorUser: challenge.challengerUser
+            })
+
+            return { ok: true }
+        }
+    }
+
     if (prefix === 'rpg') {
 
         const batalha = getBattleById(battleId)
 
         if (!batalha) return { ok: false, message: 'Nenhuma batalha ativa' }
 
-        const IsPlayer = batalha.players.some(p => p.id === user.id)
+        const participantes = [...batalha.players, ...batalha.enemies]
+        const IsPlayer = participantes.some(p => p.id === user.id && p.isHuman)
 
         if (!IsPlayer) {
             return { ok: false, message: 'Você não faz parte dessa batalha' }
@@ -56,12 +142,16 @@ async function handleActionButton(customId, user, interaction) {
             } else if (action === 'run') {
                 const player = current
 
-                let chance = 0.35
+                let chance = batalha.mode === 'pvp' ? 1 : 0.35
 
                 const roll = Math.random()
 
                 if (roll < chance) {
-                    await updateBattleMessage(batalha, `${player.nome} fugiu!`)
+                    const texto = batalha.mode === 'pvp'
+                        ? `${player.nome} desistiu da batalha!`
+                        : `${player.nome} fugiu!`
+
+                    await updateBattleMessage(batalha, texto)
                     await rewardsAndEnd(batalha, 'fuga')
                 } else {
                     await updateBattleMessage(batalha, `${player.nome} tentou fugir e falhou!`)
