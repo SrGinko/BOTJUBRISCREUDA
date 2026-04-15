@@ -1,4 +1,5 @@
 const { api } = require('./axiosClient')
+const { buscarMember } = require('../service/discordService')
 
 /**
  * 
@@ -68,6 +69,7 @@ async function addLVL(userId) {
 
     const nivel = usuario.nivel
     const xp = usuario.xp
+    atualizarUsuario(userId, nivel)
 
     const xpForNextLevel = await calculateXpForNextLevel(nivel);
 
@@ -90,11 +92,10 @@ async function addLVL(userId) {
  * @param {Inteiro} userId - id usuário
  */
 async function addLVLHeroi(userId) {
-    const heroi = await api.get(`/heroi/${userId}`).then(res => res.data).catch(err => console.error(err.data.message))    
+    const heroi = await api.get(`/heroi/${userId}`).then(res => res.data).catch(err => console.error(err.data.message))
 
     const nivel = heroi.level
     const xp = heroi.xp
-    const moeda = heroi.moeda
     const hp = heroi.hp
     const ataque = heroi.attack
     const defesa = heroi.defense
@@ -111,11 +112,42 @@ async function addLVLHeroi(userId) {
             hp: hp + 5,
             attack: ataque + 3,
             defense: defesa + 2,
-            
+
         }).catch(err => console.error(err.data.message))
     }
 
     return Math.round(xpForNextLevel)
 }
 
-module.exports = { addLVL, addXp, calculateXpForNextLevel, addLVLHeroi, addXpHeroi}
+async function atualizarUsuario(userId, lvl) {
+    const member = await buscarMember(userId)
+    switch (true) {
+        case lvl >= 0 && lvl < 20: {
+            if (!member.roles.cache.has("1493936999084589136")) {
+
+                member.roles.add("1493936999084589136").catch(console.error)
+            }
+        } break;
+        case lvl >= 20 && lvl < 40: {
+            if (!member.roles.cache.has("1493939683720167444")) {
+                console.log("Atualizando cargo do usuário " + member.user.username + " para nível 20-39")
+                member.roles.remove("1493936999084589136").catch(console.error)
+                member.roles.add("1493939683720167444").catch(console.error)
+            }
+        } break;
+        case lvl >= 40 && lvl < 70: {
+            if (!member.roles.cache.has("1493941325421215824")) {
+                member.roles.remove("1493939683720167444").catch(console.error)
+                member.roles.add("1493941325421215824").catch(console.error)
+            }
+        } break;
+        case lvl >= 70 && lvl < 110: {
+            if (!member.roles.cache.has("1308663244742725653")) {
+                member.roles.remove("1493941325421215824").catch(console.error)
+                member.roles.add("1308663244742725653").catch(console.error)
+            }
+        }break;
+    }
+}
+
+module.exports = { addLVL, addXp, calculateXpForNextLevel, addLVLHeroi, addXpHeroi }
