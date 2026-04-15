@@ -1,4 +1,4 @@
-const { api } = require('../Utils/axiosClient')
+const { api } = require('./axiosClient')
 
 async function addMenssage(discUser, quantidade, message) {
     try {
