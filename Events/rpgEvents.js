@@ -1,145 +1,182 @@
-const { ContainerBuilder, TextDisplayBuilder, SeparatorBuilder, SeparatorSpacingSize, MessageFlags, calculateShardId } = require('discord.js')
+const {
+    ContainerBuilder,
+    MessageFlags,
+    SeparatorBuilder,
+    SeparatorSpacingSize,
+    TextDisplayBuilder
+} = require('discord.js')
 const { EventEmitter } = require('events')
 const { addXpHeroi, addXp } = require('../Utils/xp')
-const { api } = require('../Utils/axiosClient')
+
 const rpgEvents = new EventEmitter()
 
-rpgEvents.on('battleEnd', ({ batalha, result, rewards }) => {
+function mentionUser(id) {
+    return id ? `<@${id}>` : 'Jogador'
+}
 
-    switch (result) {
-        case 'vitoria':
-            const containerVitoria = new ContainerBuilder()
+function buildResultContainer({ color, title, description }) {
+    const container = new ContainerBuilder().setAccentColor(color)
 
-            containerVitoria.setAccentColor(0x11ff00)
-            containerVitoria.addTextDisplayComponents(
-                new TextDisplayBuilder({
-                    content: '# 🏅 Vitória!'
+    container.addTextDisplayComponents(
+        new TextDisplayBuilder({
+            content: title
+        })
+    )
+
+    container.addSeparatorComponents(
+        new SeparatorBuilder({
+            spacing: SeparatorSpacingSize.Large
+        })
+    )
+
+    container.addTextDisplayComponents(
+        new TextDisplayBuilder({
+            content: `${description}\n> Essa mensagem sera apagada em alguns segundos.`
+        })
+    )
+
+    return container
+}
+
+async function applyRewards(players, rewards) {
+    if (!rewards || (!rewards.xp && !rewards.moeda)) return
+
+    for (const player of players) {
+        await addXpHeroi(player.id, rewards.xp, rewards.moeda)
+        await addXp(player.id, rewards.xp * 5)
+    }
+}
+
+function getPvpParticipants(batalha) {
+    const challenger = batalha.players[0] || null
+    const opponent = batalha.enemies.find(enemy => enemy.isHuman) || null
+    return { challenger, opponent }
+}
+
+function getPvpVictoryDescription(batalha, rewards) {
+    const { challenger, opponent } = getPvpParticipants(batalha)
+    const winner = challenger?.hp > 0 ? challenger : opponent
+    const loser = winner?.id === challenger?.id ? opponent : challenger
+
+    if (!winner || !loser) {
+        return 'A batalha PvP terminou.'
+    }
+
+    return `**${winner.nome}** venceu o duelo contra **${loser.nome}** e você ganhou ${rewards.xp} XP.`
+}
+
+function getPvpDefeatDescription(batalha) {
+    const { challenger, opponent } = getPvpParticipants(batalha)
+    const loser = challenger?.hp <= 0 ? challenger : opponent
+    const winner = loser?.id === challenger?.id ? opponent : challenger
+
+    if (!winner || !loser) {
+        return 'A batalha PvP terminou.'
+    }
+
+    return `**${loser.nome}** foi derrotado por **${winner.nome}**.`
+}
+
+function getPvpFleeDescription(batalha) {
+    const { challenger, opponent } = getPvpParticipants(batalha)
+    const quitter = challenger?.hp > 0 && opponent?.hp > 0 ? challenger : (challenger?.hp > 0 ? opponent : challenger)
+
+    if (!quitter) {
+        return 'Um dos jogadores desistiu do duelo.'
+    }
+
+    return `**${quitter.nome}** desistiu do duelo.`
+}
+
+async function updateBattleResultMessage(batalha, container) {
+    await batalha.message.edit({
+        components: [container],
+        flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral]
+    })
+}
+
+function scheduleBattleMessageDeletion(batalha, delay = 5000) {
+    setTimeout(() => {
+        batalha.message.delete().catch(() => null)
+    }, delay)
+}
+
+rpgEvents.on('battleEnd', async ({ batalha, result, rewards }) => {
+    try {
+        const players = batalha.players || []
+        const isPvp = batalha.mode === 'pvp'
+        const ownerMention = mentionUser(batalha.user?.id)
+
+        switch (result) {
+            case 'vitoria': {
+                const description = isPvp
+                    ? getPvpVictoryDescription(batalha, rewards)
+                    : `${ownerMention}, seu Heroi saiu vitorioso!\n**XP ganho:** ${rewards.xp}\n**Moeda ganha:** ${rewards.moeda}`
+
+                const container = buildResultContainer({
+                    color: 0x11ff00,
+                    title: '# Vitoria!',
+                    description
                 })
-            )
-            containerVitoria.addSeparatorComponents(
-                new SeparatorBuilder({
-                    spacing: SeparatorSpacingSize.Large
-                })
-            )
-            containerVitoria.addTextDisplayComponents(
-                new TextDisplayBuilder({
-                    content: `${batalha.user}, seu Heroi saiu Vitorioso! \n **XP Ganho:** ${rewards.xp} \n **Moeda Ganha:** ${rewards.moeda} \n > Essa mensagem será apagada em alguns segundos.`
-                })
-            )
 
-            for (const player of batalha.players) {
-
-                addXpHeroi(player.id, rewards.xp, rewards.moeda)
-                addXp(player.id, rewards.xp * 5)
-
+                await applyRewards(players, rewards)
+                await updateBattleResultMessage(batalha, container)
+                scheduleBattleMessageDeletion(batalha)
+                break
             }
-            batalha.message.edit({ components: [containerVitoria], flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral] })
 
-            setTimeout(() => {
-                batalha.message.delete()
-            }, 5000);
+            case 'derrota': {
+                const description = isPvp
+                    ? getPvpDefeatDescription(batalha)
+                    : `${ownerMention}, seu Heroi foi derrotado.\n**XP ganho:** ${rewards.xp}\n**Moeda ganha:** 0`
 
-            break;
-
-        case 'derrota':
-
-            const containerDerrota = new ContainerBuilder()
-            containerDerrota.setAccentColor(0xa30000)
-            containerDerrota.addTextDisplayComponents(
-                new TextDisplayBuilder({
-                    content: '# 💀 Derrota!'
+                const container = buildResultContainer({
+                    color: 0xa30000,
+                    title: '# Derrota!',
+                    description
                 })
-            )
-            containerDerrota.addSeparatorComponents(
-                new SeparatorBuilder({
-                    spacing: SeparatorSpacingSize.Large
-                })
-            )
-            containerDerrota.addTextDisplayComponents(
-                new TextDisplayBuilder({
-                    content: `${batalha.user}, seu Heroi foi  derrotado! \n **XP Ganho:** ${rewards.xp} \n Moeda Ganha: 0 \n > Essa mensagem será apagada em alguns segundos.`
-                })
-            )
 
-            for (const player of batalha.players) {
-
-                addXpHeroi(player.id, rewards.xp, rewards.moeda)
-                addXp(player.id, rewards.xp * 5)
-
+                await applyRewards(players, rewards)
+                await updateBattleResultMessage(batalha, container)
+                scheduleBattleMessageDeletion(batalha)
+                break
             }
-            batalha.message.edit({ components: [containerDerrota], flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral] })
 
-            setTimeout(() => {
-                batalha.message.delete()
-            }, 5000);
+            case 'fuga': {
+                const description = isPvp
+                    ? getPvpFleeDescription(batalha)
+                    : `${ownerMention}, seu Heroi fugiu.\n**XP ganho:** ${rewards.xp}\n**Moeda ganha:** 0`
 
-            break;
-
-        case 'fuga':
-
-            const containerFuga = new ContainerBuilder()
-
-            containerFuga.setAccentColor(0x00c3ff)
-            containerFuga.addTextDisplayComponents(
-                new TextDisplayBuilder({
-                    content: '# 💨 Você Fugiu!'
+                const container = buildResultContainer({
+                    color: 0x00c3ff,
+                    title: isPvp ? '# Duelo Encerrado!' : '# Voce Fugiu!',
+                    description
                 })
-            )
-            containerFuga.addSeparatorComponents(
-                new SeparatorBuilder({
-                    spacing: SeparatorSpacingSize.Large
-                })
-            )
-            containerFuga.addTextDisplayComponents(
-                new TextDisplayBuilder({
-                    content: `${batalha.user}, seu Heroi Fugiu! \n **XP Ganho:** ${rewards.xp} \n Moeda Ganha: 0 \n > Essa mensagem será apagada em alguns segundos.`
-                })
-            )
-            for (const player of batalha.players) {
 
-                addXpHeroi(player.id, rewards.xp, rewards.moeda)
-                addXp(player.id, rewards.xp * 5)
-
+                await applyRewards(players, rewards)
+                await updateBattleResultMessage(batalha, container)
+                scheduleBattleMessageDeletion(batalha)
+                break
             }
-            batalha.message.edit({ components: [containerFuga], flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral] })
 
-            setTimeout(() => {
-                batalha.message.delete()
-            }, 5000);
-
-            break;
-
-        case 'timeout':
-
-            const containerTimeout = new ContainerBuilder()
-
-            containerTimeout.setAccentColor(0xffbb00)
-            containerTimeout.addTextDisplayComponents(
-                new TextDisplayBuilder({
-                    content: '# ⏳ Timeout!'
+            case 'timeout': {
+                const container = buildResultContainer({
+                    color: 0xffbb00,
+                    title: '# Timeout!',
+                    description: `${ownerMention}, o tempo de resposta acabou.`
                 })
-            )
-            containerTimeout.addSeparatorComponents(
-                new SeparatorBuilder({
-                    spacing: SeparatorSpacingSize.Large
-                })
-            )
-            containerTimeout.addTextDisplayComponents(
-                new TextDisplayBuilder({
-                    content: `${batalha.user}, tempo de resposta acabou! \n > Essa mensagem será apagada em alguns segundos.`
-                })
-            )
-            batalha.message.edit({ components: [containerTimeout], flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral] })
 
-            setTimeout(() => {
-                batalha.message.delete()
-            }, 5000);
+                await updateBattleResultMessage(batalha, container)
+                scheduleBattleMessageDeletion(batalha)
+                break
+            }
 
-        default:
-            break;
+            default:
+                break
+        }
+    } catch (error) {
+        console.error('Erro ao processar battleEnd:', error)
     }
 })
 
-
-
-module.exports = rpgEvents 
+module.exports = rpgEvents
