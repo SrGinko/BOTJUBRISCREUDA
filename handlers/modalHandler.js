@@ -3,7 +3,7 @@ const { criarEmbed } = require('../Utils/embedFactory')
 const { api } = require('../Utils/axiosClient')
 const { addItem, removeItem } = require('../Utils/itensInventario')
 const { obterUnicoItem, equiparItem } = require('../Utils/itensInventario')
-const { enemyTurn, updateBattleMessage, getBattle, getBattleById, getCurrentTurn, nextTurn, processTurn } = require('../RPG/battleManager')
+const { updateBattleMessage, rewardsAndEnd, getBattleById, getCurrentTurn, nextTurn, processTurn } = require('../RPG/battleManager')
 
 async function ModalHandleAction(interaction) {
     const [prefix, action, id, battleId] = interaction.customId.split(':')
@@ -53,6 +53,15 @@ async function ModalHandleAction(interaction) {
 
                 if (!batalha) return
                 const current = getCurrentTurn(batalha)
+                const participanteValido = [...batalha.players, ...batalha.enemies]
+                    .some(personagem => personagem.id === interaction.user.id && personagem.isHuman)
+
+                if (!participanteValido) {
+                    return interaction.reply({
+                        content: 'Voce nao faz parte dessa batalha.',
+                        ephemeral: true
+                    })
+                }
 
                 if (current.id !== interaction.user.id) {
                     return interaction.reply({
