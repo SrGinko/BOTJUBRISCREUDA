@@ -34,7 +34,7 @@ module.exports = {
                 if (count >= 5) break
 
                 const attachment = await require('../../Utils/rankingBanner')
-                    .createRankingBanner(user, interaction)
+                    .createRankingBanner(user, interaction, count + 1)
 
                 if (!attachment) continue
 
