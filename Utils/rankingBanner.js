@@ -2,7 +2,7 @@ const { AttachmentBuilder } = require('discord.js')
 const Canvas = require('@napi-rs/canvas')
 const banners = require('../data/banners')
 
-async function createRankingBanner(user, interaction) {
+async function createRankingBanner(user, interaction, position) {
 
     const canvas = Canvas.createCanvas(720, 150)
     const ctx = canvas.getContext('2d')
@@ -91,6 +91,16 @@ async function createRankingBanner(user, interaction) {
     ctx.shadowBlur = 0
     ctx.shadowOffsetX = 0
     ctx.shadowOffsetY = 0
+
+    ctx.font = 'bold 22px Sans'
+    ctx.fillStyle = '#ffd166'
+    ctx.textAlign = 'right'
+    ctx.fillText(`#${position}`, canvas.width - 30, 42)
+
+    ctx.font = '20px Sans'
+    ctx.fillStyle = '#ffffff'
+    ctx.textAlign = 'left'
+    ctx.fillText(`Nivel ${user.nivel ?? 0}`, nameX, nameY + 34)
 
     return new AttachmentBuilder(
         await canvas.encode('png'),

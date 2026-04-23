@@ -1,4 +1,4 @@
-const axios = require('axios')  
+const axios = require('axios')
 const { RAWG_API } = process.env
 
 /**
@@ -13,7 +13,8 @@ async function BuscarjogoNome(nameGame) {
         const response = await axios.get(url, {
             params: {
                 key: RAWG_API,
-                search: nameGame
+                search: nameGame,
+                page_size: 25
             }
         })
 
@@ -29,4 +30,31 @@ async function BuscarjogoNome(nameGame) {
     }
 }
 
-module.exports = { BuscarjogoNome }
+/**
+ * 
+ * @param {Int} id 
+ * @returns {Objeto} Informações do jogo pesquisado na API
+ */
+async function BuscarjogoId(id) {
+    const url = `https://api.rawg.io/api/games/${id}/movies`
+
+    try {
+        const response = await axios.get(url, {
+            params: {
+                key: RAWG_API
+            }
+        })
+
+        if (response.data) {
+            return response.data
+        } else {
+            console.log('Nenhum jogo encontrado.');
+            return [];
+        }
+    } catch (error) {
+        console.error('Erro ao buscar o jogo:', error.message);
+        return null;
+    }
+}
+
+module.exports = { BuscarjogoNome, BuscarjogoId }

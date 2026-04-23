@@ -225,7 +225,7 @@ async function creatPerfil(userId, bannerIndex, interaction, type) {
             new ActionRowBuilder({
                 components: [
                     new ButtonBuilder().setLabel('Alterar Banner').setCustomId(`system:alterar_banner:${userId}`).setEmoji('<:foto:1463846754322747497>').setStyle(ButtonStyle.Primary).setDisabled(userId === interaction.user.id ? false : true),
-                    heroiData === null ? new ButtonBuilder().setLabel('Criar Heroi').setCustomId(`system:criarheroi:${userId}`).setEmoji('<:usuario:1463846764720422953>').setStyle(ButtonStyle.Success).setDisabled(userId === interaction.user.id ? false : true) : new ButtonBuilder().setLabel('Ver Herói').setCustomId(`system:verheroi:${userId}`).setEmoji('<:usuario:1463846764720422953>').setStyle(ButtonStyle.Secondary),
+                    heroiData === null ? new ButtonBuilder().setLabel('Criar Heroi').setCustomId(`system:criarheroi:${userId}`).setEmoji('<:usuario:1463846764720422953>').setStyle(ButtonStyle.Success).setDisabled(true) : new ButtonBuilder().setLabel('Ver Herói').setCustomId(`system:verheroi:${userId}`).setEmoji('<:usuario:1463846764720422953>').setStyle(ButtonStyle.Secondary),
                 ]
             })
         )
