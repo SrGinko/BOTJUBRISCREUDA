@@ -18,12 +18,10 @@ async function handleError(interaction, mensagem, erro) {
     })
 
     if (interaction.deferred || interaction.replied) {
-        await interaction.followUp({ components: [container], flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2] })
+        await interaction.update({ components: [container], flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2] })
     } else {
-        await interaction.reply({ components: [container], flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2] })
+        await interaction.update({ components: [container], flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2] })
     }
-
-
 
 }
 
