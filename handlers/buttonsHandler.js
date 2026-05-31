@@ -17,8 +17,9 @@ const {
     comecarBatalha
 } = require('../RPG/battleManager')
 const banners = require('../data/banners')
-const { BuscarjogoNome } = require('../Utils/buscarJogos')
+const { BuscarjogoId } = require('../Utils/buscarJogos')
 const { api } = require('../Utils/axiosClient')
+const { ConversorHtmltoText } = require('../Utils/ConversorHtmltoText')
 
 async function handleActionButton(customId, user, interaction) {
     const [prefix, action, userId, battleId] = customId.split(':')
@@ -213,24 +214,28 @@ async function handleActionButton(customId, user, interaction) {
         }
     } else if (prefix === 'games') {
         if (action === 'imagens') {
-            const response = await BuscarjogoNome(userId)
-            const game = response[0]
-
+            const appId = interaction.customId.split(':')[2]
+            const jogo = await BuscarjogoId(appId)
 
             const container = new ContainerBuilder()
 
             container.addMediaGalleryComponents(
                 new MediaGalleryBuilder({
-                    items: game.short_screenshots.map(screenshot => ({ media: { url: screenshot.image } }))
+                    items: [
+                        ...jogo.screenshots?.slice(0, 10).map(s => ({ media: { url: s.path_full } }))
+                    ]
+                })
+            )
+            container.addSeparatorComponents(
+                new SeparatorBuilder({
+                    spacing: SeparatorSpacingSize.Large,
+                    divider: false
                 })
             )
 
             container.addActionRowComponents(
                 new ActionRowBuilder().addComponents(
-                    new ButtonBuilder()
-                        .setEmoji(`<:controle:1463846749285257260>`)
-                        .setStyle(ButtonStyle.Secondary)
-                        .setCustomId(`games:info:${userId}`),
+                    new ButtonBuilder().setEmoji('<:anterior:1463846746428932262>').setStyle(ButtonStyle.Secondary).setCustomId(`games:info:${appId}`),
                 )
             )
 
@@ -238,18 +243,16 @@ async function handleActionButton(customId, user, interaction) {
             return { ok: true }
 
         } else if (action === 'info') {
-            const response = await BuscarjogoNome(userId)
-            const jogo = response[0]
+            const appId = interaction.customId.split(':')[2]
+            const suggestion = interaction.customId.split(':')[3]
+            const jogo = await BuscarjogoId(appId)
 
             const container = new ContainerBuilder()
 
             container.addMediaGalleryComponents(
                 new MediaGalleryBuilder({
                     items: [
-                        {
-                            media:
-                                { url: jogo.background_image },
-                        }
+                        { media: { url: jogo.background_raw } }
                     ]
                 })
             )
@@ -263,40 +266,51 @@ async function handleActionButton(customId, user, interaction) {
 
             container.addTextDisplayComponents(
                 new TextDisplayBuilder({
-                    content: `# ${jogo.name}
-**Metatric:** ${jogo.metacritic || 'N/A'}
-**Avaliação:** ${jogo.rating} / ${jogo.rating_top}
-**Plataformas:** ${jogo.platforms.map(element => { return element.platform.name }).join(', ')}
-**Data de Lançamento:** ${formatDate(jogo.released)}
-**Gêneros:** ${jogo.genres.map(element => { return element.name }).join(', ')}
-`
+                    content:
+                        `# ${jogo.name}
+
+<:moedas:1463846758282170521> ${jogo.is_free
+                            ? 'Gratuito'
+                            : jogo.price_overview?.final_formatted || 'Desconhecido'}
+
+**Metacritic:** ${jogo.metacritic ? `[${jogo.metacritic.score}](${jogo.metacritic.url})` : 'Desconecido'}
+${jogo.website ? `[Website](${jogo.website})` : 'Desconecido'}
+
+> ${ConversorHtmltoText(jogo.short_description) || 'Nenhuma descrição disponível'}
+
+**Lançamento:** ${jogo.release_date.coming_soon
+                            ? 'Em breve'
+                            : jogo.release_date.date || 'Desconhecido'
+                        }
+**Gêneros:** ${jogo.genres?.map(g => g.description).join(', ') || 'Não informado'
+                        }
+**Categorias:** ${jogo.categories?.slice(0, 10).map(c => c.description).join(', ') || 'Não informado'
+                        }`
                 })
             )
 
             container.addActionRowComponents(
                 new ActionRowBuilder().addComponents(
-                    new ButtonBuilder().setEmoji(`<:foto:1463846754322747497>`).setStyle(ButtonStyle.Secondary).setCustomId(`games:imagens:${userId}`),
-                    new ButtonBuilder().setEmoji('➕').setLabel('Adicionar Sugestão').setStyle(ButtonStyle.Secondary).setCustomId(`games:suggest:${userId}`)
+                    new ButtonBuilder().setEmoji(`<:foto:1463846754322747497>`).setLabel('Imagens').setStyle(ButtonStyle.Secondary).setCustomId(`games:imagens:${appId}`),
+                    new ButtonBuilder().setEmoji('<:estatisitcas:1463846753110331537>').setLabel('Requisitos').setStyle(ButtonStyle.Secondary).setCustomId(`games:requisitos:${appId}`),
+                    new ButtonBuilder().setEmoji('➕').setLabel('Adicionar Sugestão').setStyle(ButtonStyle.Secondary).setCustomId(`games:suggest:${appId}`).setDisabled(suggestion ? true : false),
+                    new ButtonBuilder().setEmoji('<:moedas:1463846758282170521>').setLabel('Comprar').setStyle(ButtonStyle.Link).setURL(`https://store.steampowered.com/app/${appId}`)
                 )
             )
-
             await interaction.update({ flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral], components: [container] })
             return { ok: true }
         } else if (action === 'suggest') {
 
             const forumChannel = await interaction.client.channels.fetch('1428656735505223720')
-            const response = await BuscarjogoNome(userId)
-            const jogo = response[0]
+            const appId = interaction.customId.split(':')[2]
+            const jogo = await BuscarjogoId(appId)
 
             const container = new ContainerBuilder()
 
             container.addMediaGalleryComponents(
                 new MediaGalleryBuilder({
                     items: [
-                        {
-                            media:
-                                { url: jogo.background_image },
-                        }
+                        { media: { url: jogo.background_raw } }
                     ]
                 })
             )
@@ -310,17 +324,35 @@ async function handleActionButton(customId, user, interaction) {
 
             container.addTextDisplayComponents(
                 new TextDisplayBuilder({
-                    content: `# ${jogo.name}
-**Metatric:** ${jogo.metacritic}
-**Avaliação:** ${jogo.rating} / ${jogo.rating_top}
-**Plataformas:** ${jogo.platforms.map(element => { return element.platform.name }).join(', ')}
-**Data de Lançamento:** ${formatDate(jogo.released)}
-**Gêneros:** ${jogo.genres.map(element => { return element.name }).join(', ')}
-`
+                    content:
+                        `# ${jogo.name}
+
+💰 ${jogo.is_free
+                            ? 'Gratuito'
+                            : jogo.price_overview?.final_formatted || 'Desconhecido'}
+
+**Metacritic:** ${jogo.metacritic ? `[${jogo.metacritic.score}](${jogo.metacritic.url})` : 'Desconecido'}
+${jogo.website ? `[Website](${jogo.website})` : 'Desconecido'}
+
+> ${ConversorHtmltoText(jogo.short_description) || 'Nenhuma descrição disponível'}
+
+**Lançamento:** ${jogo.release_date.coming_soon
+                            ? 'Em breve'
+                            : jogo.release_date.date || 'Desconhecido'
+                        }
+**Gêneros:** ${jogo.genres?.map(g => g.description).join(', ') || 'Não informado'
+                        }
+**Categorias:** ${jogo.categories?.slice(0, 10).map(c => c.description).join(', ') || 'Não informado'
+                        }`
                 })
             )
 
-            const listaTags = jogo.genres.map(g => g.name)
+            container.addActionRowComponents(
+                new ActionRowBuilder().addComponents(
+                    new ButtonBuilder().setEmoji(`<:foto:1463846754322747497>`).setLabel('Imagens').setStyle(ButtonStyle.Secondary).setCustomId(`games:imagens:${appId}:suggestion`),
+                )
+            )
+            const listaTags = jogo.genres.map(g => g.description)
 
             const existentes = forumChannel.availableTags ?? []
             const nomesExistentes = existentes.map(tag => tag.name.toLowerCase())
@@ -368,6 +400,46 @@ async function handleActionButton(customId, user, interaction) {
 
             addXp(user.id, 50)
             await interaction.deferUpdate()
+        } else if (action === 'requisitos') {
+            const appId = interaction.customId.split(':')[2]
+            const jogo = await BuscarjogoId(appId)
+
+            const container = new ContainerBuilder()
+
+            container.addMediaGalleryComponents(
+                new MediaGalleryBuilder({
+                    items: [
+                        { media: { url: jogo.background_raw } }
+                    ]
+                })
+            )
+
+            container.addSeparatorComponents(
+                new SeparatorBuilder({
+                    spacing: SeparatorSpacingSize.Large,
+                    divider: false
+                })
+            )
+
+            container.addTextDisplayComponents(
+                new TextDisplayBuilder({
+                    content:
+                        `# Requisitos Mínimos
+${jogo.pc_requirements?.minimum ? ConversorHtmltoText(jogo.pc_requirements.minimum) : 'Requisitos mínimos não disponíveis'}
+
+# Requisitos Recomendados
+${jogo.pc_requirements?.recommended ? ConversorHtmltoText(jogo.pc_requirements.recommended) : 'Requisitos recomendados não disponíveis'}`
+                })
+            )
+
+            container.addActionRowComponents(
+                new ActionRowBuilder().addComponents(
+                    new ButtonBuilder().setEmoji('<:anterior:1463846746428932262>').setStyle(ButtonStyle.Secondary).setCustomId(`games:info:${appId}`),
+                )
+            )
+
+            await interaction.update({ flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral], components: [container] })
+            return { ok: true }
         }
     } if (prefix === 'loja') {
         if (action === 'comprar') {
