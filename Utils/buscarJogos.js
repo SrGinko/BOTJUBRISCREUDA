@@ -1,60 +1,59 @@
 const axios = require('axios')
-const { RAWG_API } = process.env
+const cheerio = require('cheerio')
 
 /**
  * 
  * @param {String} nameGame 
  * @returns {Objeto} Informações do jogo pesquisado na API
  */
-async function BuscarjogoNome(nameGame) {
+async function BuscarjogoNome(nome) {
     const url = `https://api.rawg.io/api/games`
 
     try {
-        const response = await axios.get(url, {
+        const { data } = await axios.get("https://store.steampowered.com/search/suggest", {
             params: {
-                key: RAWG_API,
-                search: nameGame,
-                page_size: 25
+                term: nome,
+                f: "games",
+                cc: "BR",
+                l: "portuguese",
             }
         })
 
-        if (response.data && response.data.results.length > 0) {
-            return response.data.results
-        } else {
-            console.log('Nenhum jogo encontrado.');
-            return [];
-        }
+        const $ = cheerio.load(data)
+        const jogos = []
+        $(".match").each((index, element) => {
+            jogos.push({
+                appid: $(element).attr("data-ds-appid"),
+                nome: $(element).find(".match_name").text().trim(),
+            })
+        })
+
+        return jogos
+
     } catch (error) {
         console.error('Erro ao buscar o jogo:', error.message);
         return null;
     }
 }
 
-/**
- * 
- * @param {Int} id 
- * @returns {Objeto} Informações do jogo pesquisado na API
- */
-async function BuscarjogoId(id) {
-    const url = `https://api.rawg.io/api/games/${id}/movies`
-
+async function BuscarjogoId(appid) {
+    const url = `https://store.steampowered.com/api/appdetails?appids=${appid}`
     try {
-        const response = await axios.get(url, {
+        const { data } = await axios.get(url,{
             params: {
-                key: RAWG_API
+                    cc: "br",
+                    l: "brazilian",
             }
         })
 
-        if (response.data) {
-            return response.data
-        } else {
-            console.log('Nenhum jogo encontrado.');
-            return [];
-        }
-    } catch (error) {
+        return data[appid].data
+    }
+    catch (error) {
         console.error('Erro ao buscar o jogo:', error.message);
         return null;
     }
 }
 
-module.exports = { BuscarjogoNome, BuscarjogoId }
+
+
+module.exports = { BuscarjogoNome, BuscarjogoId  }
