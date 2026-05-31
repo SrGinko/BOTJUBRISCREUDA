@@ -20,6 +20,9 @@ Integração com API externa que retorna detalhes completos de qualquer título 
 ### 💾 Banco de Dados
 Todos os dados de usuários, níveis e configurações são armazenados em **SQLite** (com integração opcional ao Supabase), garantindo alto desempenho e persistência.
 
+### 🥇 Ranking
+Ranking global de Usuários baseando se em seus níveis e XP
+
 ---
 
 ## ⚔️ Sistema de RPG Integrado
@@ -55,7 +58,6 @@ Todos os dados de usuários, níveis e configurações são armazenados em **SQL
 
 ## 🚧 Em Desenvolvimento
 
-- **Ranking global** e eventos sazonais  
 - Novos tipos de **inimigos e habilidades únicas**  
 - **Missões Diárias** com recompensas
 - **Personalização** mais personalização de Perfil
