@@ -11,52 +11,6 @@ async function SelectMenusHandleAction(interaction) {
     const idMenu = interaction.customId
 
     switch (idMenu) {
-        case 'game': {
-
-            const gameName = interaction.values[0]
-            const response = await BuscarjogoNome(gameName)
-            const jogo = response[0]
-
-            const container = new ContainerBuilder()
-
-            container.addMediaGalleryComponents(
-                new MediaGalleryBuilder({
-                    items: [
-                        { media: { url: jogo.background_image } }
-                    ]
-                })
-            )
-
-            container.addSeparatorComponents(
-                new SeparatorBuilder({
-                    spacing: SeparatorSpacingSize.Large,
-                    divider: false
-                })
-            )
-
-            container.addTextDisplayComponents(
-                new TextDisplayBuilder({
-                    content: `# ${jogo.name}
-**Metatric:** ${jogo.metacritic || 'N/A'}
-**Avaliação:** ${jogo.rating} / ${jogo.rating_top}
-**Plataformas:** ${jogo.platforms.map(element => { return element.platform.name }).join(', ')}
-**Data de Lançamento:** ${formatDate(jogo.released)}
-**Gêneros:** ${jogo.genres.map(element => { return element.name }).join(', ')}
-`
-                })
-            )
-
-            container.addActionRowComponents(
-                new ActionRowBuilder().addComponents(
-                    new ButtonBuilder().setEmoji(`<:foto:1463846754322747497>`).setStyle(ButtonStyle.Secondary).setCustomId(`games:imagens:${gameName}`),
-                    new ButtonBuilder().setEmoji('➕').setLabel('Adicionar Sugestão').setStyle(ButtonStyle.Secondary).setCustomId(`games:suggest:${gameName}`)
-                )
-            )
-
-            addXp(userId, 30)
-            await interaction.update({ flags: [MessageFlags.IsComponentsV2], components: [container] })
-
-        } break;
         case 'server': {
             const server = interaction.values[0]
 
