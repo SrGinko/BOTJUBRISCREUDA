@@ -6,6 +6,7 @@ const { ModalHandleAction } = require('../handlers/modalHandler')
 const { SelectMenusHandleAction } = require('../handlers/selectmenusHandler')
 const { criarEmbed } = require('../Utils/embedFactory')
 const { handleError } = require('../handlers/errorsHandler')
+const { BuscarjogoNome } = require('../Utils/buscarJogos')
 const erro = chalk.bold.red
 
 
@@ -59,6 +60,20 @@ module.exports = {
 				}));
 
 				await interaction.respond(selections);
+			} else if (interaction.commandName === 'games') {
+
+				const texto = interaction.options.getFocused();
+				if (!texto) return interaction.respond([])
+				const jogos = await BuscarjogoNome(texto)
+				if (!jogos) return interaction.respond([])
+				const selections = jogos.slice(0, 10).map(jogo => {
+					return {
+						name: jogo.nome,
+						value: String(jogo.appid)
+					}
+				})
+
+				await interaction.respond(selections)
 			}
 
 			return
