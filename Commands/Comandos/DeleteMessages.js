@@ -41,7 +41,7 @@ module.exports = {
                 }
             } else if (lixeiro === false) {
 
-                embed.setDescription(`Você não tem permição de Lixeiro para executar este comando!`)
+                embed.setDescription(`Você não tem permissão de Lixeiro para executar este comando!`)
                 embed.setColor('Red')
 
                 return await interaction.reply({ embeds: [embed], flags: 64 })
