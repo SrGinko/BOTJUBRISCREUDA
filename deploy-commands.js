@@ -12,7 +12,7 @@ const info = chalk.bold.blue
 const title = chalk.yellow.bold
 
 const commands = [];
-const foldersPath = path.join(__dirname, 'commands');
+const foldersPath = path.join(__dirname, 'Commands');
 const commandFolders = fs.readdirSync(foldersPath);
 
 for (const folder of commandFolders) {
