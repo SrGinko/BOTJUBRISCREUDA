@@ -31,7 +31,7 @@ module.exports = {
 
             for (const user of userRanking) {
 
-                if (count >= 5) break
+                if (count >= 10) break
 
                 const attachment = await require('../../Utils/rankingBanner')
                     .createRankingBanner(user, interaction, count + 1)
