@@ -2,6 +2,8 @@ const { SlashCommandBuilder, StringSelectMenuBuilder, ContainerBuilder, TextDisp
 const { BuscarjogoId } = require("../../Utils/buscarJogos")
 const { addXp } = require("../../Utils/xp")
 const { ConversorHtmltoText } = require("../../Utils/ConversorHtmltoText")
+const { criarEmbed } = require("../../Utils/embedFactory")
+const { handleError } = require("../../handlers/errorsHandler")
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -16,7 +18,9 @@ module.exports = {
 
         const jogo = await BuscarjogoId(appId)
 
-        console.log(jogo)
+        if (!jogo) {
+            return handleError(interaction, 'Não foi possível encontrar informações sobre esse jogo. Verifique se o nome está correto ou tente novamente mais tarde.', 'Jogo Não Encontrado')
+        }
 
         const container = new ContainerBuilder()
 
