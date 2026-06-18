@@ -1,4 +1,4 @@
-const { ContainerBuilder, MessageFlags, TextDisplayBuilder } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 
 /***
  * @description Função para lidar com erros de forma padronizada
@@ -7,22 +7,53 @@ const { ContainerBuilder, MessageFlags, TextDisplayBuilder } = require("discord.
  * @param {String} erro - O título do erro a ser exibido no container
  */
 async function handleError(interaction, mensagem, erro) {
+    const embed = new EmbedBuilder()
+        .setTitle(erro)
+        .setDescription(mensagem)
+        .setColor(0xff0000);
 
-    const container = new ContainerBuilder({
-        accent_color: 0xff0000,
-        components: [
-            new TextDisplayBuilder({
-                content: `## ${erro} \n ${mensagem}`
-            })
-        ]
-    })
+    const replyData = {
+        embeds: [embed],
+        ephemeral: true
+    };
 
-    if (interaction.deferred || interaction.replied) {
-        await interaction.update({ components: [container], flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2] })
-    } else {
-        await interaction.update({ components: [container], flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2] })
+    const editData = {
+        embeds: [embed]
+    };
+
+    try {
+        if (interaction.deferred || interaction.replied) {
+            return await interaction.editReply(editData);
+        }
+
+        return await interaction.reply(replyData);
+    } catch (error) {
+        console.error('Falha ao enviar mensagem de erro inicial:', error);
+
+        if (interaction.replied || interaction.deferred) {
+            try {
+                return await interaction.followUp(replyData);
+            } catch (followError) {
+                console.error('Falha ao enviar followUp de erro:', followError);
+            }
+        }
+
+        if (typeof interaction.update === 'function') {
+            try {
+                return await interaction.update(editData);
+            } catch (updateError) {
+                console.error('Falha ao atualizar interação de erro:', updateError);
+            }
+        }
+
+        if (!interaction.replied) {
+            try {
+                return await interaction.reply(replyData);
+            } catch (replyError) {
+                console.error('Falha ao responder interação de erro:', replyError);
+            }
+        }
     }
-
 }
 
-module.exports = { handleError }
+module.exports = { handleError };
