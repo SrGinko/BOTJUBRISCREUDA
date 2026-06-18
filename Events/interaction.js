@@ -68,7 +68,7 @@ module.exports = {
 				if (!jogos) return interaction.respond([])
 				const selections = jogos.slice(0, 10).map(jogo => {
 					return {
-						name: jogo.nome,
+						name: jogo.nome.length > 100 ? jogo.nome.slice(0, 97) + '...' : jogo.nome,
 						value: String(jogo.appid)
 					}
 				})
