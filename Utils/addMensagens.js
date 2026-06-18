@@ -1,4 +1,6 @@
 const { api } = require('./axiosClient')
+const guildEvent = require('../Events/GuildEvent.js')
+const { addXp } = require('./xp')
 
 async function addMenssage(discUser, quantidade, message) {
     try {
