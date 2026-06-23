@@ -127,7 +127,7 @@ async function handleActionButton(customId, user, interaction) {
 
                 const attackerResult = await performAttack(batalha, attacker)
 
-                await updateBattleMessage(batalha, attackerResult.text, 5000)
+                await updateBattleMessage(batalha, attackerResult.text, 3000)
 
                 const result = require('../RPG/battleManager').checkBattleEnd?.(batalha)
 
@@ -152,10 +152,10 @@ async function handleActionButton(customId, user, interaction) {
                         ? `${player.nome} desistiu da batalha!`
                         : `${player.nome} fugiu!`
 
-                    await updateBattleMessage(batalha, texto, 5000)
+                    await updateBattleMessage(batalha, texto, 3000)
                     await rewardsAndEnd(batalha, 'fuga')
                 } else {
-                    await updateBattleMessage(batalha, `${player.nome} tentou fugir e falhou!`, 5000)
+                    await updateBattleMessage(batalha, `${player.nome} tentou fugir e falhou!`, 3000)
 
                     nextTurn(batalha)
                     await processTurn(batalha)

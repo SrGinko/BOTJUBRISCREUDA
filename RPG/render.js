@@ -160,7 +160,7 @@ function renderBattleContainer(battle, text) {
     return container
 }
 
-async function updateBattleMessage(battle, text, delay = 1000) {
+async function updateBattleMessage(battle, text, delay = 1000 ) {
 
     if(delay > 0){
         await new Promise(resolve => setTimeout(resolve, delay))

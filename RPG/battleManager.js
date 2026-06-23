@@ -368,7 +368,7 @@ async function processTurn(battle) {
     }
 
     const attackResult = await performAttack(battle, current)
-    await updateBattleMessage(battle, attackResult.text, 5000)
+    await updateBattleMessage(battle, attackResult.text, 2000)
 
     if (attackResult.result) {
         return rewardsAndEnd(battle, attackResult.result)

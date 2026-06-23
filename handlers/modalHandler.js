@@ -88,7 +88,7 @@ async function ModalHandleAction(interaction) {
                 await updateBattleMessage(
                     batalha,
                     `💚 ${current.nome} recuperou ${curaTotal} de vida!`,
-                    5000
+                    2000
                 )
 
                 for (const item of itensUsados) {
@@ -180,14 +180,14 @@ async function ModalHandleAction(interaction) {
                             damagePerTurn = Math.max(1, Math.floor((participante.maxHp * 0.05)))
                         }
 
-                        const efeitoObj = { type: 'DOT', damagePerTurn, remainingTurns: duration, sourceName: `${item.statusNome ? `${statusEmoji[item.statusNome] || ''}${item.statusNome}` : ''}` }
+                        const efeitoObj = { type: 'DOT', damagePerTurn, remainingTurns: duration, sourceName: `${item.statusNome ? `${item.statusNome}` : ''} ${statusEmoji[item.statusNome] || ''}` }
                         participante.effects = participante.effects || []
                         participante.effects.push(efeitoObj)
 
                         appliedStatusText = ` e aplicou ${item.statusNome} (${damagePerTurn} por ${duration} turnos)`
                     } else if (type === 'SKIP') {
                         const duration = efeito.duration || efeito.turns || item.statusDuration || 1
-                        const efeitoObj = { type: 'SKIP', remainingTurns: duration, sourceName: `${item.statusNome ? `${statusEmoji[item.statusNome] || ''}${item.statusNome}` : ''}` }
+                        const efeitoObj = { type: 'SKIP', remainingTurns: duration, sourceName: `${item.statusNome ? `${item.statusNome}` : ''} ${statusEmoji[item.statusNome] || ''}` }
                         participante.effects = participante.effects || []
                         participante.effects.push(efeitoObj)
                         appliedStatusText = ` e aplicou ${item.statusNome} (${duration} turnos)`
@@ -197,7 +197,7 @@ async function ModalHandleAction(interaction) {
                 await interaction.deferUpdate()
 
                 const hitText = damageApplied > 0 ? `${current.nome} causou ${damageApplied} de dano em ${participante.nome}` : `${current.nome} usou ${item.nome} em ${participante.nome}`
-                await updateBattleMessage(batalha, `✨ ${hitText}${appliedStatusText}`, 5000)
+                await updateBattleMessage(batalha, `✨ ${hitText}${appliedStatusText}`, 2000)
 
                 const result = require('../RPG/battleManager').checkBattleEnd?.(batalha)
 
