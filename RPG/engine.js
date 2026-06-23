@@ -10,46 +10,95 @@ function definirQuantidadeInimigos(player) {
 }
 
 function criarInimigo(nivelPlayer, enemyData) {
-    const scale = 0.8 + Math.random() * 1.2
-    const level = Math.max(1, Math.round(nivelPlayer * scale))
+    const minLevel = Math.max(1, Math.floor(nivelPlayer * 0.9))
+    const maxLevel = Math.ceil(nivelPlayer * 1.1)
+
+    const level =
+        Math.floor(Math.random() * (maxLevel - minLevel + 1)) + minLevel
 
     return {
         id: `enemy_${Date.now()}_${Math.random()}`,
         nome: enemyData.nome,
         tipo: 'enemy',
         team: 'enemies',
+
         level,
+
         maxHp: enemyData.vida + level * 5,
         hp: enemyData.vida + level * 5,
+
         ataque: enemyData.ataque + level * 2,
         defesa: enemyData.defesa + level,
+
         moeda: Math.round(Math.random() * 100) + level * 2,
         xp: Math.round(Math.random() * 100) + level * 10,
+
         imagem: enemyData.imagem || null,
+
         speed: Math.floor(Math.random() * 10) + 1,
+
         isHuman: false,
         alive: true
     }
 }
 
+function calcularForcaInimigo(enemy) {
+    return (
+        enemy.ataque * 2 +
+        enemy.defesa * 1.5 +
+        enemy.maxHp / 4
+    )
+}
+
 function gerarInimigosBalanceados(player, enemiesDataList) {
     const quantidade = definirQuantidadeInimigos(player)
-    const forcaTotal = calcularForcaPlayer(player) * 0.9
-    const forcaPorInimigo = forcaTotal / quantidade
+
     const enemies = []
 
+    const forcaDesejada =
+        calcularForcaPlayer(player) * 1.1
+
     for (let i = 0; i < quantidade; i++) {
-        const base = enemiesDataList[Math.floor(Math.random() * enemiesDataList.length)]
-        const enemy = criarInimigo(player.nivel, base)
-        const basePower = enemy.ataque * 2 + enemy.defesa + enemy.maxHp / 3
-        const scale = forcaPorInimigo / basePower
+        const base =
+            enemiesDataList[
+            Math.floor(Math.random() * enemiesDataList.length)
+            ]
 
-        enemy.ataque = Math.max(1, Math.floor(enemy.ataque * scale))
-        enemy.defesa = Math.max(1, Math.floor(enemy.defesa * scale))
-        enemy.maxHp = Math.max(5, Math.floor(enemy.maxHp * scale))
+        enemies.push(
+            criarInimigo(player.nivel, base)
+        )
+    }
+
+    const forcaAtual = enemies.reduce(
+        (total, enemy) =>
+            total + calcularForcaInimigo(enemy),
+        0
+    )
+
+    const scaleGlobal = forcaDesejada / forcaAtual
+
+    const scale = Math.min(
+        Math.max(scaleGlobal, 0.7),
+        1.5
+    )
+
+    for (const enemy of enemies) {
+        enemy.ataque = Math.max(
+            1,
+            Math.round(enemy.ataque * scale)
+        )
+
+        enemy.defesa = Math.max(
+            1,
+            Math.round(enemy.defesa * scale)
+        )
+
+        enemy.maxHp = Math.max(
+            10,
+            Math.round(enemy.maxHp * scale)
+        )
+
         enemy.hp = enemy.maxHp
-
-        enemies.push(enemy)
     }
 
     return enemies
@@ -103,7 +152,10 @@ async function performAttack(battle, attacker) {
     }
 
     const target = targets[Math.floor(Math.random() * targets.length)]
-    const damage = calcDamage(attacker, target)
+    const damageBase = calcDamage(attacker, target)
+    const damage = attacker.isHuman
+        ? Math.max(1, damageBase)
+        : damageBase
 
     target.hp -= damage
     if (target.hp <= 0) {
