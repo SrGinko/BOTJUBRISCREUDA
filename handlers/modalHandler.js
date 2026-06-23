@@ -5,6 +5,7 @@ const { addItem, removeItem } = require('../Utils/itensInventario')
 const { obterUnicoItem, equiparItem } = require('../Utils/itensInventario')
 const { updateBattleMessage, rewardsAndEnd, getBattleById, getCurrentTurn, nextTurn, processTurn } = require('../RPG/battleManager')
 
+
 async function ModalHandleAction(interaction) {
     const [prefix, action, id, battleId] = interaction.customId.split(':')
 
@@ -86,7 +87,8 @@ async function ModalHandleAction(interaction) {
 
                 await updateBattleMessage(
                     batalha,
-                    `💚 ${current.nome} recuperou ${curaTotal} de vida!`
+                    `💚 ${current.nome} recuperou ${curaTotal} de vida!`,
+                    5000
                 )
 
                 for (const item of itensUsados) {
@@ -103,13 +105,20 @@ async function ModalHandleAction(interaction) {
                 nextTurn(batalha)
 
                 await processTurn(batalha)
-                
+
 
             }
                 break;
             case 'magia': {
                 const selecionados = interaction.fields.getStringSelectValues('magiaSelect')
                 const targets = interaction.fields.getStringSelectValues('targetSelect')
+
+                const statusEmoji = {
+                    Burn: '🔥',
+                    Elec: '⚡',
+                    Ice: '❄️',
+                    Curse: '☠️'
+                }
 
                 const item = await obterUnicoItem(Number(selecionados[0]))
 
@@ -134,10 +143,9 @@ async function ModalHandleAction(interaction) {
                 if (!participante) {
                     return interaction.reply({ content: 'Alvo inválido.', ephemeral: true })
                 }
-
-                // aplicar dano imediato (se existir) e tentar aplicar status com chance
-                const damage =  item.ataque || 0
+                const damage = item.ataque || 0
                 let damageApplied = 0
+                let manaApplied = item.mana
 
                 if (damage && damage > 0) {
                     damageApplied = Math.max(1, Math.floor(damage))
@@ -148,10 +156,20 @@ async function ModalHandleAction(interaction) {
                     }
                 }
 
-                // chance de aplicar status
-                const chance = item.statusChance / 100
+                if (item.mana && item.mana > 0) {
+                    if (current.mana < item.mana) {
+                        return interaction.reply({ embeds: [criarEmbed({ description: `Você não tem mana suficiente para usar **${item.nome}**.`, color: 'Blue' })], ephemeral: true })
+                    }
+                    current.mana -= item.mana
+                    if (current.mana < 0) {
+                        current.mana = 0
+                    }
+                }
+
+                const chance = item.chanceStatus / 100
                 const rolled = Math.random() < chance
                 let appliedStatusText = ''
+                let type = 'DOT'
 
                 if (rolled) {
                     const efeito = item.statusName
@@ -162,24 +180,24 @@ async function ModalHandleAction(interaction) {
                             damagePerTurn = Math.max(1, Math.floor((participante.maxHp * 0.05)))
                         }
 
-                        const efeitoObj = { type: 'DOT', damagePerTurn, remainingTurns: duration, sourceName: item.nome }
+                        const efeitoObj = { type: 'DOT', damagePerTurn, remainingTurns: duration, sourceName: `${item.statusNome ? `${statusEmoji[item.statusNome] || ''}${item.statusNome}` : ''}` }
                         participante.effects = participante.effects || []
                         participante.effects.push(efeitoObj)
 
-                        appliedStatusText = ` e aplicou ${item.statusName} (${damagePerTurn} por ${duration} turnos)`
+                        appliedStatusText = ` e aplicou ${item.statusNome} (${damagePerTurn} por ${duration} turnos)`
                     } else if (type === 'SKIP') {
                         const duration = efeito.duration || efeito.turns || item.statusDuration || 1
-                        const efeitoObj = { type: 'SKIP', remainingTurns: duration, sourceName: item.nome }
+                        const efeitoObj = { type: 'SKIP', remainingTurns: duration, sourceName: `${item.statusNome ? `${statusEmoji[item.statusNome] || ''}${item.statusNome}` : ''}` }
                         participante.effects = participante.effects || []
                         participante.effects.push(efeitoObj)
-                        appliedStatusText = ` e aplicou ${item.statusName} (${duration} turnos)`
+                        appliedStatusText = ` e aplicou ${item.statusNome} (${duration} turnos)`
                     }
                 }
 
                 await interaction.deferUpdate()
 
                 const hitText = damageApplied > 0 ? `${current.nome} causou ${damageApplied} de dano em ${participante.nome}` : `${current.nome} usou ${item.nome} em ${participante.nome}`
-                await updateBattleMessage(batalha, `✨ ${hitText}${appliedStatusText}`)
+                await updateBattleMessage(batalha, `✨ ${hitText}${appliedStatusText}`, 5000)
 
                 const result = require('../RPG/battleManager').checkBattleEnd?.(batalha)
 
