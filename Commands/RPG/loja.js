@@ -74,7 +74,7 @@ module.exports = {
 
         container.addTextDisplayComponents(
             new TextDisplayBuilder({
-                content: `### Atributos: \n ${item.heal ? `**❤️ Vida:** ${item.heal} \n` : ''} ${item.ataque ? `**⚔️ Ataque:** ${item.ataque} \n` : ''} ${item.defesa ? `**🛡️ Defesa:** ${item.defesa} \n` : ''}`
+                content: `### Atributos: \n ${item.heal ? `**❤️ Vida:** ${item.heal} \n` : ''} ${item.ataque ? `**⚔️ Ataque:** ${item.ataque} \n` : ''} ${item.defesa ? `**🛡️ Defesa:** ${item.defesa} \n` : ''} ${item.mana ? `**🔮 Mana:** ${item.mana} \n` : ''}`
             })
         )
 
