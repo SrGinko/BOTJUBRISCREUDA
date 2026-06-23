@@ -101,4 +101,8 @@ async function equiparItem(userId, itensID) {
 
 }
 
+async function BuscarItemPorTipo(tipo) {
+    
+}
+
 module.exports = { obterItensInventario, obterItens, obterUnicoItem, addItem, removeItem, equiparItem }
