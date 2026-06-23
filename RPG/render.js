@@ -73,7 +73,12 @@ function barraDeVida(cur, max, len = 10) {
 }
 
 function renderEnemy(container, enemy) {
-    const content = `**${enemy.nome}**\n\`${barraDeVida(enemy.hp, enemy.maxHp)}\``
+    let content = `**${enemy.nome}** Lv. ${enemy.level}\n\`${barraDeVida(enemy.hp, enemy.maxHp)}\``
+
+    if (enemy.effects && enemy.effects.length > 0) {
+        const statusLines = enemy.effects.map(e => `${e.type}${e.remainingTurns ? `(${e.remainingTurns})` : ''}`)
+        content += `\nStatus: ${statusLines.join(', ')}`
+    }
 
     if (enemy.tipo === 'enemy' && enemy.imagem) {
         const section = new SectionBuilder().addTextDisplayComponents(
@@ -119,7 +124,7 @@ function renderBattleContainer(battle, text) {
     for (const player of battle.players) {
         container.addTextDisplayComponents(
             new TextDisplayBuilder({
-                content: `**${player.nome}**\n\`${barraDeVida(player.hp, player.maxHp)}\``
+                content: `**${player.nome}** Lv. ${player.nivel}\n\`${barraDeVida(player.hp, player.maxHp)}\`` + (player.effects && player.effects.length > 0 ? `\nStatus: ${player.effects.map(e => `${e.type}${e.remainingTurns ? `(${e.remainingTurns})` : ''}`).join(', ')}` : '')
             })
         )
     }
