@@ -57,6 +57,8 @@ function buildChallengeContainer({ title, description, challengeId = null, targe
     return container
 }
 
+
+
 function scheduleChallengeMessageDeletion(challenge, delay = 10000) {
     if (!challenge?.message) return
 
@@ -72,11 +74,18 @@ function barraDeVida(cur, max, len = 10) {
     return 'HP '.concat('🟥'.repeat(filled), '⬛'.repeat(empty), ` ${cur}/${max}`)
 }
 
+function barraDeMana(cur, max, len = 10) {
+    const ratio = max > 0 ? cur / max : 0
+    const filled = Math.max(0, Math.min(len, Math.round(ratio * len)))
+    const empty = len - filled
+    return 'MP '.concat('🟦'.repeat(filled), '⬛'.repeat(empty), ` ${cur}/${max}`)
+}
+
 function renderEnemy(container, enemy) {
     let content = `**${enemy.nome}** Lv. ${enemy.level}\n\`${barraDeVida(enemy.hp, enemy.maxHp)}\``
 
     if (enemy.effects && enemy.effects.length > 0) {
-        const statusLines = enemy.effects.map(e => `${e.type}${e.remainingTurns ? `(${e.remainingTurns})` : ''}`)
+        const statusLines = enemy.effects.map(e => `${e.sourceName}${e.remainingTurns ? `(${e.remainingTurns})` : ''}`)
         content += `\nStatus: ${statusLines.join(', ')}`
     }
 
@@ -105,7 +114,7 @@ function renderBattleContainer(battle, text) {
 
     container.addTextDisplayComponents(
         new TextDisplayBuilder({
-            content: `# Batalha ${battle.mode === 'pvp' ? 'PvP' : ''}`.trim()
+            content: `# ⚔️ Batalha ${battle.mode === 'pvp' ? 'PvP' : ''}`.trim()
         })
     )
 
@@ -124,7 +133,13 @@ function renderBattleContainer(battle, text) {
     for (const player of battle.players) {
         container.addTextDisplayComponents(
             new TextDisplayBuilder({
-                content: `**${player.nome}** Lv. ${player.nivel}\n\`${barraDeVida(player.hp, player.maxHp)}\`` + (player.effects && player.effects.length > 0 ? `\nStatus: ${player.effects.map(e => `${e.type}${e.remainingTurns ? `(${e.remainingTurns})` : ''}`).join(', ')}` : '')
+                content: `**${player.nome}** Lv. ${player.nivel ? player.nivel : player.level}\n\`${barraDeVida(player.hp, player.maxHp)}\`` + (player.effects && player.effects.length > 0 ? `\nStatus: ${player.effects.map(e => `${e.type}${e.remainingTurns ? `(${e.remainingTurns})` : ''}`).join(', ')}` : '')
+            })
+        )
+
+        container.addTextDisplayComponents(
+            new TextDisplayBuilder({
+                content: `\`${barraDeMana(player.mana, player.maxMana)}\``
             })
         )
     }
@@ -145,7 +160,12 @@ function renderBattleContainer(battle, text) {
     return container
 }
 
-async function updateBattleMessage(battle, text) {
+async function updateBattleMessage(battle, text, delay = 1000) {
+
+    if(delay > 0){
+        await new Promise(resolve => setTimeout(resolve, delay))
+    }
+
     await battle.message.edit({
         components: [renderBattleContainer(battle, text)],
         flags: [MessageFlags.IsComponentsV2]
