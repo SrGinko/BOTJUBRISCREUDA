@@ -127,7 +127,7 @@ async function handleActionButton(customId, user, interaction) {
 
                 const attackerResult = await performAttack(batalha, attacker)
 
-                await updateBattleMessage(batalha, attackerResult.text)
+                await updateBattleMessage(batalha, attackerResult.text, 5000)
 
                 const result = require('../RPG/battleManager').checkBattleEnd?.(batalha)
 
@@ -152,10 +152,10 @@ async function handleActionButton(customId, user, interaction) {
                         ? `${player.nome} desistiu da batalha!`
                         : `${player.nome} fugiu!`
 
-                    await updateBattleMessage(batalha, texto)
+                    await updateBattleMessage(batalha, texto, 5000)
                     await rewardsAndEnd(batalha, 'fuga')
                 } else {
-                    await updateBattleMessage(batalha, `${player.nome} tentou fugir e falhou!`)
+                    await updateBattleMessage(batalha, `${player.nome} tentou fugir e falhou!`, 5000)
 
                     nextTurn(batalha)
                     await processTurn(batalha)
@@ -242,7 +242,7 @@ async function handleActionButton(customId, user, interaction) {
                                     min_values: 1,
                                     options: itensMagia.map(item => ({
                                         label: `${item.itens.nome}`,
-                                        description: item.itens.descricao.slice(0, 100) || '',
+                                        description: `Causa ${item.itens.ataque} de dano | Custo de Mana: ${item.itens.mana}`,
                                         value: String(item.itens.id)
                                     }))
                                 }
