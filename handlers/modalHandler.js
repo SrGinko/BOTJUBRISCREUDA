@@ -107,6 +107,92 @@ async function ModalHandleAction(interaction) {
 
             }
                 break;
+            case 'magia': {
+                const selecionados = interaction.fields.getStringSelectValues('magiaSelect')
+                const targets = interaction.fields.getStringSelectValues('targetSelect')
+
+                const item = await obterUnicoItem(Number(selecionados[0]))
+
+                const batalha = getBattleById(battleId)
+                if (!batalha) return
+
+                const current = getCurrentTurn(batalha)
+                const participanteValido = [...batalha.players, ...batalha.enemies]
+                    .some(personagem => personagem.id === interaction.user.id && personagem.isHuman)
+
+                if (!participanteValido) {
+                    return interaction.reply({ content: 'Voce nao faz parte dessa batalha.', ephemeral: true })
+                }
+
+                if (current.id !== interaction.user.id) {
+                    return interaction.reply({ content: 'Não é seu turno!', ephemeral: true })
+                }
+
+                const targetId = targets[0]
+                const participante = [...batalha.players, ...batalha.enemies].find(p => String(p.id) === String(targetId))
+
+                if (!participante) {
+                    return interaction.reply({ content: 'Alvo inválido.', ephemeral: true })
+                }
+
+                // aplicar dano imediato (se existir) e tentar aplicar status com chance
+                const damage =  item.ataque || 0
+                let damageApplied = 0
+
+                if (damage && damage > 0) {
+                    damageApplied = Math.max(1, Math.floor(damage))
+                    participante.hp -= damageApplied
+                    if (participante.hp <= 0) {
+                        participante.hp = 0
+                        participante.alive = false
+                    }
+                }
+
+                // chance de aplicar status
+                const chance = item.statusChance / 100
+                const rolled = Math.random() < chance
+                let appliedStatusText = ''
+
+                if (rolled) {
+                    const efeito = item.statusName
+                    if (type === 'DOT') {
+                        let damagePerTurn = 0
+                        let duration = Math.floor(Math.random() * 4) + 2
+                        if (item.statusNome === 'Burn') {
+                            damagePerTurn = Math.max(1, Math.floor((participante.maxHp * 0.05)))
+                        }
+
+                        const efeitoObj = { type: 'DOT', damagePerTurn, remainingTurns: duration, sourceName: item.nome }
+                        participante.effects = participante.effects || []
+                        participante.effects.push(efeitoObj)
+
+                        appliedStatusText = ` e aplicou ${item.statusName} (${damagePerTurn} por ${duration} turnos)`
+                    } else if (type === 'SKIP') {
+                        const duration = efeito.duration || efeito.turns || item.statusDuration || 1
+                        const efeitoObj = { type: 'SKIP', remainingTurns: duration, sourceName: item.nome }
+                        participante.effects = participante.effects || []
+                        participante.effects.push(efeitoObj)
+                        appliedStatusText = ` e aplicou ${item.statusName} (${duration} turnos)`
+                    }
+                }
+
+                await interaction.deferUpdate()
+
+                const hitText = damageApplied > 0 ? `${current.nome} causou ${damageApplied} de dano em ${participante.nome}` : `${current.nome} usou ${item.nome} em ${participante.nome}`
+                await updateBattleMessage(batalha, `✨ ${hitText}${appliedStatusText}`)
+
+                const result = require('../RPG/battleManager').checkBattleEnd?.(batalha)
+
+                if (result) {
+                    await rewardsAndEnd(batalha, result)
+                    return
+                }
+
+                nextTurn(batalha)
+
+                await processTurn(batalha)
+            }
+                break;
             case 'equipar': {
                 const armaSelec = interaction.fields.getStringSelectValues('arma') || []
                 const aramaduraSelec = interaction.fields.getStringSelectValues('armadura') || []
