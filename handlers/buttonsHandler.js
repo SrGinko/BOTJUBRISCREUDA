@@ -207,6 +207,75 @@ async function handleActionButton(customId, user, interaction) {
                 batalha.processing = false
                 return { ok: false, message: 'Você não tem consumiveis' }
             }
+            else if (action === 'magia') {
+                const inventario = await obterItensInventario(current.id)
+                const itensMagia = inventario.map(itens => ({ itens: itens.item, quantidade: itens.quantidade }))
+                    .filter(item => {
+                        const it = item.itens
+                        return it.tipo === 'MAGIA'
+                    })
+
+                if (itensMagia.length > 0) {
+                    // construir opções de alvos (inimigos ou jogadores adversários)
+                    const targets = current.team === 'players'
+                        ? batalha.enemies.filter(t => t.hp > 0)
+                        : batalha.players.filter(t => t.hp > 0)
+
+                    const modal = new ModalBuilder({
+                        title: 'Usar Magia',
+                        customId: `rpg:magia:${current.id}:${battleId}`,
+                    })
+                        .addTextDisplayComponents(
+                            new TextDisplayBuilder({
+                                content: 'Selecione a magia e o alvo:',
+                            })
+                        )
+                        .addLabelComponents(
+                            new LabelBuilder({
+                                label: 'Magia:',
+                                description: 'Selecione a magia que deseja usar',
+                                component: {
+                                    type: ComponentType.StringSelect,
+                                    custom_id: 'magiaSelect',
+                                    required: true,
+                                    max_values: 1,
+                                    min_values: 1,
+                                    options: itensMagia.map(item => ({
+                                        label: `${item.itens.nome}`,
+                                        description: item.itens.descricao.slice(0, 100) || '',
+                                        value: String(item.itens.id)
+                                    }))
+                                }
+                            })
+                        )
+                        .addLabelComponents(
+                            new LabelBuilder({
+                                label: 'Alvo:',
+                                description: 'Selecione o alvo para a magia',
+                                component: {
+                                    type: ComponentType.StringSelect,
+                                    custom_id: 'targetSelect',
+                                    required: true,
+                                    max_values: 1,
+                                    min_values: 1,
+                                    options: targets.map(t => ({
+                                        label: `${t.nome}`,
+                                        description: `${t.hp}/${t.maxHp} HP`,
+                                        value: String(t.id)
+                                    }))
+                                }
+                            })
+                        )
+
+                    await interaction.showModal(modal)
+
+                    batalha.processing = false
+                    return { ok: true }
+                }
+
+                batalha.processing = false
+                return { ok: false, message: 'Você não tem magias disponíveis' }
+            }
         } catch (erro) {
             console.log(erro)
         } finally {
