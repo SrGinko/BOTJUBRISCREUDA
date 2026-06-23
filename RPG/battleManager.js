@@ -52,8 +52,48 @@ function buildCombatPlayer(user, playerData, equips, team) {
         defense: playerData.defense + (armadura?.defesa ?? 0) + (calca?.defesa ?? 0),
         speed: Math.floor(Math.random() * 10) + 1,
         isHuman: true,
-        alive: true
+        alive: true,
+        effects: []
     }
+}
+
+function applyStartOfTurnEffects(battle, current) {
+    if (!current.effects || current.effects.length === 0) return { skipped: false, texts: [] }
+
+    const texts = []
+
+    // apply DOT and check for skip
+    for (let i = current.effects.length - 1; i >= 0; i--) {
+        const ef = current.effects[i]
+
+        if (ef.type === 'DOT') {
+            const dmg = ef.damagePerTurn || 1
+            current.hp -= dmg
+            texts.push(`💥 ${current.nome} sofre ${dmg} de dano por efeito (${ef.sourceName || 'efeito'})`)
+            ef.remainingTurns = (ef.remainingTurns || 1) - 1
+            if (current.hp <= 0) {
+                current.hp = 0
+                current.alive = false
+            }
+            if (ef.remainingTurns <= 0) {
+                current.effects.splice(i, 1)
+            }
+        }
+
+        if (ef.type === 'SKIP') {
+            // if skip has remaining turns, decrement and skip this turn
+            if ((ef.remainingTurns || 1) > 0) {
+                ef.remainingTurns = ef.remainingTurns - 1
+                texts.push(`⏭️ ${current.nome} perdeu o turno por efeito (${ef.sourceName || 'efeito'})`)
+                if (ef.remainingTurns <= 0) {
+                    current.effects.splice(i, 1)
+                }
+                return { skipped: true, texts }
+            }
+        }
+    }
+
+    return { skipped: false, texts }
 }
 
 function getBattleByUser(userId) {
@@ -226,6 +266,7 @@ async function comecarBatalha({ interaction, playerData, channel, targetUser = n
     battle.row = new ActionRowBuilder().addComponents(
         new ButtonBuilder().setCustomId(`rpg:attack:${player.id}:${battleId}`).setLabel('Ataque').setStyle(ButtonStyle.Danger),
         new ButtonBuilder().setCustomId(`rpg:heal:${player.id}:${battleId}`).setLabel('Curar').setStyle(ButtonStyle.Success),
+        new ButtonBuilder().setCustomId(`rpg:magia:${player.id}:${battleId}`).setLabel('Magia').setStyle(ButtonStyle.Primary),
         new ButtonBuilder().setCustomId(`rpg:run:${player.id}:${battleId}`).setLabel(mode === 'pvp' ? 'Desistir' : 'Fugir').setStyle(ButtonStyle.Secondary)
     )
 
@@ -302,6 +343,19 @@ async function processTurn(battle) {
 
     const current = getCurrentTurn(battle)
     if (!current || !current.alive) {
+        nextTurn(battle)
+        return processTurn(battle)
+    }
+
+    // Apply start-of-turn effects (DOT/SKIP)
+    const effectResult = applyStartOfTurnEffects(battle, current)
+    if (effectResult.texts && effectResult.texts.length > 0) {
+        await updateBattleMessage(battle, effectResult.texts.join('\n'))
+    }
+
+    if (effectResult.skipped) {
+        // if skipped by effect, advance to next turn
+        if (checkBattleEnd(battle)) return rewardsAndEnd(battle, checkBattleEnd(battle))
         nextTurn(battle)
         return processTurn(battle)
     }
