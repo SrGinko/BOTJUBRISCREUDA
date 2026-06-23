@@ -113,10 +113,20 @@ function getCurrentTurn(battle) {
 }
 
 function nextTurn(battle) {
+
+    const participantes = [...battle.players, ...battle.enemies]
+
+    for (const participante of participantes) {
+        if (!participante.alive) continue
+        participante.mana = Math.min(participante.mana + 2, participante.maxMana || 100)
+    }
+
+
     let attempts = 0
 
     do {
         battle.turnIndex++
+
         if (battle.turnIndex >= battle.turnOrder.length) {
             battle.turnIndex = 0
         }
