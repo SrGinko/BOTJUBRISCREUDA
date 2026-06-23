@@ -46,6 +46,8 @@ function buildCombatPlayer(user, playerData, equips, team) {
         tipo: 'player',
         team,
         nivel: playerData.level,
+        mana: 100 + (armadura?.mana ?? 0) + (calca?.mana ?? 0),
+        maxMana: 100 + (armadura?.mana ?? 0) + (calca?.mana ?? 0),
         maxHp: playerData.hp + (armadura?.heal ?? 0) + (calca?.heal ?? 0),
         hp: playerData.hp + (armadura?.heal ?? 0) + (calca?.heal ?? 0),
         attack: playerData.attack + (arma?.ataque ?? 0),
@@ -62,7 +64,7 @@ function applyStartOfTurnEffects(battle, current) {
 
     const texts = []
 
-    // apply DOT and check for skip
+    
     for (let i = current.effects.length - 1; i >= 0; i--) {
         const ef = current.effects[i]
 
@@ -347,10 +349,10 @@ async function processTurn(battle) {
         return processTurn(battle)
     }
 
-    // Apply start-of-turn effects (DOT/SKIP)
+
     const effectResult = applyStartOfTurnEffects(battle, current)
     if (effectResult.texts && effectResult.texts.length > 0) {
-        await updateBattleMessage(battle, effectResult.texts.join('\n'))
+        await updateBattleMessage(battle, effectResult.texts.join('\n'), 2000)
     }
 
     if (effectResult.skipped) {
@@ -366,7 +368,7 @@ async function processTurn(battle) {
     }
 
     const attackResult = await performAttack(battle, current)
-    await updateBattleMessage(battle, attackResult.text)
+    await updateBattleMessage(battle, attackResult.text, 5000)
 
     if (attackResult.result) {
         return rewardsAndEnd(battle, attackResult.result)
