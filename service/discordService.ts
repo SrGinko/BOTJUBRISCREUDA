@@ -1,6 +1,6 @@
 require('dotenv').config()
 
-async function buscarMember(userId, guildId = process.env.GUILD_ID) {
+export default async function buscarMember(userId: string, guildId = process.env.GUILD_ID) {
     const client = require('../index')
     const resolvedGuildId = String(guildId ?? '').trim()
 
@@ -8,9 +8,7 @@ async function buscarMember(userId, guildId = process.env.GUILD_ID) {
         throw new Error('GUILD_ID nao foi definido no ambiente.')
     }
 
-    const guild =
-        client.guilds.cache.get(resolvedGuildId) ??
-        await client.guilds.fetch(resolvedGuildId)
+    const guild = client.guilds.cache.get(resolvedGuildId) ?? await client.guilds.fetch(resolvedGuildId)
 
     if (!guild) {
         throw new Error(`Nao foi possivel localizar a guild ${resolvedGuildId}.`)
@@ -19,5 +17,3 @@ async function buscarMember(userId, guildId = process.env.GUILD_ID) {
     const member = await guild.members.fetch(userId)
     return member
 }
-
-module.exports = { buscarMember }
