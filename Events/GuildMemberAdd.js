@@ -1,6 +1,6 @@
 const { Events, AttachmentBuilder } = require('discord.js')
 const Canvas = require('@napi-rs/canvas');
-const { api } = require('../Utils/axiosClient');
+const { api } = require('../service/axiosClient');
 const banners = require('../data/banners');
 const { Hoje } = require('../Utils/date');
 

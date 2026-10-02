@@ -1,5 +1,7 @@
+import ranking from '../../service/ranking'
+
 const { SlashCommandBuilder, ContainerBuilder, MediaGalleryBuilder, MessageFlags, TextDisplayBuilder, SeparatorBuilder, SeparatorSpacingSize } = require('discord.js')
-const { ranking } = require('../../Controller')
+
 
 module.exports = {
     data: new SlashCommandBuilder()

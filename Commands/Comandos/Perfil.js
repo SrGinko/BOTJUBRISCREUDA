@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, AttachmentBuilder, MediaGalleryBuilder, ContainerBuilder, MessageFlags, ThumbnailBuilder, SectionBuilder, TextDisplayBuilder, SeparatorBuilder, SeparatorSpacingSize } = require("discord.js")
 const { criarEmbed } = require("../../Utils/embedFactory");
-const { api } = require("../../Utils/axiosClient");
+const { api } = require("../../service/axiosClient");
 
 module.exports = {
     data: new SlashCommandBuilder()

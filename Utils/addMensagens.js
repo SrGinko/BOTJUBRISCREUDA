@@ -1,4 +1,4 @@
-const { api } = require('./axiosClient')
+const { api } = require('../service/axiosClient')
 const guildEvent = require('../Events/GuildEvent.js')
 const { addXp } = require('./xp')
 

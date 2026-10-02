@@ -8,7 +8,7 @@ const {
 const { EventEmitter } = require('events')
 const { addXpHeroi, addXp } = require('../Utils/xp')
 const { addItem } = require('../Utils/itensInventario')
-const { api } = require('../Utils/axiosClient')
+const { api } = require('../service/axiosClient')
 const { player } = require('..')
 
 const rpgEvents = new EventEmitter()

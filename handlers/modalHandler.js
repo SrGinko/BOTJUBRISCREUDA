@@ -1,6 +1,6 @@
 const { ContainerBuilder, TextDisplayBuilder, MessageFlags, SeparatorBuilder, SeparatorSpacingSize } = require('discord.js')
 const { criarEmbed } = require('../Utils/embedFactory')
-const { api } = require('../Utils/axiosClient')
+const { api } = require('../service/axiosClient')
 const { addItem, removeItem, equiparItem, obterUnicoItem } = require('../Utils/itensInventario')
 const { updateBattleMessage, rewardsAndEnd, getBattleById, getCurrentTurn, nextTurn, processTurn } = require('../RPG/battleManager')
 const { tryApplyStatusEffect } = require('../RPG/engine')

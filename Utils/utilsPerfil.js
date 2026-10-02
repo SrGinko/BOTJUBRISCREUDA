@@ -1,9 +1,10 @@
+import ranking from "../service/ranking";
+
 const { AttachmentBuilder, MediaGalleryBuilder, ContainerBuilder, ThumbnailBuilder, SectionBuilder, TextDisplayBuilder, SeparatorBuilder, SeparatorSpacingSize, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js")
 const Canvas = require('@napi-rs/canvas');
 const { emoji } = require("./emojis")
 const { addLVL, addLVLHeroi } = require("../Utils/xp");
-const { ranking } = require("../Controller");
-const { api } = require("../Utils/axiosClient");
+const { api } = require("../service/axiosClient");
 const { obterUnicoItem } = require("../Utils/itensInventario");
 const banners = require("../data/banners");
 const { handleError } = require("../handlers/errorsHandler");
@@ -114,7 +115,7 @@ async function creatPerfil(userId, bannerIndex, interaction, type) {
         return null
     })
 
-    allUsers = await ranking()
+    let allUsers = await ranking()
 
     const IdUser = allUsers.map(i => i.id)
     const Ranking = IdUser.indexOf(userId) + 1

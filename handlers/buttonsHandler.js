@@ -18,7 +18,7 @@ const {
 } = require('../RPG/battleManager')
 const banners = require('../data/banners')
 const { BuscarjogoId } = require('../Utils/buscarJogos')
-const { api } = require('../Utils/axiosClient')
+const { api } = require('../service/axiosClient')
 const { ConversorHtmltoText } = require('../Utils/ConversorHtmltoText')
 
 async function handleActionButton(customId, user, interaction) {

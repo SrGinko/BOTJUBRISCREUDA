@@ -1,4 +1,4 @@
-const { api, apiTeste } = require("./axiosClient");
+const { api, apiTeste } = require("../service/axiosClient");
 
 /**
  * 

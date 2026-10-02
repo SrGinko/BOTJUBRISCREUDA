@@ -1,5 +1,5 @@
 const { ContainerBuilder, TextDisplayBuilder, MessageFlags, MediaGalleryBuilder, SectionBuilder, ThumbnailBuilder, hyperlink, ActionRowBuilder, ButtonBuilder, ButtonStyle, SeparatorBuilder, SeparatorSpacingSize } = require('discord.js')
-const { api } = require('../Utils/axiosClient')
+const { api } = require('../service/axiosClient')
 const { formatDate } = require('../Utils/date')
 const { addXp } = require('../Utils/xp')
 const { obterUnicoItem } = require('../Utils/itensInventario')

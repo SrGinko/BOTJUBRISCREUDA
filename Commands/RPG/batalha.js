@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js')
-const { api } = require('../../Utils/axiosClient')
+const { api } = require('../../service/axiosClient')
 const battleManager = require('../../RPG/battleManager')
 const { criarEmbed } = require('../../Utils/embedFactory')
 

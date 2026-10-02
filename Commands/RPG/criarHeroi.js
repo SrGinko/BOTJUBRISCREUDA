@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, MessageFlags, EmbedBuilder } = require('discord.js')
-const { api } = require('../../Utils/axiosClient')
+const { api } = require('../../service/axiosClient')
 const { addXp } = require('../../Utils/xp')
 const { handleError } = require('../../handlers/errorsHandler')
 
