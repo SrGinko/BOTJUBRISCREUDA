@@ -1,12 +1,8 @@
-const { api } = require('./axiosClient')
-const { buscarMember } = require('../service/discordService')
+import { api } from "../service/axiosClient"
+import buscarMember from "../service/discordService"
 
-/**
- * 
- * @param {Inteiro} userId - id do usuário
- * @param {Inteiro} add - Quantidade de xp que será adicionada
- */
-async function addXpHeroi(userId, add, moedaAdd) {
+
+export async function addXpHeroi(userId:string, add:number, moedaAdd:number) {
 
     const response = await api.get(`/heroi/${userId}`)
 
@@ -23,12 +19,7 @@ async function addXpHeroi(userId, add, moedaAdd) {
 
 }
 
-/**
- * 
- * @param {Inteiro} userId - id do usuário
- * @param {Inteiro} add - Quantidade de xp que será adicionada
- */
-async function addXp(userId, add) {
+export async function addXp(userId: string, add: number) {
 
     const date = new Date()
     const diaSemana = date.getDay()
@@ -50,20 +41,13 @@ async function addXp(userId, add) {
 
 }
 
-/**
- * 
- * @param {Inteiro} level - Nivel atual do usuario
- * @returns {Inteiro} - Xp necessária para o próximo nivel
- */
-function calculateXpForNextLevel(level) {
+
+export function calculateXpForNextLevel(level: number) {
     return 100 * Math.pow(1.5, level - 1)
 }
 
-/**
- * 
- * @param {Inteiro} userId - id usuário
- */
-async function addLVL(userId) {
+
+export async function addLVL(userId: string) {
     const response = await api.get(`/usuario/${userId}`)
     const usuario = response.data
 
@@ -87,11 +71,7 @@ async function addLVL(userId) {
 }
 
 
-/**
- * 
- * @param {Inteiro} userId - id usuário
- */
-async function addLVLHeroi(userId) {
+export async function addLVLHeroi(userId: string) {
     const heroi = await api.get(`/heroi/${userId}`).then(res => res.data).catch(err => console.error(err.data.message))
 
     const nivel = heroi.level
@@ -119,8 +99,9 @@ async function addLVLHeroi(userId) {
     return Math.round(xpForNextLevel)
 }
 
-async function atualizarUsuario(userId, lvl) {
+export async function atualizarUsuario(userId: string, lvl: number) {
     const member = await buscarMember(userId)
+    
     switch (true) {
         case lvl >= 0 && lvl < 20: {
             if (!member.roles.cache.has("1493936999084589136")) {
@@ -130,7 +111,6 @@ async function atualizarUsuario(userId, lvl) {
         } break;
         case lvl >= 20 && lvl < 40: {
             if (!member.roles.cache.has("1493939683720167444")) {
-                console.log("Atualizando cargo do usuário " + member.user.username + " para nível 20-39")
                 member.roles.remove("1493936999084589136").catch(console.error)
                 member.roles.add("1493939683720167444").catch(console.error)
             }
@@ -149,5 +129,3 @@ async function atualizarUsuario(userId, lvl) {
         }break;
     }
 }
-
-module.exports = { addLVL, addXp, calculateXpForNextLevel, addLVLHeroi, addXpHeroi }
