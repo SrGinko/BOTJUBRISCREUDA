@@ -37,6 +37,12 @@ export async function addMenssage(discUser: User, quantidade: number, message: M
 
         const conquista = conquistas.find(c => c.messagens <= novaQuantidade && !message.member?.roles.cache.has(c.cargo))
 
+        guildEvent.emit('conquista', {
+            conquista: conquista ? message.guild.roles.cache.find((r: any) => r.name === conquista.cargo) || null : null,
+            xp: conquista ? conquista.xp : 0,
+            user: discUser.id,
+            channel: message.channel
+        })
 
         if (!conquista) {
             await api.patch(`/usuario/${discUser.id}`, {
