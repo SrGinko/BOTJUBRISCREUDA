@@ -1,13 +1,8 @@
-const { api, apiTeste } = require("../service/axiosClient");
+import { api } from "../service/axiosClient"
 
-/**
- * 
- * @param {Integer} userId 
- * @returns  Um Array de objeto com os itens
- */
-async function obterItensInventario(userId) {
+export async function obterItensInventario(userId: string) {
     const heroi = await api.get(`/heroi/${userId}`)
-    const itens = heroi.data.inventario.itens.map(item => {
+    const itens = heroi.data.inventario.itens.map((item: any) => {
         return {
             quantidade: item.quantidade,
             item: item.item,
@@ -17,33 +12,20 @@ async function obterItensInventario(userId) {
     return itens
 }
 
-/**
- * 
- * @returns Array de Objetos com os itens
- */
-async function obterItens() {
+export async function obterItens() {
     let itens = await api.get('/itens').then(res => res)
     return itens.data
 }
 
-/**
- * 
- * @param {Integer} itemID 
- * @returns Objeto com os dados do Item
- */
-async function obterUnicoItem(itemID) {
+export async function obterUnicoItem(itemID: string) {
     let item = await api.get(`/itens/${itemID}`)
     return item.data
 }
 
-/**
- * Adiciona um item ao inventario do heroi
- * @param {*Number} userID - ID do Heroi 
- * @param {*Number} itemID - ID do Item 
- * @param {*Number} quantidade - Quantidade que será adicionada
- */
-async function addItem(userID, itemID, quantidade = 1) {
-    const heroi = await api.get(`/heroi/${userID}`).then(res => { res.data })
+export async function addItem(userID: string, itemID: string, quantidade = 1) {
+    const res = await api.get(`/heroi/${userID}`)
+    const heroi = res.data
+
 
     await api.patch(`heroi/${heroi.id}/inventario/adicionar`, {
         itemID: itemID,
@@ -52,13 +34,7 @@ async function addItem(userID, itemID, quantidade = 1) {
 }
 
 
-/**
- * Remove um item do inventario do heroi
- * @param {*Number} userID - ID do Heroi 
- * @param {*Number} itemID - ID do Item 
- * @param {*Number} quantidade - Quantidade que será removida
- */
-async function removeItem(userID, itemID, quantidade) {
+export async function removeItem(userID: string, itemID: string, quantidade: number) {
     const res = await api.get(`/heroi/${userID}`)
     const heroi = res.data
 
@@ -68,15 +44,7 @@ async function removeItem(userID, itemID, quantidade) {
     })
 }
 
-
-/** * Equipa os itens no heroi e remove os itens do inventário
- * @param {*Number} userId - ID do Usuário
- * @param {*Number} armaID - ID da Arma
- * @param {*Number} armaduraID - ID da Armadura
- * @param {*Number} calcaID - ID da Calça
- *
- */
-async function equiparItem(userId, itensID) {
+export async function equiparItem(userId: string, itensID: { arma?: string, armadura?: string, calca?: string }) {
 
     const res = await api.get(`/heroi/${userId}`)
     const heroi = res.data
@@ -122,11 +90,9 @@ async function equiparItem(userId, itensID) {
 
 }
 
-async function BuscarItemPorTipo(tipo) {
+export async function BuscarItemPorTipo(tipo: string) {
     const res = await api.get(`itens/raridade/${tipo}`)
     const itens = res.data
 
     return itens
 }
-
-module.exports = { obterItensInventario, obterItens, obterUnicoItem, addItem, removeItem, equiparItem, BuscarItemPorTipo }
