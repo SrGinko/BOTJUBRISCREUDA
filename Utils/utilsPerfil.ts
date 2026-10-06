@@ -9,7 +9,7 @@ const { obterUnicoItem } = require("../Utils/itensInventario");
 const banners = require("../data/banners");
 const { handleError } = require("../handlers/errorsHandler");
 
-function barraDeXp(cur, max, len = 10) {
+export function barraDeXp(cur: number, max: number, len = 10) {
     const filled = Math.round((cur / max) * len)
     const empty = len - filled
 
@@ -19,10 +19,8 @@ function barraDeXp(cur, max, len = 10) {
     return '🟦'.repeat(filled) + '⬛'.repeat(empty) + ` ${userXp}/${maxXp}`
 }
 
-function formatXp(xp) {
+export function formatXp(xp: number) {
     const unidades = ['', 'K', 'M', 'B', 'T']
-
-    xp = parseInt(xp)
 
     let index = 0;
     while (xp >= 1000 && index < unidades.length - 1) {
@@ -33,10 +31,8 @@ function formatXp(xp) {
     return `${xp.toFixed(1)}${unidades[index]}`
 }
 
-function formatUserXp(xp) {
+export function formatUserXp(xp: number) {
     const unidades = ['', 'K', 'M', 'B', 'T']
-
-    xp = parseInt(xp)
 
     let index = 0;
     while (xp >= 1000 && index < unidades.length - 1) {
@@ -47,7 +43,7 @@ function formatUserXp(xp) {
     return `${xp.toFixed(1)}${unidades[index]}`
 }
 
-function formatarItemEquipado(rotulo, item) {
+export function formatarItemEquipado(rotulo: string, item: any) {
     if (!item) {
         return `**${rotulo}:** Nenhum item equipado`
     }
@@ -65,21 +61,13 @@ function formatarItemEquipado(rotulo, item) {
     return `**${rotulo}:** ${item.nome}${atributosTexto}`
 }
 
-/** 
-* Cria o perfil do usuário
-* @param {number} userId - O ID do usuário para o qual criar o perfil
-* @param {number} bannerIndex - O índice do banner selecionado pelo usuário
-* @param {Interaction} interaction - A interação do Discord para responder
-*@param {string} type - O tipo de perfil a ser criado ('usuario' ou 'heroi')
-* @returns {Object} Um objeto contendo o container do perfil e o attachment da imagem gerada
-*
-*/
-async function creatPerfil(userId, bannerIndex, interaction, type) {
+
+export async function creatPerfil(userId: string, bannerIndex: number, interaction: any, type: string) {
 
     const agora = new Date()
     const member = await interaction.guild.members.fetch(userId)
 
-    const diffMs = agora - member.joinedTimestamp
+    const diffMs = agora.getTime() - member.joinedTimestamp
     const diffSec = Math.floor(diffMs / 1000)
     const diffMin = Math.floor(diffSec / 60)
     const diffHours = Math.floor(diffMin / 60)
@@ -104,14 +92,14 @@ async function creatPerfil(userId, bannerIndex, interaction, type) {
         tempoEntrada = `há pouco tempo`
     }
 
-    const cargos = member.roles.cache.filter(role => role.name !== '@everyone' && role.mentionable).map(role => role.toString()).join(' ')
-    const conquistas = member.roles.cache.filter(role => role.name !== '@everyone').map(role => emoji(role.name)).join(' ')
+    const cargos = member.roles.cache.filter((role: any) => role.name !== '@everyone' && role.mentionable).map((role: any) => role.toString()).join(' ')
+    const conquistas = member.roles.cache.filter((role: any) => role.name !== '@everyone').map((role: any) => emoji(role.name)).join(' ')
 
-    const userData = await api.get(`/usuario/${userId}`).then(res => res.data).catch(err => {
+    const userData = await api.get(`/usuario/${userId}`).then((res: any) => res.data).catch((err: any) => {
         handleError(interaction, 'Ocorreu um erro ao buscar os dados do usuário', 'Erro de Perfil')
-        return null     
+        return null
     })
-    const heroiData = await api.get(`/heroi/${userId}`).then(res => res.data).catch(err => {
+    const heroiData = await api.get(`/heroi/${userId}`).then((res: any) => res.data).catch((err: any) => {
         return null
     })
 
@@ -272,5 +260,3 @@ async function creatPerfil(userId, bannerIndex, interaction, type) {
 
     return { conteiner, attachment }
 }
-
-module.exports = { creatPerfil }
