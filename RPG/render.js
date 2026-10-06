@@ -1,18 +1,7 @@
-const {
-    ActionRowBuilder,
-    ButtonBuilder,
-    ButtonStyle,
-    ContainerBuilder,
-    MessageFlags,
-    SectionBuilder,
-    SeparatorBuilder,
-    SeparatorSpacingSize,
-    TextDisplayBuilder,
-    ThumbnailBuilder
-} = require('discord.js')
-const { getCurrentTurn } = require('./engine')
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ContainerBuilder, MessageFlags, SectionBuilder, SeparatorBuilder, SeparatorSpacingSize, TextDisplayBuilder, ThumbnailBuilder } from 'discord.js'
+import { getCurrentTurn } from './engine'
 
-function buildChallengeRow(challengeId, targetUserId, disabled = false) {
+export function buildChallengeRow(challengeId, targetUserId, disabled = false) {
     return new ActionRowBuilder().addComponents(
         new ButtonBuilder()
             .setCustomId(`rpgduel:accept:${challengeId}:${targetUserId}`)
@@ -27,7 +16,7 @@ function buildChallengeRow(challengeId, targetUserId, disabled = false) {
     )
 }
 
-function buildChallengeContainer({ title, description, challengeId = null, targetUserId = null, disabled = false, accentColor = 0x1f1f1f }) {
+export function buildChallengeContainer({ title, description, challengeId = null, targetUserId = null, disabled = false, accentColor = 0x1f1f1f }) {
     const container = new ContainerBuilder({ accent_color: accentColor })
 
     if (title) {
@@ -59,7 +48,7 @@ function buildChallengeContainer({ title, description, challengeId = null, targe
 
 
 
-function scheduleChallengeMessageDeletion(challenge, delay = 10000) {
+export function scheduleChallengeMessageDeletion(challenge, delay = 10000) {
     if (!challenge?.message) return
 
     setTimeout(() => {
@@ -67,21 +56,21 @@ function scheduleChallengeMessageDeletion(challenge, delay = 10000) {
     }, delay)
 }
 
-function barraDeVida(cur, max, len = 10) {
+export function barraDeVida(cur, max, len = 10) {
     const ratio = max > 0 ? cur / max : 0
     const filled = Math.max(0, Math.min(len, Math.round(ratio * len)))
     const empty = len - filled
     return 'HP '.concat('🟥'.repeat(filled), '⬛'.repeat(empty), ` ${cur}/${max}`)
 }
 
-function barraDeMana(cur, max, len = 10) {
+export function barraDeMana(cur, max, len = 10) {
     const ratio = max > 0 ? cur / max : 0
     const filled = Math.max(0, Math.min(len, Math.round(ratio * len)))
     const empty = len - filled
     return 'MP '.concat('🟦'.repeat(filled), '⬛'.repeat(empty), ` ${cur}/${max}`)
 }
 
-function renderEnemy(container, enemy) {
+export function renderEnemy(container, enemy) {
     let content = `**${enemy.nome}** Lv. ${enemy.level}\n\`${barraDeVida(enemy.hp, enemy.maxHp)}\``
 
     if (enemy.effects && enemy.effects.length > 0) {
@@ -109,7 +98,7 @@ function renderEnemy(container, enemy) {
     )
 }
 
-function renderBattleContainer(battle, text) {
+export function renderBattleContainer(battle, text) {
     const container = new ContainerBuilder({ accent_color: 0x1f1f1f })
 
     container.addTextDisplayComponents(
@@ -160,9 +149,9 @@ function renderBattleContainer(battle, text) {
     return container
 }
 
-async function updateBattleMessage(battle, text, delay = 1000 ) {
+async function updateBattleMessage(battle, text, delay = 1000) {
 
-    if(delay > 0){
+    if (delay > 0) {
         await new Promise(resolve => setTimeout(resolve, delay))
     }
 

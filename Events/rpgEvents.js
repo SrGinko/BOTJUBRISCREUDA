@@ -7,7 +7,7 @@ const {
 } = require('discord.js')
 const { EventEmitter } = require('events')
 const { addXpHeroi, addXp } = require('../Utils/xp')
-const { addItem } = require('../Utils/itensInventario')
+const { addItem } = require('../service/itensInventario')
 const { api } = require('../service/axiosClient')
 const { player } = require('..')
 

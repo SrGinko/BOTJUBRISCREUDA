@@ -1,12 +1,12 @@
 const { Events } = require('discord.js')
 const { handleActionButton } = require('../handlers/buttonsHandler')
-const { obterItens } = require('../Utils/itensInventario')
+const { obterItens } = require('../service/itensInventario')
 const chalk = require("chalk")
 const { ModalHandleAction } = require('../handlers/modalHandler')
 const { SelectMenusHandleAction } = require('../handlers/selectmenusHandler')
 const { criarEmbed } = require('../Utils/embedFactory')
 const { handleError } = require('../handlers/errorsHandler')
-const { BuscarjogoNome } = require('../Utils/buscarJogos')
+const { BuscarjogoNome } = require('../service/buscarJogos')
 const erro = chalk.bold.red
 
 

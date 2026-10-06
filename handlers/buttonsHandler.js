@@ -1,7 +1,7 @@
 const { ContainerBuilder, TextDisplayBuilder, MessageFlags, MediaGalleryBuilder, LabelBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, SeparatorBuilder, SeparatorSpacingSize, ModalBuilder, ComponentType } = require('discord.js')
 const { formatDate } = require('../Utils/date')
 const { addXp } = require('../Utils/xp')
-const { obterUnicoItem, obterItensInventario } = require('../Utils/itensInventario')
+const { obterUnicoItem, obterItensInventario } = require('../service/itensInventario')
 const {
     updateBattleMessage,
     rewardsAndEnd,
@@ -17,7 +17,7 @@ const {
     comecarBatalha
 } = require('../RPG/battleManager')
 const banners = require('../data/banners')
-const { BuscarjogoId } = require('../Utils/buscarJogos')
+const { BuscarjogoId } = require('../service/buscarJogos')
 const { api } = require('../service/axiosClient')
 const { ConversorHtmltoText } = require('../Utils/ConversorHtmltoText')
 

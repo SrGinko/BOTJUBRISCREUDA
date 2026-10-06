@@ -2,9 +2,9 @@ const { ContainerBuilder, TextDisplayBuilder, MessageFlags, MediaGalleryBuilder,
 const { api } = require('../service/axiosClient')
 const { formatDate } = require('../Utils/date')
 const { addXp } = require('../Utils/xp')
-const { obterUnicoItem } = require('../Utils/itensInventario')
+const { obterUnicoItem } = require('../service/itensInventario')
 const hydraLinks = require('../data/hydraLinks')
-const { BuscarjogoNome, BuscarjogoId } = require('../Utils/buscarJogos')
+const { BuscarjogoNome, BuscarjogoId } = require('../service/buscarJogos')
 
 async function SelectMenusHandleAction(interaction) {
     const userId = interaction.user.id

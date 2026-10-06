@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, ModalBuilder, ContainerBuilder, SectionBuilder, SeparatorBuilder, SeparatorSpacingSize, ActionRowBuilder, ButtonStyle, ButtonBuilder, MessageFlags, TextDisplayBuilder, ThumbnailBuilder } = require("discord.js")
-const { obterUnicoItem } = require("../../Utils/itensInventario")
+const { obterUnicoItem } = require("../../service/itensInventario")
 const { criarEmbed } = require("../../Utils/embedFactory")
 const { getBattleByUser } = require("../../RPG/battleManager")
 

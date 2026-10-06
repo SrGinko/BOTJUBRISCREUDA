@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, StringSelectMenuBuilder, ContainerBuilder, TextDisplayBuilder, ButtonStyle, ActionRowBuilder, MessageFlags, MediaGalleryBuilder, SeparatorBuilder, SeparatorSpacingSize, ButtonBuilder } = require("discord.js")
-const { BuscarjogoId } = require("../../Utils/buscarJogos")
+const { BuscarjogoId } = require("../../service/buscarJogos")
 const { addXp } = require("../../Utils/xp")
 const { ConversorHtmltoText } = require("../../Utils/ConversorHtmltoText")
 const { criarEmbed } = require("../../Utils/embedFactory")

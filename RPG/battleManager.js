@@ -5,8 +5,8 @@ const {
     MessageFlags
 } = require('discord.js')
 const { randomUUID } = require('crypto')
-const { obterUnicoItem, BuscarItemPorTipo } = require('../Utils/itensInventario')
-const { obterUnicoInimigo } = require('../Utils/getInimigo')
+const { obterUnicoItem, BuscarItemPorTipo } = require('../service/itensInventario')
+const { obterUnicoInimigo } = require('../service/getInimigo')
 const { criarEmbed } = require('../Utils/embedFactory')
 const rpgEvents = require('../Events/rpgEvents')
 const {

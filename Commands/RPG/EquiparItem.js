@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, TextDisplayBuilder, ModalBuilder, LabelBuilder, ComponentType } = require('discord.js')
-const { obterItensInventario } = require('../../Utils/itensInventario')
+const { obterItensInventario } = require('../../service/itensInventario')
 
 
 
