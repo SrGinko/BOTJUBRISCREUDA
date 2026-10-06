@@ -1,21 +1,23 @@
+import { Usuario } from "../types/Usuario"
+
 const { AttachmentBuilder } = require('discord.js')
 const Canvas = require('@napi-rs/canvas')
 const banners = require('../data/banners')
 
-async function createRankingBanner(user, interaction, position) {
+async function createRankingBanner(user: Usuario, interaction: any, position: number) {
 
     const canvas = Canvas.createCanvas(720, 150)
     const ctx = canvas.getContext('2d')
 
     const userGlobal = await interaction.client.users.fetch(user.id)
-    let member 
+    let member
     try {
         member = await interaction.guild.members.fetch(user.id)
     } catch (error) {
         member = null
     }
 
-    if(!member) {
+    if (!member) {
         return
     }
 
