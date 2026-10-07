@@ -1,5 +1,4 @@
 const { SlashCommandBuilder, ButtonBuilder, ButtonStyle, ContainerBuilder, TextDisplayBuilder, MessageFlags, SectionBuilder, ThumbnailBuilder } = require('discord.js');
-const { getRandonCores } = require('../../Utils/cores');
 const { addXp } = require('../../Utils/xp');
 const { icone } = require('../../Utils/emojis');
 
