@@ -2,7 +2,7 @@ import { api } from "../service/axiosClient"
 import buscarMember from "../service/discordService"
 
 
-export async function addXpHeroi(userId:string, add:number, moedaAdd:number) {
+export async function addXpHeroi(userId: string, add: number, moedaAdd: number) {
 
     const response = await api.get(`/heroi/${userId}`)
 
@@ -101,7 +101,7 @@ export async function addLVLHeroi(userId: string) {
 
 export async function atualizarUsuario(userId: string, lvl: number) {
     const member = await buscarMember(userId)
-    
+
     switch (true) {
         case lvl >= 0 && lvl < 20: {
             if (!member.roles.cache.has("1493936999084589136")) {
@@ -126,6 +126,6 @@ export async function atualizarUsuario(userId: string, lvl: number) {
                 member.roles.remove("1493941325421215824").catch(console.error)
                 member.roles.add("1308663244742725653").catch(console.error)
             }
-        }break;
+        } break;
     }
 }
