@@ -1,13 +1,15 @@
 import ranking from "../service/ranking";
 
-const { AttachmentBuilder, MediaGalleryBuilder, ContainerBuilder, ThumbnailBuilder, SectionBuilder, TextDisplayBuilder, SeparatorBuilder, SeparatorSpacingSize, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js")
-const Canvas = require('@napi-rs/canvas');
-const { emoji } = require("./emojis")
-const { addLVL, addLVLHeroi } = require("../Utils/xp");
-const { api } = require("../service/axiosClient");
-const { obterUnicoItem } = require("../Utils/itensInventario");
-const banners = require("../data/banners");
-const { handleError } = require("../handlers/errorsHandler");
+import { AttachmentBuilder, MediaGalleryBuilder, ContainerBuilder, ThumbnailBuilder, SectionBuilder, TextDisplayBuilder, SeparatorBuilder, SeparatorSpacingSize, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction } from "discord.js"
+import Canvas from '@napi-rs/canvas'
+import { emoji } from "./emojis"
+import { addLVL, addLVLHeroi } from "../Utils/xp"
+import { api } from "../service/axiosClient"
+import { obterUnicoItem } from "../service/itensInventario"
+import banners from "../data/banners"
+import { handleError } from "../handlers/errorsHandler"
+
+type PefilType = 'usuario' | 'heroi'
 
 export function barraDeXp(cur: number, max: number, len = 10) {
     const filled = Math.round((cur / max) * len)
@@ -62,10 +64,25 @@ export function formatarItemEquipado(rotulo: string, item: any) {
 }
 
 
-export async function creatPerfil(userId: string, bannerIndex: number, interaction: any, type: string) {
+export async function creatPerfil(userId: string, bannerIndex: number, interaction: ChatInputCommandInteraction, type: PefilType) {
+
+
+    if (!interaction.guild) {
+        handleError(interaction, 'Este comando só pode ser usado em servidores.', 'Erro de Perfil')
+        return
+    }
+    if (!interaction.guild.members) {
+        handleError(interaction, 'Não foi possível acessar os membros do servidor.', 'Erro de Perfil')
+        return
+    }
 
     const agora = new Date()
     const member = await interaction.guild.members.fetch(userId)
+
+    if (member.joinedTimestamp === null) {
+        handleError(interaction, 'Não foi possível acessar o tempo em que o usuário entrou no servior', 'Erro de Perfil')
+        return
+    }
 
     const diffMs = agora.getTime() - member.joinedTimestamp
     const diffSec = Math.floor(diffMs / 1000)
@@ -125,19 +142,19 @@ export async function creatPerfil(userId: string, bannerIndex: number, interacti
 
     const conteiner = new ContainerBuilder({
         accent_color: banner[bannerIndex].corHEX,
-        components: [
-            new MediaGalleryBuilder({
-                items: [
-                    {
-                        media: {
-                            url: `attachment://perfil.png`
-
-                        }
-                    }
-                ]
-            }),
-        ]
     })
+
+    conteiner.addMediaGalleryComponents(
+        new MediaGalleryBuilder({
+            items: [
+                {
+                    media: {
+                        url: `attachment://perfil.png`
+                    }
+                }
+            ]
+        })
+    )
 
     conteiner.addSeparatorComponents(
         new SeparatorBuilder({
@@ -202,12 +219,10 @@ export async function creatPerfil(userId: string, bannerIndex: number, interacti
             })
         )
         conteiner.addActionRowComponents(
-            new ActionRowBuilder({
-                components: [
-                    new ButtonBuilder().setLabel('Voltar').setCustomId(`system:verusuario:${userId}`).setEmoji('<:usuario:1463846764720422953>').setStyle(ButtonStyle.Secondary),
-                    new ButtonBuilder().setLabel('Alterar Banner').setCustomId(`system:alterar_banner:${userId}`).setEmoji('<:foto:1463846754322747497>').setStyle(ButtonStyle.Primary).setDisabled(userId === interaction.user.id ? false : true),
-                ]
-            })
+            new ActionRowBuilder<ButtonBuilder>().addComponents(
+                new ButtonBuilder().setLabel('Voltar').setCustomId(`system:verusuario:${userId}`).setEmoji('<:usuario:1463846764720422953>').setStyle(ButtonStyle.Secondary),
+                new ButtonBuilder().setLabel('Alterar Banner').setCustomId(`system:alterar_banner:${userId}`).setEmoji('<:foto:1463846754322747497>').setStyle(ButtonStyle.Primary).setDisabled(userId === interaction.user.id ? false : true),
+            )
         )
 
     } else if (type === 'usuario') {
@@ -248,12 +263,10 @@ export async function creatPerfil(userId: string, bannerIndex: number, interacti
             })
         )
         conteiner.addActionRowComponents(
-            new ActionRowBuilder({
-                components: [
-                    new ButtonBuilder().setLabel('Alterar Banner').setCustomId(`system:alterar_banner:${userId}`).setEmoji('<:foto:1463846754322747497>').setStyle(ButtonStyle.Primary).setDisabled(userId === interaction.user.id ? false : true),
-                    heroiData === null ? new ButtonBuilder().setLabel('Criar Heroi').setCustomId(`system:criarheroi:${userId}`).setEmoji('<:usuario:1463846764720422953>').setStyle(ButtonStyle.Success).setDisabled(true) : new ButtonBuilder().setLabel('Ver Herói').setCustomId(`system:verheroi:${userId}`).setEmoji('<:usuario:1463846764720422953>').setStyle(ButtonStyle.Secondary),
-                ]
-            })
+            new ActionRowBuilder<ButtonBuilder>().addComponents(
+                new ButtonBuilder().setLabel('Alterar Banner').setCustomId(`system:alterar_banner:${userId}`).setEmoji('<:foto:1463846754322747497>').setStyle(ButtonStyle.Primary).setDisabled(userId === interaction.user.id ? false : true),
+                heroiData === null ? new ButtonBuilder().setLabel('Criar Heroi').setCustomId(`system:criarheroi:${userId}`).setEmoji('<:usuario:1463846764720422953>').setStyle(ButtonStyle.Success).setDisabled(true) : new ButtonBuilder().setLabel('Ver Herói').setCustomId(`system:verheroi:${userId}`).setEmoji('<:usuario:1463846764720422953>').setStyle(ButtonStyle.Secondary),
+            )
         )
     }
 

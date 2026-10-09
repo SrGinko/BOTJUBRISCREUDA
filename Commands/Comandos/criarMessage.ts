@@ -1,17 +1,17 @@
-import { SlashCommandBuilder, ModalBuilder, TextInputBuilder, ActionRowBuilder, TextInputStyle, ChannelType, TextDisplayBuilder, LabelBuilder, ComponentType, LabelAssertions } from 'discord.js'
+import { SlashCommandBuilder, ModalBuilder, TextInputBuilder, ActionRowBuilder, TextInputStyle, ChannelType, TextDisplayBuilder, LabelBuilder, ComponentType, LabelAssertions, ChatInputCommandInteraction } from 'discord.js'
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('criarmessage')
         .setDescription('Cria uma mensagem para ser enviada a um canal'),
 
-    async execute(interaction: any) {
+    async execute(interaction: ChatInputCommandInteraction) {
 
         try {
 
             if (interaction.user.id === '770818264691114016') {
 
-                const channelTexts = interaction.guild?.channels.cache.filter((c: any) => c.type === ChannelType.GuildText)
+                const channelTexts = interaction.guild?.channels.cache.filter((c) => c.type === ChannelType.GuildText)
 
                 const modal = new ModalBuilder({
                     title: 'Enviar Mensagem',
@@ -54,9 +54,9 @@ module.exports = {
                                 type: ComponentType.StringSelect,
                                 custom_id: 'canaltexto',
                                 required: true,
-                                options: channelTexts.map((ch: any) => (
+                                options: channelTexts?.map((ch: any) => (
                                     { label: `${ch.name}`, value: `${ch.id}` }
-                                )).slice(0, 25)
+                                )).slice(0, 25) ?? []
                             }
                         })
                     )
