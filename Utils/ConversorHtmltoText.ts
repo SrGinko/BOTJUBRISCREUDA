@@ -1,6 +1,6 @@
 const { convert } = require("html-to-text");
 
-function ConversorHtmltoText(html) {
+function ConversorHtmltoText(html: string) {
     const text = convert(html, {
         wordwrap: false,
     })
