@@ -1,7 +1,7 @@
 require('dotenv').config()
+import client from '../index'
 
 export default async function buscarMember(userId: string, guildId = process.env.GUILD_ID) {
-    const client = require('../index')
     const resolvedGuildId = String(guildId ?? '').trim()
 
     if (!resolvedGuildId) {
