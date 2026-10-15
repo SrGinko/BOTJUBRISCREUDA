@@ -1,5 +1,6 @@
 const axios = require('axios')
 const cheerio = require('cheerio')
+import type { SteamGame, SteamGameSearchResult } from '../types/SteamGame'
 
 export async function BuscarjogoNome(nome: string) {
 
@@ -14,10 +15,13 @@ export async function BuscarjogoNome(nome: string) {
         })
 
         const $ = cheerio.load(data)
-        const jogos: { appid: string; nome: string }[] = []
+        const jogos: SteamGameSearchResult[] = []
         $(".match").each((index: number, element:any) => {
+            const appid = $(element).attr("data-ds-appid")
+            if (!appid) return
+
             jogos.push({
-                appid: $(element).attr("data-ds-appid"),
+                appid,
                 nome: $(element).find(".match_name").text().trim(),
             })
         })
@@ -30,7 +34,7 @@ export async function BuscarjogoNome(nome: string) {
     }
 }
 
-export async function BuscarjogoId(appid: string) {
+export async function BuscarjogoId(appid: string): Promise<SteamGame | null> {
     const url = `https://store.steampowered.com/api/appdetails?appids=${appid}`
     try {
         const { data } = await axios.get(url,{
@@ -40,7 +44,8 @@ export async function BuscarjogoId(appid: string) {
             }
         })
 
-        return data[appid].data
+        const result = data[appid] as { success?: boolean; data?: SteamGame } | undefined
+        return result?.success ? result.data ?? null : null
     }
     catch (error: unknown) {
         console.error('Erro ao buscar o jogo:', error instanceof Error ? error.message : error);
