@@ -11,7 +11,7 @@ type EmbedOptions = {
 }
 
 
-export default function criarEmbed(opts: EmbedOptions = {}) {
+export function criarEmbed(opts: EmbedOptions = {}) {
     const embed = new EmbedBuilder().setColor(opts.color ?? Math.floor(Math.random() * 0xffffff))
 
     if (opts.title) embed.setTitle(opts.title)
@@ -24,4 +24,4 @@ export default function criarEmbed(opts: EmbedOptions = {}) {
     return embed
 }
 
-module.exports = { criarEmbed } 
+export default criarEmbed

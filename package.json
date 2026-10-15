@@ -29,9 +29,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node dist/deploy-commands.js && node dist/index.js",
+    "start": "npm run deploy && npm run bot",
+    "menu": "tsx scripts/menu.ts",
+    "deploy": "node dist/deploy-commands.js",
+    "bot": "node dist/index.js",
     "dev": "tsx watch index.ts",
-    "build": "tsc"
+    "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
+    "build": "npm run clean && tsc"
   },
   "repository": {
     "type": "git",

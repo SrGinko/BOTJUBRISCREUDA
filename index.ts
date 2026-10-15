@@ -59,16 +59,18 @@ function restartBot() {
 client.commands = new Collection()
 
 const foldersPath = path.join(__dirname, 'Commands')
-const commandFolders = fs.readdirSync(foldersPath)
+function findJavaScriptFiles(directory: string): string[] {
+	return fs.readdirSync(directory, { withFileTypes: true }).flatMap(entry => {
+		const entryPath = path.join(directory, entry.name)
+		if (entry.isDirectory()) return findJavaScriptFiles(entryPath)
+		return entry.isFile() && entry.name.endsWith('.js') ? [entryPath] : []
+	})
+}
 
-for (const folder of commandFolders) {
-	const commandsPath = path.join(foldersPath, folder)
-	const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'))
-	for (const file of commandFiles) {
-		const command = require(path.join(commandsPath, file))
-		if ('data' in command && 'execute' in command) {
-			client.commands.set(command.data.name, command)
-		}
+for (const filePath of findJavaScriptFiles(foldersPath)) {
+	const command = require(filePath)
+	if (command?.data && typeof command.execute === 'function') {
+		client.commands.set(command.data.name, command)
 	}
 }
 

@@ -1,98 +1,55 @@
-import { api } from "./axiosClient"
+import { api } from './axiosClient'
+import type { HeroData, InventoryEntry, RpgItem } from '../types/RPG'
 
-export async function obterItensInventario(userId: string) {
-    const heroi = await api.get(`/heroi/${userId}`)
-    const itens = heroi.data.inventario.itens.map((item: any) => {
-        return {
-            quantidade: item.quantidade,
-            item: item.item,
-        }
-    })
-
-    return itens
+interface HeroInventoryResponse extends HeroData {
+    inventario?: { itens?: InventoryEntry[] }
 }
 
-export async function obterItens() {
-    let itens = await api.get('/itens').then(res => res)
-    return itens.data
+export async function obterItensInventario(userId: string): Promise<InventoryEntry[]> {
+    const { data } = await api.get<HeroInventoryResponse>(`/heroi/${userId}`)
+    return data.inventario?.itens ?? []
 }
 
-export async function obterUnicoItem(itemID: string) {
-    let item = await api.get(`/itens/${itemID}`)
-    return item.data
+export async function obterItens(): Promise<RpgItem[]> {
+    const { data } = await api.get<RpgItem[]>('/itens')
+    return data
 }
 
-export async function addItem(userID: string, itemID: string, quantidade = 1) {
-    const res = await api.get(`/heroi/${userID}`)
-    const heroi = res.data
-
-
-    await api.patch(`heroi/${heroi.id}/inventario/adicionar`, {
-        itemID: itemID,
-        quantidade: quantidade
-    })
+export async function obterUnicoItem(itemId: number | string): Promise<RpgItem> {
+    const { data } = await api.get<RpgItem>(`/itens/${itemId}`)
+    return data
 }
 
-
-export async function removeItem(userID: string, itemID: string, quantidade: number) {
-    const res = await api.get(`/heroi/${userID}`)
-    const heroi = res.data
-
-    await api.patch(`heroi/${heroi.id}/inventario/remover`, {
-        itemID: itemID,
-        quantidade: quantidade
-    })
+export async function addItem(userId: string, itemId: number | string, quantidade = 1): Promise<void> {
+    const { data: hero } = await api.get<HeroData>(`/heroi/${userId}`)
+    await api.patch(`/heroi/${hero.id ?? userId}/inventario/adicionar`, { itemID: itemId, quantidade })
 }
 
-export async function equiparItem(userId: string, itensID: { arma?: string, armadura?: string, calca?: string }) {
+export async function removeItem(userId: string, itemId: number | string, quantidade: number): Promise<void> {
+    const { data: hero } = await api.get<HeroData>(`/heroi/${userId}`)
+    await api.patch(`/heroi/${hero.id ?? userId}/inventario/remover`, { itemID: itemId, quantidade })
+}
 
-    const res = await api.get(`/heroi/${userId}`)
-    const heroi = res.data
+export async function equiparItem(
+    userId: string,
+    selectedItems: { arma?: number; armadura?: number; calca?: number },
+): Promise<void> {
+    const { data: hero } = await api.get<HeroData>(`/heroi/${userId}`)
+    const equipmentSlots = [
+        { selectedId: selectedItems.arma, currentId: hero.armaID, field: 'armaID' as const },
+        { selectedId: selectedItems.armadura, currentId: hero.armaduraID, field: 'armaduraID' as const },
+        { selectedId: selectedItems.calca, currentId: hero.calcaID, field: 'calcaID' as const },
+    ]
 
-    if (itensID.arma) {
-
-        if (heroi.armaID) {
-            await addItem(userId, heroi.armaID)
-        }
-
-        await api.patch(`/heroi/${userId}`, {
-            armaID: itensID.arma
-        })
-
-        removeItem(userId, itensID.arma, 1)
+    for (const slot of equipmentSlots) {
+        if (!slot.selectedId || slot.selectedId === slot.currentId) continue
+        if (slot.currentId) await addItem(userId, slot.currentId)
+        await api.patch(`/heroi/${userId}`, { [slot.field]: slot.selectedId })
+        await removeItem(userId, slot.selectedId, 1)
     }
-    if (itensID.armadura) {
-
-        if (heroi.armaID) {
-            await addItem(userId, heroi.armaID)
-        }
-
-
-        await api.patch(`/heroi/${userId}`, {
-            armaduraID: itensID.armadura
-        })
-
-        removeItem(userId, itensID.armadura, 1)
-    }
-    if (itensID.calca) {
-
-        if (heroi.armaID) {
-            await addItem(userId, heroi.armaID)
-        }
-
-
-        await api.patch(`/heroi/${userId}`, {
-            calcaID: itensID.calca
-        })
-
-        removeItem(userId, itensID.calca, 1)
-    }
-
 }
 
-export async function BuscarItemPorTipo(tipo: string) {
-    const res = await api.get(`itens/raridade/${tipo}`)
-    const itens = res.data
-
-    return itens
+export async function BuscarItemPorTipo(tipo: string): Promise<RpgItem[]> {
+    const { data } = await api.get<RpgItem[]>(`/itens/raridade/${tipo}`)
+    return data
 }

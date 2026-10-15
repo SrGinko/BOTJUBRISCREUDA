@@ -1,11 +1,12 @@
 import { api } from "./axiosClient"
+import type { EnemyData } from "../types/RPG"
 
-export async function obterInimigos() {
-    let itens = await api.get('/inimigo')
-    return itens.data
+export async function obterInimigos(): Promise<EnemyData[]> {
+    const { data } = await api.get<EnemyData[]>('/inimigo')
+    return data
 }
 
-export async function obterUnicoInimigo(itemID: number) {
-    let item = await api.get(`/inimigo/${itemID}`)
-    return item.data
+export async function obterUnicoInimigo(itemId: number): Promise<EnemyData> {
+    const { data } = await api.get<EnemyData>(`/inimigo/${itemId}`)
+    return data
 }
