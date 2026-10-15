@@ -1,12 +1,13 @@
 const { Events } = require('discord.js')
 const { handleActionButton } = require('../handlers/buttonsHandler')
-const { obterItens } = require('../service/itensInventario')
 const chalk = require("chalk")
 const { ModalHandleAction } = require('../handlers/modalHandler')
 const { SelectMenusHandleAction } = require('../handlers/selectmenusHandler')
 const { criarEmbed } = require('../Utils/embedFactory')
 const { handleError } = require('../handlers/errorsHandler')
-const { BuscarjogoNome } = require('../service/buscarJogos')
+const { handleGamesComponent } = require('../Commands/games/gamesComponent')
+const { autocompleteGames } = require('../Commands/games/gamesAutocomplete')
+const { autocompleteLoja } = require('../Commands/RPG/loja/autocomplete')
 const erro = chalk.bold.red
 
 
@@ -15,7 +16,7 @@ module.exports = {
 	async execute(interaction) {
 
 		if (interaction.isModalSubmit()) {
-			ModalHandleAction(interaction)
+			return ModalHandleAction(interaction)
 		}
 
 		if (interaction.isStringSelectMenu()) {
@@ -23,18 +24,24 @@ module.exports = {
 		}
 
 		if (interaction.isButton()) {
+			if (interaction.customId.startsWith('games:')) {
+				return handleGamesComponent(interaction)
+			}
 
 			const res = await handleActionButton(interaction.customId, interaction.user, interaction)
 
 			if (!res.ok) {
-				return interaction.reply({
+				const reply = {
 					embeds: [
 						criarEmbed({
 							description: res.message,
 							color: 'Orange'
 						})
 					], flags: 64
-				})
+				}
+				return interaction.deferred || interaction.replied
+					? interaction.followUp(reply)
+					: interaction.reply(reply)
 			}
 
 			if (!interaction.replied && !interaction.deferred) {
@@ -46,34 +53,9 @@ module.exports = {
 		if (interaction.isAutocomplete()) {
 
 			if (interaction.commandName === 'loja') {
-				const query = interaction.options.getFocused()
-
-				const itens = await obterItens()
-
-				const itensFilter = itens.filter(item => {
-					return item.nome.toLowerCase().includes(query.toLowerCase())
-				});
-
-				const selections = itensFilter.slice(0, 10).map(item => ({
-					name: item.nome,
-					value: String(item.id)
-				}));
-
-				await interaction.respond(selections);
+				await autocompleteLoja(interaction)
 			} else if (interaction.commandName === 'games') {
-
-				const texto = interaction.options.getFocused();
-				if (!texto) return interaction.respond([])
-				const jogos = await BuscarjogoNome(texto)
-				if (!jogos) return interaction.respond([])
-				const selections = jogos.slice(0, 10).map(jogo => {
-					return {
-						name: jogo.nome.length > 100 ? jogo.nome.slice(0, 97) + '...' : jogo.nome,
-						value: String(jogo.appid)
-					}
-				})
-
-				await interaction.respond(selections)
+				await autocompleteGames(interaction)
 			}
 
 			return

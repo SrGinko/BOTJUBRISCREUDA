@@ -2,7 +2,6 @@ const { ContainerBuilder, TextDisplayBuilder, MessageFlags, MediaGalleryBuilder,
 const { api } = require('../service/axiosClient')
 const { formatDate } = require('../Utils/date')
 const { addXp } = require('../Utils/xp')
-const { obterUnicoItem } = require('../service/itensInventario')
 const hydraLinks = require('../data/hydraLinks')
 const { BuscarjogoNome, BuscarjogoId } = require('../service/buscarJogos')
 
@@ -90,53 +89,7 @@ async function SelectMenusHandleAction(interaction) {
         }
             break;
 
-        case 'equipar-item': {
-            const itemId = interaction.values
-            itemId.map(async id => {
-                let itens = await obterUnicoItem(+id)
 
-                switch (itens.tipo) {
-                    case 'ARMA':
-                        api.patch(`heroes/${userId}`, {
-                            armaID: itens.id
-                        })
-
-                        const container = new ContainerBuilder({
-                            accent_color: 0x00ff2a,
-                            components: [
-                                new TextDisplayBuilder({
-                                    content: 'Arma equipada com sucesso.'
-                                })
-                            ]
-                        })
-
-                        api.patch(`heroes/${userId}/inventario/remover`, {
-                            itemID: itens.id,
-                            quantidade: 1
-                        })
-
-                        interaction.update({ components: [container] })
-                        break
-                    case 'ARMADURA':
-                        api.patch(`heroes/${userId}`, {
-                            armaduraID: itens.id
-                        })
-                        interaction.update({ content: 'Armadura equipada com sucesso.' })
-                        break
-                    case 'CALCA':
-                        api.patch(`heroes/${userId}`, {
-                            calcaID: itens.id
-                        })
-                        interaction.update({ content: 'Calca equipada com sucesso.' })
-                        break
-                    default:
-                        interaction.update({ content: 'Item não equipável.' })
-                        break
-                }
-            })
-        }
-
-            break;
     }
 }
 
