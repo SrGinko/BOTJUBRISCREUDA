@@ -1,5 +1,12 @@
+export type Banner = {
+    name: string
+    id: string
+    banner: string
+    cor: string
+    corHEX: number
+}
 
-const banners = [
+export const banners: Banner[] = [
     { name: 'Wave', id: '0', banner: 'https://zzggbdfcndfwdunphupw.supabase.co/storage/v1/object/public/Jubiscreuda/banners/wave.jpg', cor: '#bb00ff', corHEX: 0xbb00ff },
     { name: 'Tarde', id: '1', banner: 'https://zzggbdfcndfwdunphupw.supabase.co/storage/v1/object/public/Jubiscreuda/banners/tarde.jpg', cor: '#f74922', corHEX: 0xf74922 },
     { name: 'Olhar', id: '2', banner: 'https://i.pinimg.com/736x/65/ee/ff/65eeff4c209bf9c7badcd8a688136363.jpg', cor: '#ffffff', corHEX: 0xffffff },
@@ -20,5 +27,3 @@ const banners = [
     { name: 'Akuma', id: '17', banner: 'https://zzggbdfcndfwdunphupw.supabase.co/storage/v1/object/public/Jubiscreuda/banners/Akuma.jpg', cor: '#c40000', corHEX: 0xc40000 },
     
 ]
-
-module.exports = banners

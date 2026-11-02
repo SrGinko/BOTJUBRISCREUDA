@@ -11,11 +11,11 @@ if (!TOKEN) throw new Error('TOKEN não configurado no arquivo .env')
 if (!CLIENTE_ID) throw new Error('CLIENTE_ID não configurado no arquivo .env')
 if (!GUILD_ID) throw new Error('GUILD_ID não configurado no arquivo .env')
 
-function findJavaScriptFiles(directory: string): string[] {
+function findModuleFiles(directory: string): string[] {
     return fs.readdirSync(directory, { withFileTypes: true }).flatMap(entry => {
         const entryPath = path.join(directory, entry.name)
-        if (entry.isDirectory()) return findJavaScriptFiles(entryPath)
-        return entry.isFile() && entry.name.endsWith('.js') ? [entryPath] : []
+        if (entry.isDirectory()) return findModuleFiles(entryPath)
+        return entry.isFile() && /\.(js|ts)$/.test(entry.name) && !entry.name.endsWith('.d.ts') ? [entryPath] : []
     })
 }
 
@@ -23,7 +23,7 @@ const commands: unknown[] = []
 const commandFilesByName = new Map<string, string>()
 const commandsPath = path.join(__dirname, 'Commands')
 
-for (const filePath of findJavaScriptFiles(commandsPath)) {
+for (const filePath of findModuleFiles(commandsPath)) {
     const command = require(filePath)
     if (!command?.data || typeof command.execute !== 'function') continue
 

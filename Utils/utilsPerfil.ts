@@ -1,12 +1,12 @@
 import ranking from "../service/ranking";
 
-import { AttachmentBuilder, MediaGalleryBuilder, ContainerBuilder, ThumbnailBuilder, SectionBuilder, TextDisplayBuilder, SeparatorBuilder, SeparatorSpacingSize, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction } from "discord.js"
+import { AttachmentBuilder, MediaGalleryBuilder, ContainerBuilder, ThumbnailBuilder, SectionBuilder, TextDisplayBuilder, SeparatorBuilder, SeparatorSpacingSize, ActionRowBuilder, ButtonBuilder, ButtonStyle, type ButtonInteraction, type ChatInputCommandInteraction, type ModalSubmitInteraction } from "discord.js"
 import Canvas from '@napi-rs/canvas'
 import { emoji } from "./emojis"
 import { addLVL, addLVLHeroi } from "../Utils/xp"
 import { api } from "../service/axiosClient"
 import { obterUnicoItem } from "../service/itensInventario"
-import banners from "../data/banners"
+import { banners } from "../data/banners"
 import { handleError } from "../handlers/errorsHandler"
 
 type PefilType = 'usuario' | 'heroi'
@@ -64,7 +64,12 @@ export function formatarItemEquipado(rotulo: string, item: any) {
 }
 
 
-export async function creatPerfil(userId: string, bannerIndex: number, interaction: ChatInputCommandInteraction, type: PefilType) {
+export async function creatPerfil(
+    userId: string,
+    bannerIndex: number,
+    interaction: ChatInputCommandInteraction | ButtonInteraction | ModalSubmitInteraction,
+    type: PefilType,
+) {
 
 
     if (!interaction.guild) {

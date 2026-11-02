@@ -4,7 +4,7 @@ const { AttachmentBuilder } = require('discord.js')
 const Canvas = require('@napi-rs/canvas')
 const banners = require('../data/banners')
 
-async function createRankingBanner(user: Usuario, interaction: any, position: number) {
+export async function createRankingBanner(user: Usuario, interaction: any, position: number) {
 
     const canvas = Canvas.createCanvas(720, 150)
     const ctx = canvas.getContext('2d')
@@ -109,5 +109,3 @@ async function createRankingBanner(user: Usuario, interaction: any, position: nu
         { name: `ranking_banner_${user.id}.png` }
     )
 }
-
-module.exports = { createRankingBanner }

@@ -1,4 +1,4 @@
-import type { Icones as IconesType } from "../types/emoji";
+import type { Icones as IconesType } from "../RPG/handlers/emoji";
 
 export const Icones: IconesType = {
     emojis: {

@@ -6,11 +6,12 @@ import {
     type SendableChannels,
     type User,
 } from 'discord.js'
-import { BuscarItemPorTipo, obterUnicoItem } from '../service/itensInventario'
+import { obterUnicoItem } from '../service/itensInventario'
 import { obterUnicoInimigo } from '../service/getInimigo'
 import { criarEmbed } from '../Utils/embedFactory'
 import rpgEvents from '../Events/rpgEvents'
-import type { Battle, BattleMode, BattleResult, BattleRewards, ChestReward, Combatant, EnemyData, HeroData, PvpChallenge, RpgItem } from '../types/RPG'
+import { generateChestReward } from './loot'
+import type { Battle, BattleMode, BattleResult, BattleRewards, Combatant, EnemyData, HeroData, PvpChallenge, RpgItem } from '../types/RPG'
 import {
     checkBattleEnd,
     generateTurnOrder,
@@ -31,13 +32,6 @@ const battles = new Map<string, Battle>()
 const battleIdByPlayer = new Map<string, string>()
 const challenges = new Map<string, PvpChallenge>()
 const challengeIdByPlayer = new Map<string, string>()
-
-const CHEST_CHANCES = { COMUM: 35, RARO: 10 } as const
-const CHEST_LOOT_TABLE = {
-    COMUM: ['COMUM', 'RARA'],
-    RARA: ['COMUM', 'RARA', 'EPICO'],
-} as const
-const CHEST_CONFIG = { COMUM: { maxRewards: 2 }, RARA: { maxRewards: 4 } } as const
 
 interface CreatePvpChallengeOptions {
     channel: SendableChannels
@@ -124,43 +118,6 @@ function buildCombatPlayer(user: User, playerData: HeroData, equips: Awaited<Ret
         effects: [],
         arma,
     }
-}
-
-function gerarBau(): ChestReward['tipo'] | null {
-    const roll = Math.random() * 100
-    if (roll <= CHEST_CHANCES.RARO) return 'RARA'
-    if (roll <= CHEST_CHANCES.RARO + CHEST_CHANCES.COMUM) return 'COMUM'
-    return null
-}
-
-async function gerarConteudoBau(tipoBau: ChestReward['tipo']): Promise<ChestReward['conteudo']> {
-    const rewards: ChestReward['conteudo'] = []
-    const quantity = CHEST_CONFIG[tipoBau].maxRewards + 1
-    const allowedRarities = CHEST_LOOT_TABLE[tipoBau]
-
-    for (let index = 0; index < quantity; index++) {
-        const rewardType = Math.floor(Math.random() * 3)
-        if (rewardType === 0) {
-            const rarity = allowedRarities[Math.floor(Math.random() * allowedRarities.length)]
-            const items = await BuscarItemPorTipo(rarity)
-            if (items.length) {
-                rewards.push({
-                    tipo: 'ITEM',
-                    item: items[Math.floor(Math.random() * items.length)],
-                    quantidade: Math.floor(Math.random() * 3) + 1,
-                })
-            }
-        } else {
-            const currencyType = rewardType === 1 ? 'MOEDA' : 'XP'
-            rewards.push({
-                tipo: currencyType,
-                quantidade: currencyType === 'MOEDA'
-                    ? Math.floor(Math.random() * 500) + 100
-                    : Math.floor(Math.random() * 300) + 50,
-            })
-        }
-    }
-    return rewards
 }
 
 export async function createPvpChallenge({ channel, challengerUser, targetUser, timeoutMs = 60_000 }: CreatePvpChallengeOptions): Promise<PvpChallenge | null> {
@@ -278,8 +235,10 @@ async function calcularRecompensas(battle: Battle, result: BattleResult): Promis
     if (result === 'derrota') { xp *= 0.15; moeda = 0 }
 
     const rewards: BattleRewards = { xp: Math.floor(xp), moeda: Math.floor(moeda), baus: [] }
-    const chestType = gerarBau()
-    if (chestType) rewards.baus.push({ tipo: chestType, conteudo: await gerarConteudoBau(chestType) })
+    if (result === 'vitoria') {
+        const chest = await generateChestReward()
+        if (chest) rewards.baus.push(chest)
+    }
     return rewards
 }
 

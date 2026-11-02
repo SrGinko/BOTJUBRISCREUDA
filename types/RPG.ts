@@ -126,7 +126,7 @@ export interface LootCurrencyReward {
 export type LootReward = LootItemReward | LootCurrencyReward
 
 export interface ChestReward {
-    tipo: 'COMUM' | 'RARA'
+    tipo: 'COMUM' | 'NORMAL' | 'RARA' | 'LENDARIO'
     conteudo: LootReward[]
 }
 

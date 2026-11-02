@@ -1,5 +1,11 @@
-const hydraLinks = [
-    { id: 'todos', name: 'Todos', link: ''},
+type HydraLink = {
+    id: string
+    name: string
+    link: string
+}
+
+export const hydraLinks: HydraLink[] = [
+    { id: 'todos', name: 'Todos', link: '' },
     { id: 'rutracker', name: 'Rutracker', link: 'https://raw.githubusercontent.com/KekitU/rutracker-hydra-links/main/all_categories.json' },
     { id: 'onlinefix', name: 'Onlinefix', link: 'https://hydralinks.cloud/sources/onlinefix.json' },
     { id: 'gog', name: 'GOG', link: 'https://hydralinks.cloud/sources/gog.json' },
@@ -15,6 +21,9 @@ const hydraLinks = [
     { id: 'david-kazumi', name: 'David Kazumi', link: 'https://davidkazumi-github-io.pages.dev/fontekazumi.json' },
     { id: 'steamgg', name: 'SteamGG', link: 'https://raw.githubusercontent.com/Wkeynhk/Rutor/refs/heads/main/steamgg.json' },
     { id: 'wkeynhk', name: 'Wkeynhk', link: 'https://raw.githubusercontent.com/Wkeynhk/Rutor/refs/heads/main/rutor.json' },
+    { id: 'empress', name: 'Empress', link: 'https://hydralinks.cloud/sources/empress.json' },
+    { id: 'atopgames', name: 'AtopGames', link: 'https://hydralinks.cloud/sources/atop-games.json' },
+    { id: 'redump', name: 'Redump', link: 'https://wkeynhk.online/redump.json' },
+    { id: 'gamebounty', name: 'Gamebounty', link: 'https://hydralinks.cloud/sources/gamebounty.json' },
+    { id: 'romsportugues', name: 'ROMs Portugues', link: 'https://hydralinks.cloud/sources/roms-portugues.json' },
 ]
-
-module.exports = hydraLinks

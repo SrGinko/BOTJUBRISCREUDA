@@ -59,15 +59,15 @@ function restartBot() {
 client.commands = new Collection()
 
 const foldersPath = path.join(__dirname, 'Commands')
-function findJavaScriptFiles(directory: string): string[] {
+function findModuleFiles(directory: string): string[] {
 	return fs.readdirSync(directory, { withFileTypes: true }).flatMap(entry => {
 		const entryPath = path.join(directory, entry.name)
-		if (entry.isDirectory()) return findJavaScriptFiles(entryPath)
-		return entry.isFile() && entry.name.endsWith('.js') ? [entryPath] : []
+		if (entry.isDirectory()) return findModuleFiles(entryPath)
+		return entry.isFile() && /\.(js|ts)$/.test(entry.name) && !entry.name.endsWith('.d.ts') ? [entryPath] : []
 	})
 }
 
-for (const filePath of findJavaScriptFiles(foldersPath)) {
+for (const filePath of findModuleFiles(foldersPath)) {
 	const command = require(filePath)
 	if (command?.data && typeof command.execute === 'function') {
 		client.commands.set(command.data.name, command)
@@ -75,11 +75,12 @@ for (const filePath of findJavaScriptFiles(foldersPath)) {
 }
 
 const eventsPath = path.join(__dirname, 'Events')
-const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'))
+const eventFiles = fs.readdirSync(eventsPath).filter(file => /\.(js|ts)$/.test(file) && !file.endsWith('.d.ts'))
 
 for (const file of eventFiles) {
 	const filePath = path.join(eventsPath, file);
 	const event = require(filePath);
+	if (!event?.name || typeof event.execute !== 'function') continue
 	if (event.once) {
 		client.once(event.name, (...args) => event.execute(...args));
 	} else {

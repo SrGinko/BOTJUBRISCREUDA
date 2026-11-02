@@ -45,12 +45,10 @@ export function criarGameInfoViewer(jogo: SteamGame, appId: string, suggestion =
     const genres = jogo.genres?.map(genre => genre.description).join(', ') || 'Não informado'
     const categories = jogo.categories?.slice(0, 10).map(category => category.description).join(', ') || 'Não informado'
     const price = jogo.is_free ? 'Gratuito' : jogo.price_overview?.final_formatted || 'Desconhecido'
-    const metacritic = jogo.metacritic
-        ? `[${jogo.metacritic.score}](${jogo.metacritic.url})`
-        : 'Desconhecido'
+    const metacritic = jogo.metacritic ? `[${jogo.metacritic.score}](${jogo.metacritic.url})` : 'Desconhecido'
 
-    const content = `# ${jogo.name}
-
+    const content = `# ${jogo.name} 
+    
 <:moedas:1463846758282170521> ${price}
 
 **Metacritic:** ${metacritic}
