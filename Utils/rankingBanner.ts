@@ -1,8 +1,7 @@
 import { Usuario } from "../types/Usuario"
-
+import { banners } from "../data/banners"
 const { AttachmentBuilder } = require('discord.js')
 const Canvas = require('@napi-rs/canvas')
-const banners = require('../data/banners')
 
 export async function createRankingBanner(user: Usuario, interaction: any, position: number) {
 

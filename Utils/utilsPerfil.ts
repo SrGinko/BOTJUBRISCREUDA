@@ -10,6 +10,17 @@ import { banners } from "../data/banners"
 import { handleError } from "../handlers/errorsHandler"
 
 type PefilType = 'usuario' | 'heroi'
+const bannerImageCache = new Map<string, ReturnType<typeof Canvas.loadImage>>()
+
+function loadBannerImage(url: string): ReturnType<typeof Canvas.loadImage> {
+    let imagePromise = bannerImageCache.get(url)
+    if (!imagePromise) {
+        imagePromise = Canvas.loadImage(url)
+        bannerImageCache.set(url, imagePromise)
+        void imagePromise.catch(() => bannerImageCache.delete(url))
+    }
+    return imagePromise
+}
 
 export function barraDeXp(cur: number, max: number, len = 10) {
     const filled = Math.round((cur / max) * len)
@@ -117,29 +128,35 @@ export async function creatPerfil(
     const cargos = member.roles.cache.filter((role: any) => role.name !== '@everyone' && role.mentionable).map((role: any) => role.toString()).join(' ')
     const conquistas = member.roles.cache.filter((role: any) => role.name !== '@everyone').map((role: any) => emoji(role.name)).join(' ')
 
-    const userData = await api.get(`/usuario/${userId}`).then((res: any) => res.data).catch((err: any) => {
-        handleError(interaction, 'Ocorreu um erro ao buscar os dados do usuário', 'Erro de Perfil')
-        return null
-    })
-    const heroiData = await api.get(`/heroi/${userId}`).then((res: any) => res.data).catch((err: any) => {
-        return null
-    })
+    const [userResponse, heroResponse] = await Promise.all([
+        type === 'usuario' ? api.get(`/usuario/${userId}`) : Promise.resolve(null),
+        api.get(`/heroi/${userId}`).catch(() => null),
+    ])
+    const userData = userResponse?.data
+    const heroiData = heroResponse?.data ?? null
 
-    let allUsers = await ranking()
+    if (type === 'usuario' && !userData) {
+        await handleError(interaction, 'Ocorreu um erro ao buscar os dados do usuário', 'Erro de Perfil')
+        return
+    }
+    if (type === 'heroi' && !heroiData) {
+        await handleError(interaction, 'Não foi possível encontrar os dados do herói.', 'Erro de Perfil')
+        return
+    }
 
-    const IdUser = allUsers.map(i => i.id)
-    const Ranking = IdUser.indexOf(userId) + 1
-
+    const [allUsers, maxXp] = await Promise.all([
+        type === 'usuario' ? ranking() : Promise.resolve([]),
+        type === 'usuario' ? addLVL(userId) : Promise.resolve(0),
+    ])
+    const Ranking = allUsers.findIndex(user => user.id === userId) + 1
     const banner = banners
-
-    var maxXp = await addLVL(userId)
 
     let xpBar
 
     const canvas = Canvas.createCanvas(720, 300)
 
     const ctx = canvas.getContext('2d')
-    const background = await Canvas.loadImage(`${banner[bannerIndex].banner}`);
+    const background = await loadBannerImage(banner[bannerIndex].banner)
     ctx.drawImage(background, 0, 0, canvas.width, canvas.height)
 
     const attachment = new AttachmentBuilder(await canvas.encode('png'), { name: 'perfil.png' });
@@ -169,7 +186,7 @@ export async function creatPerfil(
 
     if (type === 'heroi') {
 
-        let maxHeroiXp = await addLVLHeroi(userId)
+        const maxHeroiXp = await addLVLHeroi(userId)
         xpBar = barraDeXp(heroiData.xp, maxHeroiXp)
         const [arma, armadura, calca] = await Promise.all([
             heroiData.armaID ? obterUnicoItem(heroiData.armaID).catch(() => null) : null,

@@ -1,8 +1,10 @@
 import {
     ComponentType,
+    ContainerBuilder,
     LabelBuilder,
     MessageFlags,
     ModalBuilder,
+    TextDisplayBuilder,
     type ButtonInteraction,
 } from 'discord.js'
 import { api } from '../service/axiosClient'
@@ -48,10 +50,22 @@ export async function handleActionButton(customId: string, interaction: ButtonIn
         }
 
         if (action === 'verheroi' || action === 'verusuario') {
-            await interaction.deferUpdate()
+            const profileType = action === 'verheroi' ? 'heroi' : 'usuario'
+            await interaction.update({
+                components: [
+                    new ContainerBuilder().addTextDisplayComponents(
+                        new TextDisplayBuilder({
+                            content: profileType === 'heroi'
+                                ? '⏳ Carregando perfil do herói...'
+                                : '⏳ Carregando perfil do usuário...',
+                        }),
+                    ),
+                ],
+                flags: MessageFlags.IsComponentsV2,
+            })
+
             const { data } = await api.get<{ wallpaper?: number }>(`/usuario/${userId}`)
             const wallpaperIndex = data.wallpaper ?? 0
-            const profileType = action === 'verheroi' ? 'heroi' : 'usuario'
             const perfil = await creatPerfil(userId, wallpaperIndex, interaction, profileType)
             if (!perfil) return { ok: true }
 
