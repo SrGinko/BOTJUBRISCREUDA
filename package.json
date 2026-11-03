@@ -4,6 +4,7 @@
     "@discordjs/opus": "^0.10.0",
     "@discordjs/voice": "^0.19.2",
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
+    "@google/genai": "^2.32.0",
     "@magicyan/discord": "^1.7.0",
     "@napi-rs/canvas": "^0.1.71",
     "axios": "^1.9.0",
@@ -29,8 +30,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node deploy-commands.js & node index.js",
-    "dev": "nodemon --exec node deploy-commands.js & node index.js"
+    "start": "npm run deploy && npm run bot",
+    "menu": "tsx scripts/menu.ts",
+    "deploy": "node dist/deploy-commands.js",
+    "bot": "node dist/index.js",
+    "dev": "tsx watch index.ts",
+    "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
+    "build": "npm run clean && tsc"
   },
   "repository": {
     "type": "git",
@@ -45,6 +51,9 @@
   },
   "homepage": "https://github.com/SrGinko/BOTJUBRISCREUDA#readme",
   "devDependencies": {
-    "nodemon": "^3.1.11"
+    "@types/node": "^26.6.3",
+    "nodemon": "^3.1.11",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
   }
 }
