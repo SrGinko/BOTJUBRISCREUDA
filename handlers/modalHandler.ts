@@ -11,6 +11,7 @@ import { api } from '../service/axiosClient'
 import { handleRpgModal } from '../RPG/handlers/modals'
 import { creatPerfil } from '../Utils/utilsPerfil'
 import guildEvent from '../Events/GuildEvent'
+import CompartilharVideosHandle from '../Commands/Comandos/videos/CompartilharVideosHandle'
 
 export async function ModalHandleAction(interaction: ModalSubmitInteraction): Promise<void> {
     const [prefix, action, id] = interaction.customId.split(':')
@@ -98,5 +99,9 @@ export async function ModalHandleAction(interaction: ModalSubmitInteraction): Pr
             files: [perfil.attachment],
             flags: MessageFlags.IsComponentsV2,
         })
+    }
+
+    if (action === 'compartilharvideo') {
+        CompartilharVideosHandle(interaction.customId, interaction)
     }
 }
